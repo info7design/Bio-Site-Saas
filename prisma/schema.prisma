@@ -111,7 +111,7 @@ model BioSite {
 
   org          Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
   theme        SiteTheme?
-  blocks       SiteBlock[]
+  pages        Page[]
   links        Link[]
   socialLinks  SocialLink[]
   products     Product[]
@@ -137,18 +137,31 @@ model SiteTheme {
   site    BioSite @relation(fields: [siteId], references: [id], onDelete: Cascade)
 }
 
+model Page {
+  id       String      @id @default(cuid())
+  siteId   String
+  slug     String // única dentro do site; "" para a página inicial
+  title    String
+  position Int         @default(0)
+  site     BioSite     @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  blocks   SiteBlock[]
+
+  @@unique([siteId, slug])
+  @@index([siteId, position])
+}
+
 model SiteBlock {
   id       String  @id @default(cuid())
-  siteId   String
+  pageId   String
   type     String // ProfileBlock, ButtonBlock, CatalogBlock, ...
   position Int
   visible  Boolean @default(true)
   props    Json // conteúdo
-  style    Json? // estilo por bloco
+  style    Json? // estilo por bloco (fundo, padrão, formato, tamanho...)
   animation String?
-  site     BioSite @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  page     Page    @relation(fields: [pageId], references: [id], onDelete: Cascade)
 
-  @@index([siteId, position])
+  @@index([pageId, position])
 }
 
 model Link {

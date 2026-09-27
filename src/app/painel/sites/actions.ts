@@ -58,7 +58,16 @@ export async function createSiteAction(_prev: CreateSiteState, formData: FormDat
           tokens: themeFromTemplate?.tokens ?? { primary: "#5b6cff", radius: "1rem" },
         },
       },
-      blocks: { create: [{ type: profile.type, position: 0, props: profile.props, animation: profile.animation }] },
+      pages: {
+        create: [
+          {
+            slug: "",
+            title: "Início",
+            position: 0,
+            blocks: { create: [{ type: profile.type, position: 0, props: profile.props, animation: profile.animation }] },
+          },
+        ],
+      },
     },
   });
 

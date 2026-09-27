@@ -1,17 +1,18 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
-import BlockView from "@/components/blocks/BlockView";
-import ViewTracker from "@/components/blocks/ViewTracker";
-import type { BlockType } from "@/lib/blocks";
+import PublicSiteBody from "@/components/PublicSiteBody";
 
 async function getSite(slug: string) {
   return prisma.bioSite.findFirst({
     where: { slug, published: true },
     include: {
-      blocks: { where: { visible: true }, orderBy: { position: "asc" } },
       theme: true,
       services: { where: { available: true } },
+      pages: {
+        orderBy: { position: "asc" },
+        include: { blocks: { where: { visible: true }, orderBy: { position: "asc" } } },
+      },
     },
   });
 }
@@ -31,7 +32,9 @@ export default async function PublicSitePage({ params }: { params: Promise<{ slu
   const site = await getSite(slug);
   if (!site) notFound();
 
-  const primary = (site.theme?.tokens as any)?.primary ?? "#5b6cff";
+  const home = site.pages.find((p) => p.slug === "") ?? site.pages[0];
+  if (!home) notFound();
+
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "";
   const context = {
     siteId: site.id,
@@ -40,14 +43,12 @@ export default async function PublicSitePage({ params }: { params: Promise<{ slu
   };
 
   return (
-    <main className="mx-auto min-h-dvh max-w-md bg-white px-4 py-8" style={{ ["--brand" as any]: primary }}>
-      <ViewTracker siteId={site.id} />
-      <div className="flex flex-col gap-4">
-        {site.blocks.map((b) => (
-          <BlockView key={b.id} type={b.type as BlockType} props={b.props as Record<string, any>} mode="public" context={context} />
-        ))}
-      </div>
-      <p className="mt-10 text-center text-[11px] text-slate-300">Feito com manifesti</p>
-    </main>
+    <PublicSiteBody
+      site={site}
+      pages={site.pages.map((p) => ({ slug: p.slug, title: p.title }))}
+      activeSlug=""
+      blocks={home.blocks}
+      context={context}
+    />
   );
 }

@@ -8,6 +8,55 @@ export type FieldDef =
 
 /** Campos de edição por tipo de bloco. Dirige o formulário genérico do inspetor. */
 export const BLOCK_FIELDS: Record<BlockType, FieldDef[]> = {
+  CoverBlock: [
+    { key: "title", label: "Título", kind: "text" },
+    { key: "subtitle", label: "Subtítulo", kind: "text" },
+    { key: "image", label: "URL da imagem de fundo", kind: "url" },
+    {
+      key: "format",
+      label: "Formato",
+      kind: "select",
+      options: [
+        { value: "card", label: "Cartão" },
+        { value: "fullscreen", label: "Tela cheia" },
+        { value: "arc", label: "Arco" },
+        { value: "wave", label: "Onda" },
+        { value: "diagonal", label: "Diagonal" },
+        { value: "organic", label: "Orgânico" },
+      ],
+    },
+    {
+      key: "textAlign",
+      label: "Alinhamento do texto",
+      kind: "select",
+      options: [
+        { value: "left", label: "Esquerda" },
+        { value: "center", label: "Centro" },
+      ],
+    },
+    {
+      key: "height",
+      label: "Altura",
+      kind: "select",
+      options: [
+        { value: "baixa", label: "Baixa" },
+        { value: "media", label: "Média" },
+        { value: "alta", label: "Alta" },
+      ],
+    },
+  ],
+  StoriesBlock: [
+    {
+      key: "items",
+      label: "Stories",
+      kind: "list",
+      itemLabel: "Story",
+      itemFields: [
+        { key: "title", label: "Título", kind: "text" },
+        { key: "image", label: "URL da imagem", kind: "url" },
+      ],
+    },
+  ],
   ProfileBlock: [
     { key: "name", label: "Nome", kind: "text" },
     { key: "handle", label: "@usuário", kind: "text" },
@@ -16,6 +65,22 @@ export const BLOCK_FIELDS: Record<BlockType, FieldDef[]> = {
     { key: "location", label: "Localização", kind: "text" },
     { key: "avatar", label: "URL da foto de perfil", kind: "url" },
     { key: "cover", label: "URL da capa", kind: "url" },
+  ],
+  BigTitleBlock: [
+    { key: "text", label: "Título", kind: "text" },
+    {
+      key: "align",
+      label: "Alinhamento",
+      kind: "select",
+      options: [
+        { value: "left", label: "Esquerda" },
+        { value: "center", label: "Centro" },
+      ],
+    },
+  ],
+  DetailLineBlock: [
+    { key: "icon", label: "Ícone/emoji", kind: "text" },
+    { key: "text", label: "Texto", kind: "text" },
   ],
   TextBlock: [
     { key: "title", label: "Título", kind: "text" },
@@ -32,6 +97,32 @@ export const BLOCK_FIELDS: Record<BlockType, FieldDef[]> = {
         { key: "description", label: "Descrição", kind: "text" },
         { key: "url", label: "Link", kind: "url" },
         { key: "emoji", label: "Emoji", kind: "text" },
+        {
+          key: "style",
+          label: "Estilo do botão",
+          kind: "select",
+          options: [
+            { value: "solido", label: "Sólido" },
+            { value: "suave", label: "Suave" },
+            { value: "contorno", label: "Contorno" },
+            { value: "vidro", label: "Vidro" },
+            { value: "pilula", label: "Pílula" },
+            { value: "degrade", label: "Degradê" },
+          ],
+        },
+      ],
+    },
+  ],
+  IconGridBlock: [
+    {
+      key: "items",
+      label: "Ícones",
+      kind: "list",
+      itemLabel: "Ícone",
+      itemFields: [
+        { key: "icon", label: "Emoji/ícone", kind: "text" },
+        { key: "label", label: "Rótulo", kind: "text" },
+        { key: "url", label: "Link", kind: "url" },
       ],
     },
   ],
@@ -118,6 +209,51 @@ export const BLOCK_FIELDS: Record<BlockType, FieldDef[]> = {
       itemFields: [{ key: "url", label: "URL da imagem", kind: "url" }],
     },
   ],
+  ImageBlocksBlock: [
+    {
+      key: "layout",
+      label: "Layout",
+      kind: "select",
+      options: [
+        { value: "grid", label: "Grade" },
+        { value: "list", label: "Lista" },
+        { value: "mosaic", label: "Mosaico" },
+      ],
+    },
+    {
+      key: "items",
+      label: "Imagens",
+      kind: "list",
+      itemLabel: "Imagem",
+      itemFields: [
+        { key: "url", label: "URL da imagem", kind: "url" },
+        { key: "caption", label: "Legenda", kind: "text" },
+      ],
+    },
+  ],
+  PhotoStripBlock: [
+    {
+      key: "items",
+      label: "Fotos",
+      kind: "list",
+      itemLabel: "Foto",
+      itemFields: [{ key: "url", label: "URL da imagem", kind: "url" }],
+    },
+  ],
+  CardsBlock: [
+    {
+      key: "items",
+      label: "Cartões",
+      kind: "list",
+      itemLabel: "Cartão",
+      itemFields: [
+        { key: "title", label: "Título", kind: "text" },
+        { key: "text", label: "Texto", kind: "textarea" },
+        { key: "image", label: "URL da imagem", kind: "url" },
+        { key: "url", label: "Link", kind: "url" },
+      ],
+    },
+  ],
   VideoBlock: [
     { key: "title", label: "Título", kind: "text" },
     { key: "url", label: "URL do vídeo (YouTube/MP4)", kind: "url" },
@@ -167,6 +303,18 @@ export const BLOCK_FIELDS: Record<BlockType, FieldDef[]> = {
       itemFields: [
         { key: "name", label: "Nome", kind: "text" },
         { key: "text", label: "Depoimento", kind: "textarea" },
+      ],
+    },
+  ],
+  FixedIconBarBlock: [
+    {
+      key: "items",
+      label: "Ícones fixos",
+      kind: "list",
+      itemLabel: "Ícone",
+      itemFields: [
+        { key: "icon", label: "Emoji/ícone", kind: "text" },
+        { key: "url", label: "Link", kind: "url" },
       ],
     },
   ],

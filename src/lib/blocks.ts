@@ -6,10 +6,12 @@
  */
 
 export const BLOCK_TYPES = [
-  "ProfileBlock", "TextBlock", "ButtonBlock", "SocialBlock", "WhatsAppBlock",
+  "CoverBlock", "StoriesBlock", "ProfileBlock", "BigTitleBlock", "DetailLineBlock",
+  "TextBlock", "ButtonBlock", "IconGridBlock", "SocialBlock", "WhatsAppBlock",
   "CatalogBlock", "ServiceBlock", "BookingBlock", "PixBlock", "MapBlock",
-  "GalleryBlock", "VideoBlock", "LeadFormBlock", "WifiBlock", "Tour360Block",
-  "QRCodeBlock", "DividerBlock", "CarouselBlock", "TestimonialsBlock", "CustomHTMLBlock",
+  "GalleryBlock", "ImageBlocksBlock", "PhotoStripBlock", "CardsBlock", "VideoBlock",
+  "LeadFormBlock", "WifiBlock", "Tour360Block", "QRCodeBlock", "DividerBlock",
+  "CarouselBlock", "TestimonialsBlock", "FixedIconBarBlock", "CustomHTMLBlock",
 ] as const;
 export type BlockType = (typeof BLOCK_TYPES)[number];
 
@@ -26,9 +28,14 @@ export type BlockData = {
 export type BlockMeta = { label: string; icon: string; defaults: Record<string, any> };
 
 export const BLOCK_META: Record<BlockType, BlockMeta> = {
+  CoverBlock: { label: "Capa", icon: "Image", defaults: { title: "Seu negócio", subtitle: "", image: "", format: "card", textAlign: "left", height: "media" } },
+  StoriesBlock: { label: "Stories", icon: "CircleDot", defaults: { items: [] } },
   ProfileBlock: { label: "Perfil", icon: "User", defaults: { name: "Seu nome", handle: "@usuario", verified: false, headline: "Profissão | Categoria", bio: "Conte em uma frase o que você faz.", location: "", avatar: "", cover: "" } },
+  BigTitleBlock: { label: "Título grande", icon: "Heading", defaults: { text: "Título de impacto", align: "left" } },
+  DetailLineBlock: { label: "Linha de detalhes", icon: "Info", defaults: { icon: "🟢", text: "Aberto até 23h" } },
   TextBlock: { label: "Texto", icon: "Type", defaults: { title: "", text: "Escreva aqui." } },
   ButtonBlock: { label: "Botões / Links", icon: "MousePointerClick", defaults: { items: [{ id: "b1", title: "Conheça nossos serviços", description: "", url: "https://", emoji: "✨" }] } },
+  IconGridBlock: { label: "Grade de ícones", icon: "Grid3x3", defaults: { items: [] } },
   SocialBlock: { label: "Redes sociais", icon: "Share2", defaults: { items: [] } },
   WhatsAppBlock: { label: "WhatsApp", icon: "MessageCircle", defaults: { phone: "", message: "Olá! Vim pelo seu Bio Site e gostaria de saber mais.", label: "Fale comigo no WhatsApp" } },
   CatalogBlock: { label: "Catálogo", icon: "ShoppingBag", defaults: { title: "Catálogo", phone: "", items: [] } },
@@ -37,6 +44,9 @@ export const BLOCK_META: Record<BlockType, BlockMeta> = {
   PixBlock: { label: "PIX", icon: "QrCode", defaults: { key: "", keyType: "aleatoria", receiver: "", city: "", label: "Pagar com PIX" } },
   MapBlock: { label: "Mapa", icon: "MapPin", defaults: { address: "", lat: null, lng: null } },
   GalleryBlock: { label: "Galeria", icon: "Images", defaults: { layout: "grid", items: [] } },
+  ImageBlocksBlock: { label: "Blocos com imagem", icon: "LayoutGrid", defaults: { layout: "grid", items: [] } },
+  PhotoStripBlock: { label: "Faixa de fotos", icon: "GalleryHorizontalEnd", defaults: { items: [] } },
+  CardsBlock: { label: "Cartões", icon: "IdCard", defaults: { items: [] } },
   VideoBlock: { label: "Vídeo", icon: "Video", defaults: { url: "", title: "" } },
   LeadFormBlock: { label: "Formulário de leads", icon: "ClipboardList", defaults: { title: "Fale com a gente", fields: ["name", "phone", "email", "message"], consentText: "Concordo com o uso dos meus dados para contato (LGPD).", button: "Enviar" } },
   WifiBlock: { label: "Wi-Fi", icon: "Wifi", defaults: { ssid: "", password: "", security: "WPA" } },
@@ -45,6 +55,7 @@ export const BLOCK_META: Record<BlockType, BlockMeta> = {
   DividerBlock: { label: "Divisor", icon: "Minus", defaults: { style: "line" } },
   CarouselBlock: { label: "Carrossel", icon: "GalleryHorizontal", defaults: { items: [] } },
   TestimonialsBlock: { label: "Depoimentos", icon: "Quote", defaults: { items: [] } },
+  FixedIconBarBlock: { label: "Barra de ícones fixa", icon: "Dock", defaults: { items: [] } },
   CustomHTMLBlock: { label: "HTML personalizado", icon: "Code", defaults: { html: "" } },
 };
 

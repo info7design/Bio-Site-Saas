@@ -9,9 +9,17 @@ export default async function EditorPage({ params }: { params: Promise<{ siteId:
 
   const site = await prisma.bioSite.findFirst({
     where: { id: siteId, orgId: org.id },
-    include: { blocks: { orderBy: { position: "asc" } }, theme: true },
+    include: {
+      theme: true,
+      pages: {
+        orderBy: { position: "asc" },
+        include: { blocks: { orderBy: { position: "asc" } } },
+      },
+    },
   });
   if (!site) notFound();
 
-  return <Editor site={site} />;
+  const maxPages = (org.subscription?.plan?.features as any)?.paginas ?? 1;
+
+  return <Editor site={site} maxPages={maxPages} />;
 }

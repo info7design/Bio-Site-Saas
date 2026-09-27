@@ -11,6 +11,26 @@ function money(cents?: number | null) {
   return (cents / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
 
+const BUTTON_STYLES: Record<string, string> = {
+  solido: "bg-slate-900 text-white border-transparent",
+  suave: "bg-violet-50 text-violet-700 border-transparent",
+  contorno: "bg-transparent text-slate-900 border-slate-300",
+  vidro: "bg-white/60 text-slate-900 border-white/40 backdrop-blur",
+  pilula: "bg-white text-slate-900 border-slate-200 !rounded-full",
+  degrade: "bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white border-transparent",
+};
+
+const COVER_FORMAT_CLASS: Record<string, string> = {
+  card: "rounded-2xl",
+  fullscreen: "rounded-none -mx-4 w-[calc(100%+2rem)]",
+  arc: "rounded-b-[3rem]",
+  wave: "[clip-path:ellipse(75%_100%_at_50%_0%)]",
+  diagonal: "[clip-path:polygon(0_0,100%_0,100%_85%,0_100%)]",
+  organic: "rounded-[2rem_3rem_1rem_3rem]",
+};
+
+const COVER_HEIGHT_CLASS: Record<string, string> = { baixa: "h-24", media: "h-40", alta: "h-56" };
+
 type PublicContext = {
   siteId: string;
   appUrl?: string;
@@ -29,6 +49,45 @@ export default function BlockView({
   context?: PublicContext;
 }) {
   switch (type) {
+    case "CoverBlock":
+      return (
+        <div
+          className={`relative flex flex-col justify-end overflow-hidden bg-slate-200 bg-cover bg-center p-4 text-white ${COVER_FORMAT_CLASS[props.format] ?? COVER_FORMAT_CLASS.card} ${COVER_HEIGHT_CLASS[props.height] ?? COVER_HEIGHT_CLASS.media}`}
+          style={{ backgroundImage: props.image ? `url(${props.image})` : undefined }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-black/0" />
+          <div className={`relative ${props.textAlign === "center" ? "text-center" : "text-left"}`}>
+            <h2 className="text-xl font-bold">{props.title || "Seu negócio"}</h2>
+            {props.subtitle && <p className="text-sm text-white/80">{props.subtitle}</p>}
+          </div>
+        </div>
+      );
+
+    case "StoriesBlock":
+      return (
+        <div className="flex gap-3 overflow-x-auto px-1">
+          {(props.items ?? []).map((it: any, i: number) => (
+            <div key={i} className="flex flex-shrink-0 flex-col items-center gap-1">
+              <div className="h-16 w-16 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 p-0.5">
+                <div className="h-full w-full overflow-hidden rounded-full border-2 border-white bg-slate-200 bg-cover bg-center" style={{ backgroundImage: it.image ? `url(${it.image})` : undefined }} />
+              </div>
+              <span className="max-w-[4rem] truncate text-[11px] text-slate-600">{it.title}</span>
+            </div>
+          ))}
+        </div>
+      );
+
+    case "BigTitleBlock":
+      return <h1 className={`text-2xl font-extrabold leading-tight ${props.align === "center" ? "text-center" : "text-left"}`}>{props.text}</h1>;
+
+    case "DetailLineBlock":
+      return (
+        <div className="flex items-center gap-2 text-sm text-slate-600">
+          <span>{props.icon}</span>
+          <span>{props.text}</span>
+        </div>
+      );
+
     case "ProfileBlock":
       return (
         <div className="text-center">
@@ -61,9 +120,21 @@ export default function BlockView({
               href={it.url}
               target="_blank"
               rel="noreferrer"
-              className="touch-target flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium shadow-sm"
+              className={`touch-target flex items-center justify-center gap-2 rounded-2xl border px-4 py-3 text-sm font-medium shadow-sm ${BUTTON_STYLES[it.style] ?? BUTTON_STYLES.contorno}`}
             >
               {it.emoji && <span>{it.emoji}</span>} {it.title}
+            </a>
+          ))}
+        </div>
+      );
+
+    case "IconGridBlock":
+      return (
+        <div className="grid grid-cols-4 gap-3">
+          {(props.items ?? []).map((it: any, i: number) => (
+            <a key={i} href={it.url} target="_blank" rel="noreferrer" className="flex flex-col items-center gap-1 text-center">
+              <span className="grid h-12 w-12 place-items-center rounded-2xl bg-slate-100 text-xl">{it.icon}</span>
+              <span className="max-w-[3.5rem] truncate text-[11px] text-slate-600">{it.label}</span>
             </a>
           ))}
         </div>
@@ -170,6 +241,42 @@ export default function BlockView({
         </div>
       );
 
+    case "ImageBlocksBlock":
+      return (
+        <div className={props.layout === "list" ? "flex flex-col gap-3" : props.layout === "mosaic" ? "grid grid-cols-3 gap-1.5 [&>*:first-child]:col-span-2 [&>*:first-child]:row-span-2" : "grid grid-cols-2 gap-1.5"}>
+          {(props.items ?? []).map((it: any, i: number) => (
+            <figure key={i} className="overflow-hidden rounded-xl">
+              <img src={it.url} alt={it.caption ?? ""} className="aspect-square w-full object-cover" />
+              {it.caption && <figcaption className="mt-1 text-xs text-slate-500">{it.caption}</figcaption>}
+            </figure>
+          ))}
+        </div>
+      );
+
+    case "PhotoStripBlock":
+      return (
+        <div className="-mx-4 flex gap-2 overflow-x-auto px-4">
+          {(props.items ?? []).map((it: any, i: number) => (
+            <img key={i} src={it.url} alt="" className="h-24 w-24 flex-shrink-0 rounded-xl object-cover" />
+          ))}
+        </div>
+      );
+
+    case "CardsBlock":
+      return (
+        <div className="flex flex-col gap-3">
+          {(props.items ?? []).map((it: any, i: number) => (
+            <a key={i} href={it.url || undefined} className="overflow-hidden rounded-2xl border border-slate-100 shadow-sm">
+              {it.image && <img src={it.image} alt="" className="h-28 w-full object-cover" />}
+              <div className="p-3">
+                <p className="text-sm font-semibold">{it.title}</p>
+                {it.text && <p className="mt-0.5 text-xs text-slate-500">{it.text}</p>}
+              </div>
+            </a>
+          ))}
+        </div>
+      );
+
     case "VideoBlock":
       return props.url ? (
         <div className="overflow-hidden rounded-xl">
@@ -236,6 +343,17 @@ export default function BlockView({
               <p className="italic text-slate-600">“{it.text}”</p>
               <p className="mt-1 text-xs font-semibold">— {it.name}</p>
             </div>
+          ))}
+        </div>
+      );
+
+    case "FixedIconBarBlock":
+      return (
+        <div className="sticky bottom-2 z-10 mx-auto flex w-fit gap-4 rounded-full border border-slate-200 bg-white/90 px-4 py-2 shadow-lg backdrop-blur">
+          {(props.items ?? []).map((it: any, i: number) => (
+            <a key={i} href={it.url} target="_blank" rel="noreferrer" className="touch-target grid place-items-center text-lg">
+              {it.icon}
+            </a>
           ))}
         </div>
       );

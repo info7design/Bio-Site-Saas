@@ -1,48 +1,94 @@
 "use client";
 
 import { useRef, useState, useTransition } from "react";
-import type { BioSite, SiteBlock, SiteTheme } from "@prisma/client";
+import type { BioSite, Page, SiteBlock, SiteTheme } from "@prisma/client";
 import { BLOCK_META, BLOCK_TYPES, type BlockType } from "@/lib/blocks";
 import { BLOCK_FIELDS, type FieldDef } from "@/lib/block-fields";
 import BlockView from "@/components/blocks/BlockView";
 import {
   addBlockAction,
+  addPageAction,
   deleteBlockAction,
+  deletePageAction,
   publishSiteAction,
+  renamePageAction,
   reorderBlocksAction,
   toggleBlockVisibleAction,
   updateBlockPropsAction,
 } from "./actions";
 import SiteSettings from "./SiteSettings";
 
-type SiteWithBlocks = BioSite & { blocks: SiteBlock[]; theme: SiteTheme | null };
+type PageWithBlocks = Page & { blocks: SiteBlock[] };
+type SiteWithPages = BioSite & { pages: PageWithBlocks[]; theme: SiteTheme | null };
 type MobileTab = "blocks" | "preview" | "settings";
 
-export default function Editor({ site }: { site: SiteWithBlocks }) {
-  const [blocks, setBlocks] = useState<SiteBlock[]>(site.blocks);
-  const [selectedId, setSelectedId] = useState<string | null>(site.blocks[0]?.id ?? null);
+export default function Editor({ site, maxPages }: { site: SiteWithPages; maxPages: number }) {
+  const [pages, setPages] = useState<PageWithBlocks[]>(site.pages);
+  const [activePageId, setActivePageId] = useState(site.pages[0]?.id ?? "");
+  const [selectedId, setSelectedId] = useState<string | null>(site.pages[0]?.blocks[0]?.id ?? null);
   const [tab, setTab] = useState<MobileTab>("preview");
   const [published, setPublished] = useState(site.published);
   const [, startTransition] = useTransition();
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const activePage = pages.find((p) => p.id === activePageId) ?? pages[0];
+  const blocks = activePage?.blocks ?? [];
   const selected = blocks.find((b) => b.id === selectedId) ?? null;
+
+  function updateActivePageBlocks(updater: (blocks: SiteBlock[]) => SiteBlock[]) {
+    setPages((prev) => prev.map((p) => (p.id === activePageId ? { ...p, blocks: updater(p.blocks) } : p)));
+  }
 
   function selectAndShowSettings(id: string) {
     setSelectedId(id);
     setTab("settings");
   }
 
+  function handleSelectPage(pageId: string) {
+    setActivePageId(pageId);
+    setSelectedId(null);
+  }
+
+  function handleAddPage() {
+    const title = window.prompt("Nome da nova página", "Nova página");
+    if (!title) return;
+    startTransition(async () => {
+      try {
+        const created = await addPageAction(site.id, title);
+        setPages((prev) => [...prev, { ...created, blocks: [] }]);
+        setActivePageId(created.id);
+      } catch (e: any) {
+        alert(e.message ?? "Não foi possível criar a página");
+      }
+    });
+  }
+
+  function handleRenamePage(pageId: string) {
+    const current = pages.find((p) => p.id === pageId);
+    const title = window.prompt("Novo nome da página", current?.title);
+    if (!title) return;
+    setPages((prev) => prev.map((p) => (p.id === pageId ? { ...p, title } : p)));
+    startTransition(() => renamePageAction(site.id, pageId, title));
+  }
+
+  function handleDeletePage(pageId: string) {
+    if (pages.length <= 1) return;
+    if (!window.confirm("Excluir esta página e todos os blocos dela?")) return;
+    setPages((prev) => prev.filter((p) => p.id !== pageId));
+    if (activePageId === pageId) setActivePageId(pages.find((p) => p.id !== pageId)?.id ?? "");
+    startTransition(() => deletePageAction(site.id, pageId));
+  }
+
   function handleAdd(type: BlockType) {
     startTransition(async () => {
-      const created = await addBlockAction(site.id, type);
-      setBlocks((prev) => [...prev, created]);
+      const created = await addBlockAction(site.id, activePageId, type);
+      updateActivePageBlocks((prev) => [...prev, created]);
       selectAndShowSettings(created.id);
     });
   }
 
   function handlePropsChange(blockId: string, props: Record<string, any>) {
-    setBlocks((prev) => prev.map((b) => (b.id === blockId ? { ...b, props } : b)));
+    updateActivePageBlocks((prev) => prev.map((b) => (b.id === blockId ? { ...b, props } : b)));
     if (saveTimer.current) clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(() => {
       startTransition(() => updateBlockPropsAction(site.id, blockId, props));
@@ -51,12 +97,12 @@ export default function Editor({ site }: { site: SiteWithBlocks }) {
 
   function handleToggleVisible(block: SiteBlock) {
     const visible = !block.visible;
-    setBlocks((prev) => prev.map((b) => (b.id === block.id ? { ...b, visible } : b)));
+    updateActivePageBlocks((prev) => prev.map((b) => (b.id === block.id ? { ...b, visible } : b)));
     startTransition(() => toggleBlockVisibleAction(site.id, block.id, visible));
   }
 
   function handleDelete(blockId: string) {
-    setBlocks((prev) => prev.filter((b) => b.id !== blockId));
+    updateActivePageBlocks((prev) => prev.filter((b) => b.id !== blockId));
     if (selectedId === blockId) setSelectedId(null);
     startTransition(() => deleteBlockAction(site.id, blockId));
   }
@@ -66,7 +112,7 @@ export default function Editor({ site }: { site: SiteWithBlocks }) {
     if (target < 0 || target >= blocks.length) return;
     const next = [...blocks];
     [next[index], next[target]] = [next[target], next[index]];
-    setBlocks(next);
+    updateActivePageBlocks(() => next);
     startTransition(() => reorderBlocksAction(site.id, next.map((b) => b.id)));
   }
 
@@ -104,10 +150,33 @@ export default function Editor({ site }: { site: SiteWithBlocks }) {
 
       <div className="flex flex-1 overflow-hidden">
         <section className={`w-full flex-shrink-0 overflow-y-auto border-r border-slate-100 bg-white p-3 lg:block lg:w-72 ${tab === "blocks" ? "block" : "hidden"}`}>
+          <PagesPanel
+            pages={pages}
+            activePageId={activePageId}
+            maxPages={maxPages}
+            onSelect={handleSelectPage}
+            onAdd={handleAddPage}
+            onRename={handleRenamePage}
+            onDelete={handleDeletePage}
+          />
           <BlocksPanel blocks={blocks} selectedId={selectedId} onAdd={handleAdd} onSelect={selectAndShowSettings} onToggle={handleToggleVisible} onDelete={handleDelete} onMove={handleMove} />
         </section>
 
         <section className={`flex-1 overflow-y-auto bg-slate-100 p-4 lg:block ${tab === "preview" ? "block" : "hidden"}`}>
+          {pages.length > 1 && (
+            <div className="mx-auto mb-3 flex max-w-sm flex-wrap justify-center gap-1.5">
+              {pages.map((p) => (
+                <button
+                  key={p.id}
+                  type="button"
+                  onClick={() => handleSelectPage(p.id)}
+                  className={`touch-target rounded-full px-3 py-1.5 text-xs font-medium ${p.id === activePageId ? "bg-slate-900 text-white" : "bg-white text-slate-600"}`}
+                >
+                  {p.title}
+                </button>
+              ))}
+            </div>
+          )}
           <div className="mx-auto flex max-w-sm flex-col gap-3 rounded-[2rem] border-8 border-slate-900 bg-white p-3 shadow-xl">
             {blocks.filter((b) => b.visible).map((b) => (
               <button
@@ -119,7 +188,7 @@ export default function Editor({ site }: { site: SiteWithBlocks }) {
                 <BlockView type={b.type as BlockType} props={b.props as Record<string, any>} />
               </button>
             ))}
-            {blocks.length === 0 && <p className="p-6 text-center text-sm text-slate-400">Adicione blocos para montar seu site.</p>}
+            {blocks.length === 0 && <p className="p-6 text-center text-sm text-slate-400">Adicione blocos para montar essa página.</p>}
           </div>
         </section>
 
@@ -144,6 +213,50 @@ export default function Editor({ site }: { site: SiteWithBlocks }) {
           </button>
         ))}
       </nav>
+    </div>
+  );
+}
+
+function PagesPanel({
+  pages,
+  activePageId,
+  maxPages,
+  onSelect,
+  onAdd,
+  onRename,
+  onDelete,
+}: {
+  pages: PageWithBlocks[];
+  activePageId: string;
+  maxPages: number;
+  onSelect: (id: string) => void;
+  onAdd: () => void;
+  onRename: (id: string) => void;
+  onDelete: (id: string) => void;
+}) {
+  return (
+    <div className="mb-5">
+      <h3 className="text-xs font-semibold uppercase text-slate-400">
+        Páginas do site ({pages.length}/{maxPages})
+      </h3>
+      <div className="mt-2 flex flex-col gap-1.5">
+        {pages.map((p) => (
+          <div key={p.id} className={`flex items-center gap-1 rounded-xl border px-2 py-1.5 ${p.id === activePageId ? "border-violet-300 bg-violet-50" : "border-slate-100"}`}>
+            <button type="button" onClick={() => onSelect(p.id)} className="flex-1 truncate text-left text-sm font-medium">
+              {p.title}
+            </button>
+            <button type="button" onClick={() => onRename(p.id)} className="touch-target text-xs text-slate-400" title="Renomear">✎</button>
+            {pages.length > 1 && (
+              <button type="button" onClick={() => onDelete(p.id)} className="touch-target text-xs text-red-400" title="Excluir página">🗑</button>
+            )}
+          </div>
+        ))}
+      </div>
+      {pages.length < maxPages && (
+        <button type="button" onClick={onAdd} className="touch-target mt-2 w-full rounded-full border border-dashed border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-500">
+          + Nova página
+        </button>
+      )}
     </div>
   );
 }
