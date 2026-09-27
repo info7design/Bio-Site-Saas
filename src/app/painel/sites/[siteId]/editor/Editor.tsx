@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import type { BioSite, Page, SiteBlock } from "@prisma/client";
+import type { BioSite, Page, SiteBlock, SiteTheme } from "@prisma/client";
 import { BLOCK_META, BLOCK_TYPES, type BlockType } from "@/lib/blocks";
 import { BLOCK_FIELDS, type FieldDef } from "@/lib/block-fields";
 import BlockView from "@/components/blocks/BlockView";
@@ -16,10 +16,27 @@ import {
 } from "./actions";
 
 type PageWithBlocks = Page & { blocks: SiteBlock[] };
-type SiteWithPages = BioSite & { pages: PageWithBlocks[] };
+type SiteWithPages = BioSite & { pages: PageWithBlocks[]; theme: SiteTheme | null };
 type MobileTab = "blocks" | "stage" | "inspector";
 
 export default function Editor({ site, maxPages }: { site: SiteWithPages; maxPages: number }) {
+  const tokens = (site.theme?.tokens as Record<string, any>) ?? {};
+  const primary = tokens.primary ?? "#5b4bff";
+  const themeVars: Record<string, string> = {
+    "--bg": tokens.bg ?? "#faf9f5",
+    "--text": tokens.text ?? "#15151a",
+    "--muted": tokens.muted ?? "color-mix(in srgb, var(--text) 55%, transparent)",
+    "--primary": primary,
+    "--secondary": tokens.secondary ?? "color-mix(in srgb, var(--primary) 14%, white)",
+    "--btn-bg": tokens.btnBg ?? primary,
+    "--btn-text": tokens.btnText ?? "#ffffff",
+    "--radius": tokens.radius ?? "16px",
+    "--shadow": tokens.shadow ?? "0 10px 24px -12px rgba(0,0,0,.35)",
+    "--hf": tokens.headingFont ?? "inherit",
+    "--gap": tokens.gap ?? "16px",
+    "--fs": "15px",
+    "--av": "92px",
+  };
   const [pages, setPages] = useState<PageWithBlocks[]>(site.pages);
   const [activePageId, setActivePageId] = useState(site.pages[0]?.id ?? "");
   const [selectedId, setSelectedId] = useState<string | null>(site.pages[0]?.blocks[0]?.id ?? null);
@@ -178,7 +195,7 @@ export default function Editor({ site, maxPages }: { site: SiteWithPages; maxPag
           </div>
         </div>
         <div className={`device ${device === "desktop" ? "desktop" : ""}`}>
-          <div className="bio">
+          <div className="bio" style={themeVars as React.CSSProperties}>
             <div className="page">
               {blocks.filter((b) => b.visible).map((b) => (
                 <div

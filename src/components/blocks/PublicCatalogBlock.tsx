@@ -23,6 +23,7 @@ export default function PublicCatalogBlock({
   items: Item[];
 }) {
   const [cart, setCart] = useState<Record<string, number>>({});
+  const [showCart, setShowCart] = useState(false);
 
   const lines: CartLine[] = useMemo(
     () =>
@@ -45,45 +46,64 @@ export default function PublicCatalogBlock({
     await submitOrderAction(siteId, lines, total);
     await trackEventAction(siteId, "catalog_order");
     setCart({});
+    setShowCart(false);
   }
 
   return (
-    <div className="relative">
-      {title && <h3 className="mb-2 font-semibold">{title}</h3>}
-      <div className="flex flex-col gap-3">
-        {items.map((it, i) => {
-          const qty = cart[it.name] ?? 0;
-          return (
-            <div key={i} className="flex items-center gap-3 rounded-xl border border-slate-100 p-2">
-              {it.imageId && <img src={it.imageId} alt={it.name} className="h-14 w-14 rounded-lg object-cover" />}
-              <div className="flex-1">
-                <p className="text-sm font-semibold">{it.name}</p>
-                {it.description && <p className="text-xs text-slate-500">{it.description}</p>}
-                {it.priceCents != null && <p className="text-sm font-semibold text-slate-700">{money(it.priceCents)}</p>}
-              </div>
+    <div className="pcard" style={{ position: "relative" }}>
+      {title && <div className="ptitle">{title}</div>}
+      {items.map((it, i) => {
+        const qty = cart[it.name] ?? 0;
+        return (
+          <div key={i} className={`mn-it ${it.imageId ? "has-img" : ""}`}>
+            {it.imageId && <div className="pimg" style={{ backgroundImage: `url(${it.imageId})` }} />}
+            <div>
+              <b>{it.name}</b>
+              {it.description && <div className="ds">{it.description}</div>}
+              {it.priceCents != null && <div className="pr">{money(it.priceCents)}</div>}
+            </div>
+            <div className="mn-act">
               {it.available === false ? (
-                <span className="text-xs text-slate-400">Indisponível</span>
+                <span className="note">Indisponível</span>
+              ) : qty === 0 ? (
+                <button type="button" className="mn-add" onClick={() => addTo(it.name, 1)}>+</button>
               ) : (
-                <div className="flex items-center gap-2">
-                  <button type="button" onClick={() => addTo(it.name, -1)} className="touch-target h-8 w-8 rounded-full border border-slate-200 text-sm font-bold">−</button>
-                  <span className="w-4 text-center text-sm">{qty}</span>
-                  <button type="button" onClick={() => addTo(it.name, 1)} className="touch-target h-8 w-8 rounded-full border border-slate-200 text-sm font-bold">+</button>
+                <div className="mn-step">
+                  <button type="button" onClick={() => addTo(it.name, -1)}>−</button>
+                  <span>{qty}</span>
+                  <button type="button" onClick={() => addTo(it.name, 1)}>+</button>
                 </div>
               )}
             </div>
-          );
-        })}
-      </div>
+          </div>
+        );
+      })}
 
-      {count > 0 && (
-        <button
-          type="button"
-          onClick={checkout}
-          className="touch-target sticky bottom-3 mt-3 flex w-full items-center justify-between rounded-2xl bg-emerald-500 px-4 py-3 text-sm font-semibold text-white shadow-lg"
-        >
-          <span>{count} {count === 1 ? "item" : "itens"} · {money(total)}</span>
-          <span>Pedir no WhatsApp →</span>
+      {count > 0 && !showCart && (
+        <button type="button" className="mn-bar" onClick={() => setShowCart(true)}>
+          <small>{count} {count === 1 ? "item" : "itens"}</small>
+          <span>Ver pedido · {money(total)}</span>
         </button>
+      )}
+
+      {showCart && (
+        <div className="mn-cart">
+          <h5>Seu pedido</h5>
+          {lines.map((l, i) => (
+            <div key={i} className="ln">
+              <span>{l.qty}x {l.name}</span>
+              <span>{money(l.priceCents * l.qty)}</span>
+            </div>
+          ))}
+          <div className="tot">
+            <span>Total</span>
+            <span>{money(total)}</span>
+          </div>
+          <a href="#" onClick={(e) => { e.preventDefault(); checkout(); }} className="send">
+            Enviar pedido no WhatsApp
+          </a>
+          <p className="fine">Você confirma os itens e o valor direto com o estabelecimento.</p>
+        </div>
       )}
     </div>
   );

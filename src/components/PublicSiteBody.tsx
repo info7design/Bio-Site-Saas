@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { BlockType } from "@/lib/blocks";
 import BlockView from "@/components/blocks/BlockView";
 import ViewTracker from "@/components/blocks/ViewTracker";
+import "@/styles/manifesti.css";
 
 type PageLite = { slug: string; title: string };
 type BlockLite = { id: string; type: string; props: any };
@@ -19,32 +20,51 @@ export default function PublicSiteBody({
   blocks: BlockLite[];
   context: { siteId: string; appUrl?: string; services?: { id: string; name: string; durationMin: number }[] };
 }) {
-  const primary = site.theme?.tokens?.primary ?? "#5b6cff";
+  const tokens = site.theme?.tokens ?? {};
+  const primary = tokens.primary ?? "#5b4bff";
+
+  const vars: Record<string, string> = {
+    "--bg": tokens.bg ?? "#faf9f5",
+    "--text": tokens.text ?? "#15151a",
+    "--muted": tokens.muted ?? "color-mix(in srgb, var(--text) 55%, transparent)",
+    "--primary": primary,
+    "--secondary": tokens.secondary ?? "color-mix(in srgb, var(--primary) 14%, white)",
+    "--btn-bg": tokens.btnBg ?? primary,
+    "--btn-text": tokens.btnText ?? "#ffffff",
+    "--radius": tokens.radius ?? "16px",
+    "--shadow": tokens.shadow ?? "0 10px 24px -12px rgba(0,0,0,.35)",
+    "--hf": tokens.headingFont ?? "inherit",
+    "--gap": tokens.gap ?? "16px",
+    "--fs": "15px",
+    "--av": "92px",
+  };
 
   return (
-    <main className="mx-auto min-h-dvh max-w-md bg-white px-4 py-8" style={{ ["--brand" as any]: primary }}>
+    <div className="bio" style={vars as React.CSSProperties}>
       <ViewTracker siteId={site.id} />
+      <div className="page">
+        {pages.length > 1 && (
+          <div className="ptabs">
+            {pages.map((p) => (
+              <Link
+                key={p.slug}
+                href={p.slug ? `/${site.slug}/${p.slug}` : `/${site.slug}`}
+                aria-current={p.slug === activeSlug ? "page" : undefined}
+              >
+                {p.title}
+              </Link>
+            ))}
+          </div>
+        )}
 
-      {pages.length > 1 && (
-        <div className="mb-4 flex flex-wrap justify-center gap-1.5">
-          {pages.map((p) => (
-            <Link
-              key={p.slug}
-              href={p.slug ? `/${site.slug}/${p.slug}` : `/${site.slug}`}
-              className={`touch-target rounded-full px-3 py-1.5 text-xs font-medium ${p.slug === activeSlug ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-600"}`}
-            >
-              {p.title}
-            </Link>
-          ))}
-        </div>
-      )}
-
-      <div className="flex flex-col gap-4">
         {blocks.map((b) => (
-          <BlockView key={b.id} type={b.type as BlockType} props={b.props as Record<string, any>} mode="public" context={context} />
+          <div key={b.id} className="blk">
+            <BlockView type={b.type as BlockType} props={b.props as Record<string, any>} mode="public" context={context} />
+          </div>
         ))}
+
+        <p className="note" style={{ textAlign: "center", marginTop: 24 }}>Feito com manifesti</p>
       </div>
-      <p className="mt-10 text-center text-[11px] text-slate-300">Feito com manifesti</p>
-    </main>
+    </div>
   );
 }

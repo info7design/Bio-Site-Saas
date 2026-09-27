@@ -14,6 +14,22 @@ export default function DemoEditor({ initialBlocks }: { initialBlocks: DemoBlock
   const [tab, setTab] = useState<MobileTab>("stage");
   const [device, setDevice] = useState<"mobile" | "desktop">("mobile");
 
+  const themeVars = {
+    "--bg": "#faf9f5",
+    "--text": "#15151a",
+    "--muted": "color-mix(in srgb, var(--text) 55%, transparent)",
+    "--primary": "#5b4bff",
+    "--secondary": "color-mix(in srgb, var(--primary) 14%, white)",
+    "--btn-bg": "#5b4bff",
+    "--btn-text": "#ffffff",
+    "--radius": "16px",
+    "--shadow": "0 10px 24px -12px rgba(0,0,0,.35)",
+    "--hf": "inherit",
+    "--gap": "16px",
+    "--fs": "15px",
+    "--av": "92px",
+  } as React.CSSProperties;
+
   const selected = blocks.find((b) => b.id === selectedId) ?? null;
 
   function select(id: string) {
@@ -89,7 +105,7 @@ export default function DemoEditor({ initialBlocks }: { initialBlocks: DemoBlock
           </div>
         </div>
         <div className={`device ${device === "desktop" ? "desktop" : ""}`}>
-          <div className="bio">
+          <div className="bio" style={themeVars}>
             <div className="page">
               {blocks.filter((b) => b.visible).map((b) => (
                 <div key={b.id} className={`blk mode-edit ${selectedId === b.id ? "sel" : ""}`} onClick={() => select(b.id)}>

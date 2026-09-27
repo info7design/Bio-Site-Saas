@@ -28,7 +28,7 @@ export type BlockData = {
 export type BlockMeta = { label: string; icon: string; defaults: Record<string, any> };
 
 export const BLOCK_META: Record<BlockType, BlockMeta> = {
-  CoverBlock: { label: "Capa", icon: "Image", defaults: { title: "Seu negócio", subtitle: "", image: "", format: "card", textAlign: "left", height: "media" } },
+  CoverBlock: { label: "Capa", icon: "Image", defaults: { title: "Seu negócio", subtitle: "", badge: "", image: "", format: "card", textAlign: "left", height: "media" } },
   StoriesBlock: { label: "Stories", icon: "CircleDot", defaults: { items: [] } },
   ProfileBlock: { label: "Perfil", icon: "User", defaults: { name: "Seu nome", handle: "@usuario", verified: false, headline: "Profissão | Categoria", bio: "Conte em uma frase o que você faz.", location: "", avatar: "", cover: "" } },
   BigTitleBlock: { label: "Título grande", icon: "Heading", defaults: { text: "Título de impacto", align: "left" } },
