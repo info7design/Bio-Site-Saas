@@ -16,10 +16,10 @@ export default function LandingPage() {
           manifesti
         </div>
         <Link
-          href="/registrar"
+          href="/entrar"
           className="touch-target rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500 px-5 py-2.5 text-sm font-semibold text-white shadow-sm"
         >
-          Criar meu site
+          Entrar
         </Link>
       </header>
 
@@ -40,16 +40,16 @@ export default function LandingPage() {
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
           <Link
-            href="/registrar"
+            href="/entrar"
             className="touch-target rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white"
           >
-            Começar grátis
+            Entrar
           </Link>
           <Link
-            href="/entrar"
+            href="/demo"
             className="touch-target rounded-full border border-slate-200 px-6 py-3 text-sm font-semibold text-slate-700"
           >
-            Já tenho conta
+            Ver demonstração
           </Link>
         </div>
       </section>

@@ -43,9 +43,9 @@ export default function EntrarPage() {
       </form>
 
       <p className="mt-6 text-center text-sm text-slate-600">
-        Ainda não tem conta?{" "}
-        <Link href="/registrar" className="font-semibold text-violet-700">
-          Criar grátis
+        Cadastro temporariamente indisponível.{" "}
+        <Link href="/demo" className="font-semibold text-violet-700">
+          Ver demonstração
         </Link>
       </p>
     </main>
