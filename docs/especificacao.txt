@@ -1,0 +1,1390 @@
+Crie uma plataforma SaaS completa de criação e gerenciamento de Bio Sites / Mini Sites profissionais, inspirada nas funcionalidades encontradas em plataformas modernas de presença digital, mas com identidade visual, arquitetura, componentes e experiência próprias.
+
+A plataforma deve permitir que qualquer pessoa ou empresa crie, personalize e publique um mini-site profissional responsivo, sem conhecimento de programação.
+
+O objetivo não é criar apenas uma página de “links na bio”, mas uma verdadeira página comercial compacta, funcionando como cartão digital, vitrine, catálogo, canal de contato, agenda, página de pagamento e ferramenta de conversão.
+
+---
+
+1. CONCEITO PRINCIPAL
+
+Cada usuário poderá criar um ou vários Bio Sites.
+
+Cada Bio Site terá uma URL pública própria, por exemplo:
+
+/nome-da-marca
+
+ou
+
+/usuario
+
+A página deve funcionar perfeitamente em:
+
+- Instagram
+- TikTok
+- Facebook
+- YouTube
+- WhatsApp
+- Google
+- QR Code
+- cartão de visita
+- cartão NFC
+- anúncios
+- assinatura de e-mail
+
+A página deve ser extremamente otimizada para dispositivos móveis.
+
+---
+
+2. EDITOR VISUAL
+
+Criar um editor visual no estilo “construtor de páginas”.
+
+O usuário deverá conseguir montar a página sem programação.
+
+O editor deve permitir:
+
+- adicionar blocos
+- remover blocos
+- duplicar blocos
+- reordenar blocos
+- arrastar e soltar
+- ativar/desativar blocos
+- editar textos
+- alterar cores
+- alterar fontes
+- alterar alinhamentos
+- alterar tamanho
+- alterar espaçamentos
+- alterar bordas
+- alterar sombras
+- alterar estilos dos botões
+- visualizar a página em tempo real
+- visualizar versão mobile
+- visualizar versão desktop
+
+A alteração realizada no painel deve refletir imediatamente na página pública.
+
+---
+
+3. IDENTIDADE VISUAL
+
+Cada Bio Site deve possuir personalização completa.
+
+Permitir configurar:
+
+- logo
+- foto de perfil
+- capa
+- imagem de fundo
+- vídeo de fundo
+- cor principal
+- cor secundária
+- cor dos textos
+- cor dos botões
+- gradientes
+- tipografia
+- tamanho da fonte
+- formato da logo
+- alinhamento do conteúdo
+- espaçamento
+- bordas
+- raio dos elementos
+- sombras
+- efeitos visuais
+
+Oferecer presets de design:
+
+- Minimalista
+- Moderno
+- Empresarial
+- Luxo
+- Dark
+- Glassmorphism
+- Neon
+- Gradiente
+- Elegante
+- Criativo
+- Social Media
+
+Também permitir criação totalmente personalizada.
+
+---
+
+4. PERFIL / CABEÇALHO
+
+Criar um bloco de perfil contendo:
+
+- foto ou logo
+- nome
+- nome de usuário
+- selo de verificação opcional
+- descrição
+- profissão
+- localização
+- categoria
+- chamada principal
+
+Exemplo:
+
+"Jefferson Mathias"
+
+"Empreendedor | Tecnologia | Software"
+
+"Transformando ideias em produtos digitais."
+
+Permitir configurar alinhamento:
+
+- esquerda
+- centro
+- direita
+
+---
+
+5. BOTÕES E LINKS
+
+Criar sistema de links ilimitados.
+
+Cada botão poderá conter:
+
+- título
+- descrição
+- URL
+- ícone
+- emoji
+- imagem
+- cor
+- estilo
+- animação
+- ação
+
+Tipos:
+
+- URL externa
+- WhatsApp
+- Instagram
+- TikTok
+- YouTube
+- Facebook
+- LinkedIn
+- Telegram
+- X
+- Spotify
+- Google Maps
+- Google Drive
+- agenda
+- catálogo
+- produto
+- serviço
+- telefone
+- e-mail
+
+Permitir criar botões personalizados.
+
+Exemplo:
+
+"Fale comigo no WhatsApp"
+
+"Agende seu horário"
+
+"Conheça nossos serviços"
+
+"Ver catálogo"
+
+"Comprar agora"
+
+"Solicitar orçamento"
+
+---
+
+6. WHATSAPP
+
+Criar integração profunda com WhatsApp.
+
+O administrador deverá informar:
+
+- número
+- mensagem padrão
+- mensagem por produto
+- mensagem por serviço
+- mensagem por botão
+
+Exemplo:
+
+"Olá! Vim pelo seu Bio Site e gostaria de saber mais sobre o serviço X."
+
+Ao clicar, abrir o WhatsApp já com a mensagem preenchida.
+
+Também registrar o clique no Analytics.
+
+---
+
+7. CATÁLOGO
+
+Criar um módulo completo de catálogo.
+
+Cada produto ou serviço deverá possuir:
+
+- imagem
+- nome
+- descrição
+- preço
+- preço promocional
+- categoria
+- botão de compra
+- botão de WhatsApp
+- disponibilidade
+- destaque
+
+Exemplo:
+
+Produto:
+
+"Plano Premium"
+
+Preço:
+
+"R$ 149,90"
+
+Botão:
+
+"Quero contratar"
+
+O catálogo deverá funcionar como uma vitrine dentro do Bio Site.
+
+---
+
+8. SERVIÇOS
+
+Criar módulo específico para empresas que trabalham com serviços.
+
+Cada serviço deverá permitir:
+
+- nome
+- descrição
+- preço
+- duração
+- imagem
+- categoria
+- disponibilidade
+- botão de agendamento
+- botão de WhatsApp
+
+Exemplos:
+
+- Corte masculino
+- Consulta
+- Sessão de terapia
+- Manutenção
+- Fotografia
+- Design
+- Consultoria
+
+---
+
+9. AGENDAMENTO ONLINE
+
+Criar sistema completo de agendamento.
+
+O administrador poderá:
+
+- cadastrar serviços
+- definir duração
+- definir dias de atendimento
+- definir horários
+- bloquear dias
+- bloquear horários
+- cadastrar folgas
+- cadastrar feriados
+- definir intervalos entre atendimentos
+
+O sistema deverá calcular automaticamente os horários disponíveis.
+
+Exemplo:
+
+Serviço:
+
+"Consulta"
+
+Duração:
+
+50 minutos
+
+Horário de funcionamento:
+
+08:00 às 18:00
+
+Se 10:00 estiver ocupado, o horário não poderá ser oferecido para outro cliente.
+
+O cliente deverá conseguir:
+
+1. escolher serviço
+2. escolher data
+3. escolher horário
+4. informar nome
+5. informar telefone
+6. informar e-mail opcional
+7. confirmar
+
+Não exigir criação de conta do cliente para realizar o agendamento.
+
+---
+
+10. PIX
+
+Criar bloco de pagamento por PIX.
+
+Permitir cadastrar:
+
+- chave PIX
+- tipo da chave
+- nome do recebedor
+- QR Code
+- código copia e cola
+
+Criar botão:
+
+"Copiar PIX"
+
+Criar também:
+
+"Mostrar QR Code"
+
+O sistema não deve necessariamente intermediar o dinheiro. O Bio Site apenas apresenta os dados de pagamento cadastrados pelo proprietário.
+
+---
+
+11. FORMULÁRIO DE LEADS
+
+Criar formulário integrado.
+
+Campos configuráveis:
+
+- nome
+- telefone
+- WhatsApp
+- e-mail
+- empresa
+- mensagem
+- campo personalizado
+
+Permitir ativar/desativar campos.
+
+Os leads devem ficar armazenados no painel administrativo.
+
+Criar:
+
+- lista de leads
+- data
+- origem
+- página
+- dispositivo
+- botão clicado
+- exportação
+
+---
+
+12. GALERIA
+
+Criar bloco de galeria de imagens.
+
+Permitir:
+
+- múltiplas imagens
+- vídeos
+- carrossel
+- grid
+- antes/depois
+- destaque
+- legendas
+
+Possibilitar abrir imagem em tela cheia.
+
+---
+
+13. VÍDEOS
+
+Permitir adicionar:
+
+- YouTube
+- Vimeo
+- vídeos hospedados
+- vídeos curtos
+- vídeos de apresentação
+
+Criar bloco de vídeo responsivo.
+
+---
+
+14. TOUR 360°
+
+Criar suporte para conteúdo 360°.
+
+Permitir inserir:
+
+- link do tour
+- iframe
+- imagem 360°
+- conteúdo externo
+
+Apresentar o tour diretamente dentro do Bio Site.
+
+---
+
+15. MAPA
+
+Criar bloco de localização.
+
+Permitir:
+
+- endereço
+- latitude
+- longitude
+- Google Maps
+- botão "Como chegar"
+
+Mostrar mapa responsivo.
+
+---
+
+16. REDES SOCIAIS
+
+Criar bloco de redes sociais.
+
+Ícones para:
+
+- Instagram
+- TikTok
+- Facebook
+- YouTube
+- LinkedIn
+- X
+- Pinterest
+- Threads
+- Spotify
+- Telegram
+- WhatsApp
+
+Permitir escolher quais aparecem.
+
+---
+
+17. WI-FI
+
+Criar bloco Wi-Fi.
+
+Campos:
+
+- nome da rede
+- senha
+- tipo de segurança
+
+Botão:
+
+"Conectar ao Wi-Fi"
+
+Sempre que possível, utilizar mecanismos compatíveis com dispositivos móveis para facilitar o acesso.
+
+---
+
+18. QR CODE
+
+Cada Bio Site deverá possuir QR Code próprio.
+
+O sistema deverá permitir:
+
+- gerar QR Code
+- baixar PNG
+- baixar SVG
+- compartilhar
+- imprimir
+- personalizar cores
+- adicionar logo ao QR Code
+
+O QR Code deve continuar funcionando mesmo quando o conteúdo do Bio Site for alterado.
+
+---
+
+19. NFC
+
+Preparar a plataforma para utilização com cartões NFC.
+
+O cartão NFC deverá apontar para a URL permanente do Bio Site.
+
+Assim, o usuário poderá aproximar o cartão do celular e abrir automaticamente sua página.
+
+---
+
+20. ANALYTICS
+
+Criar sistema de Analytics em tempo real.
+
+Registrar:
+
+- visitantes
+- visualizações
+- cliques
+- links mais acessados
+- origem do tráfego
+- dispositivo
+- sistema operacional
+- navegador
+- localização aproximada
+- data
+- horário
+- taxa de conversão
+
+Mostrar origem:
+
+- Instagram
+- TikTok
+- YouTube
+- Google
+- WhatsApp
+- Facebook
+- acesso direto
+- campanha
+
+---
+
+21. RASTREAMENTO DE CLIQUES
+
+Cada botão deverá possuir um identificador.
+
+Exemplo:
+
+WhatsApp:
+
+100 cliques
+
+Instagram:
+
+45 cliques
+
+Catálogo:
+
+73 cliques
+
+Agendamento:
+
+32 cliques
+
+PIX:
+
+19 cliques
+
+Criar ranking dos elementos mais utilizados.
+
+---
+
+22. TAXA DE CONVERSÃO
+
+Criar métrica:
+
+Visitantes → Cliques
+
+Exemplo:
+
+1.000 visitantes
+
+350 pessoas clicaram em algum botão
+
+Taxa de conversão:
+
+35%
+
+Permitir escolher quais ações são consideradas conversões.
+
+---
+
+23. PIXEL E TRACKING
+
+Preparar integração com:
+
+- Meta Pixel
+- Google Analytics
+- Google Tag Manager
+- TikTok Pixel
+
+Permitir inserir IDs de rastreamento pelo painel.
+
+O usuário não deverá precisar editar código.
+
+---
+
+24. SEO
+
+Cada Bio Site deverá possuir:
+
+- título SEO
+- descrição SEO
+- imagem Open Graph
+- favicon
+- URL amigável
+- meta tags
+- canonical
+- sitemap
+- robots.txt
+
+Permitir indexação pelos mecanismos de busca.
+
+---
+
+25. COMPARTILHAMENTO
+
+Criar compartilhamento rápido.
+
+Botões:
+
+- WhatsApp
+- Instagram
+- Facebook
+- copiar link
+- QR Code
+- compartilhar nativamente pelo celular
+
+---
+
+26. DOMÍNIO PERSONALIZADO
+
+Preparar arquitetura para domínio próprio.
+
+Exemplo:
+
+www.minhaempresa.com.br
+
+ou
+
+bio.minhaempresa.com.br
+
+O usuário deverá conseguir conectar seu domínio futuramente.
+
+---
+
+27. MULTI-TENANT
+
+A plataforma deve ser construída como SaaS multi-tenant.
+
+Cada usuário/empresa deverá possuir seus próprios:
+
+- Bio Sites
+- configurações
+- leads
+- analytics
+- catálogo
+- produtos
+- serviços
+- agendamentos
+- links
+- domínio
+- usuários
+
+Os dados de um cliente jamais devem aparecer para outro.
+
+---
+
+28. PAINEL ADMINISTRATIVO
+
+Criar dashboard moderno.
+
+Menu:
+
+Dashboard
+
+Meus Bio Sites
+
+Editor
+
+Links
+
+Catálogo
+
+Serviços
+
+Agendamentos
+
+Leads
+
+Analytics
+
+PIX
+
+QR Code
+
+Domínios
+
+Aparência
+
+Integrações
+
+Configurações
+
+Usuários
+
+Assinatura
+
+---
+
+29. DASHBOARD
+
+Mostrar cards:
+
+- visualizações hoje
+- visualizações no mês
+- cliques
+- leads
+- agendamentos
+- conversão
+
+Mostrar gráficos:
+
+- visitas
+- cliques
+- crescimento
+- origem dos visitantes
+- dispositivos
+- botões mais acessados
+
+---
+
+30. MULTI-SITE
+
+Usuários de planos superiores poderão criar vários Bio Sites.
+
+Exemplo:
+
+Empresa A
+
+Empresa B
+
+Cliente 01
+
+Cliente 02
+
+Cliente 03
+
+Cada site terá seus próprios dados e Analytics.
+
+---
+
+31. SUBCONTAS
+
+Criar sistema de subcontas para agências.
+
+A agência poderá:
+
+- criar clientes
+- criar Bio Sites
+- administrar páginas
+- visualizar Analytics
+- alterar páginas
+- gerenciar usuários
+
+Cada cliente poderá possuir acesso separado.
+
+---
+
+32. PLANOS
+
+Criar arquitetura de assinatura.
+
+Exemplo:
+
+PLANO INDIVIDUAL
+
+1 Bio Site
+
+PLANO PROFISSIONAL
+
+5 Bio Sites
+
+PLANO AGÊNCIA
+
+30 Bio Sites
+
+PLANO SCALE
+
+100+ Bio Sites
+
+PLANO WHITELABEL
+
+Plataforma com identidade própria.
+
+Os limites devem ser configuráveis pelo administrador.
+
+---
+
+33. WHITE LABEL
+
+Criar arquitetura para permitir futuramente:
+
+- remover marca da plataforma
+- domínio próprio
+- logo própria
+- favicon próprio
+- cores próprias
+- painel personalizado
+- URL personalizada
+- subcontas ilimitadas
+- gestão de clientes
+
+A plataforma deverá poder ser revendida por agências.
+
+---
+
+34. TEMPLATES
+
+Criar biblioteca de templates.
+
+Categorias:
+
+- Médico
+- Psicólogo
+- Dentista
+- Clínica
+- Barbearia
+- Salão
+- Restaurante
+- Loja
+- Imobiliária
+- Fotógrafo
+- Personal Trainer
+- Influenciador
+- Profissional liberal
+- Freelancer
+- Empresa
+- Coworking
+- Prestador de serviços
+
+Cada template deverá ser totalmente editável.
+
+---
+
+35. BLOCOS MODULARES
+
+Criar arquitetura baseada em componentes.
+
+Exemplos:
+
+ProfileBlock
+
+TextBlock
+
+ButtonBlock
+
+SocialBlock
+
+WhatsAppBlock
+
+CatalogBlock
+
+ProductBlock
+
+ServiceBlock
+
+BookingBlock
+
+PixBlock
+
+MapBlock
+
+GalleryBlock
+
+VideoBlock
+
+LeadFormBlock
+
+WifiBlock
+
+Tour360Block
+
+QRCodeBlock
+
+DividerBlock
+
+CarouselBlock
+
+TestimonialsBlock
+
+CustomHTMLBlock
+
+A arquitetura deve permitir adicionar novos blocos futuramente sem precisar reconstruir todo o sistema.
+
+---
+
+36. ANIMAÇÕES
+
+Adicionar animações opcionais.
+
+Exemplos:
+
+- fade
+- slide
+- scale
+- bounce
+- pulse
+- hover
+- entrada sequencial
+- parallax
+- gradientes animados
+
+As animações devem ser discretas e não prejudicar performance.
+
+---
+
+37. RESPONSIVIDADE
+
+Prioridade máxima para mobile.
+
+O Bio Site deve funcionar perfeitamente em:
+
+- Android
+- iPhone
+- tablet
+- desktop
+
+O design deve ser mobile-first.
+
+---
+
+38. PERFORMANCE
+
+O Bio Site deve carregar rapidamente.
+
+O sistema deverá:
+
+- otimizar imagens
+- lazy-load
+- comprimir arquivos
+- utilizar cache
+- evitar JavaScript desnecessário
+- otimizar fontes
+- reduzir requisições
+- utilizar CDN quando disponível
+
+A página pública deve ser extremamente leve.
+
+---
+
+39. SEGURANÇA
+
+Implementar:
+
+- autenticação segura
+- autorização por usuário
+- proteção contra XSS
+- proteção contra CSRF
+- rate limiting
+- validação de dados
+- criptografia de informações sensíveis
+- controle de sessão
+- logs
+- backup
+- isolamento entre tenants
+
+---
+
+40. LGPD
+
+Criar estrutura compatível com LGPD.
+
+Permitir:
+
+- consentimento
+- política de privacidade
+- exclusão de dados
+- exportação de dados
+- gerenciamento de cookies
+- controle de leads
+
+Não coletar dados desnecessários.
+
+---
+
+41. EXPERIÊNCIA DO VISITANTE
+
+A página pública deve ter foco em conversão.
+
+A hierarquia recomendada:
+
+1. Logo/foto
+2. Nome
+3. Descrição
+4. CTA principal
+5. Oferta/produto/serviço
+6. Catálogo
+7. Prova social
+8. Galeria
+9. Agendamento
+10. Localização
+11. Redes sociais
+12. PIX
+13. Informações adicionais
+
+O administrador deverá poder alterar completamente essa ordem.
+
+---
+
+42. MICROINTERAÇÕES
+
+Adicionar pequenas interações:
+
+- botões com hover
+- animação de clique
+- feedback ao copiar PIX
+- feedback ao copiar link
+- carregamento suave
+- transições
+- indicadores de ação
+- animação ao abrir catálogo
+- animação ao abrir agenda
+
+---
+
+43. SISTEMA DE NOTIFICAÇÕES
+
+Criar notificações para o administrador:
+
+- novo lead
+- novo agendamento
+- cancelamento
+- novo cliente
+- pagamento registrado externamente
+- limite de uso atingido
+
+Preparar integração futura com:
+
+- WhatsApp
+- e-mail
+- push
+- SMS
+
+---
+
+44. E-MAIL
+
+Preparar sistema de e-mails transacionais.
+
+Exemplos:
+
+- confirmação de cadastro
+- confirmação de agendamento
+- cancelamento
+- novo lead
+- recuperação de senha
+- alteração de conta
+
+---
+
+45. ADMINISTRADOR MASTER
+
+Criar painel administrativo da plataforma.
+
+O administrador poderá:
+
+- visualizar usuários
+- criar usuários
+- bloquear usuários
+- editar usuários
+- visualizar sites
+- visualizar assinaturas
+- alterar planos
+- visualizar métricas globais
+- gerenciar templates
+- gerenciar recursos
+- configurar limites
+- visualizar logs
+- configurar integrações
+
+---
+
+46. ARQUITETURA
+
+Construir a aplicação com arquitetura escalável.
+
+Separar:
+
+Frontend
+
+Backend
+
+Banco de dados
+
+Autenticação
+
+Storage
+
+Analytics
+
+Pagamentos
+
+Agendamento
+
+Notificações
+
+Integrações
+
+O sistema deve permitir evolução futura sem necessidade de reescrever toda a aplicação.
+
+---
+
+47. BANCO DE DADOS
+
+Criar entidades para:
+
+User
+
+Organization
+
+BioSite
+
+SiteTheme
+
+SiteBlock
+
+Link
+
+SocialLink
+
+Product
+
+Service
+
+Category
+
+Booking
+
+Availability
+
+Lead
+
+AnalyticsEvent
+
+Domain
+
+QRCode
+
+Integration
+
+Subscription
+
+Plan
+
+TeamMember
+
+Notification
+
+Template
+
+Media
+
+Wifi
+
+PixConfiguration
+
+Tour360
+
+---
+
+48. EDITOR
+
+O editor deve permitir que o usuário enxergue a página enquanto edita.
+
+Layout:
+
+PAINEL ESQUERDO
+
+Componentes/blocos
+
+CENTRO
+
+Preview do Bio Site
+
+PAINEL DIREITO
+
+Configurações do elemento selecionado
+
+Exemplo:
+
+Selecionar botão
+
+→ texto
+
+→ link
+
+→ ícone
+
+→ cor
+
+→ tamanho
+
+→ borda
+
+→ sombra
+
+→ animação
+
+→ alinhamento
+
+---
+
+49. PUBLICAÇÃO
+
+Ao clicar em:
+
+"Publicar"
+
+O sistema deve:
+
+1. validar dados
+2. salvar configuração
+3. gerar/atualizar URL
+4. atualizar página pública
+5. atualizar QR Code
+6. disponibilizar imediatamente
+
+---
+
+50. PRINCIPAL DIFERENCIAL
+
+Não criar apenas um clone de uma ferramenta de Link na Bio.
+
+Criar uma plataforma que combine:
+
+BIO SITE
+
++ 
+
+MINI SITE
+
++ 
+
+CATÁLOGO
+
++ 
+
+AGENDA
+
++ 
+
+WHATSAPP
+
++ 
+
+PIX
+
++ 
+
+LEADS
+
++ 
+
+ANALYTICS
+
++ 
+
+QR CODE
+
++ 
+
+NFC
+
++ 
+
+MARKETING
+
++ 
+
+MULTI-SITE
+
++ 
+
+AGÊNCIA
+
++ 
+
+WHITE LABEL
+
+Tudo dentro de uma única plataforma.
+
+---
+
+51. DESIGN DA PLATAFORMA
+
+A interface administrativa deve ter aparência de software SaaS premium.
+
+Evitar aparência genérica de template.
+
+Utilizar:
+
+- cards modernos
+- sidebar
+- navegação clara
+- microinterações
+- tipografia moderna
+- espaços bem definidos
+- responsividade
+- dark mode opcional
+- componentes consistentes
+
+A página pública deve ter aparência ainda mais refinada e focada em conversão.
+
+---
+
+52. TECNOLOGIA
+
+Utilizar arquitetura moderna e escalável.
+
+Frontend:
+
+Next.js
+React
+TypeScript
+Tailwind CSS
+
+Componentes:
+
+shadcn/ui
+Lucide Icons
+
+Backend:
+
+API própria / Server Actions
+
+Banco:
+
+PostgreSQL
+
+ORM:
+
+Prisma
+
+Autenticação:
+
+sistema seguro de autenticação
+
+Storage:
+
+armazenamento de imagens e vídeos
+
+Analytics:
+
+event tracking próprio
+
+A aplicação deve ser preparada para deploy em produção.
+
+---
+
+53. PRINCÍPIO FINAL
+
+A experiência precisa ser:
+
+"Cadastrei minha conta → escolhi um template → coloquei minha logo → adicionei meus links → configurei WhatsApp/PIX/agenda → publiquei → pronto."
+
+O usuário não deve precisar entender programação.
+
+O sistema deve esconder toda a complexidade técnica e entregar uma experiência simples para o usuário final.
+
+Criar uma plataforma visualmente sofisticada, rápida, responsiva, modular e escalável, com foco em pequenos negócios, profissionais autônomos, criadores, empresas e agências.
+
+A interface deve transmitir a sensação de um produto SaaS profissional e consolidado, e não de um simples agregador de links.
