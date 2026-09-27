@@ -4,6 +4,7 @@ import { buildPixPayload } from "@/lib/pix";
 import QrCanvas from "@/components/blocks/QrCanvas";
 import PublicLeadForm from "@/components/blocks/PublicLeadForm";
 import PublicBookingBlock from "@/components/blocks/PublicBookingBlock";
+import PublicCatalogBlock from "@/components/blocks/PublicCatalogBlock";
 
 function money(cents?: number | null) {
   if (!cents && cents !== 0) return null;
@@ -92,6 +93,9 @@ export default function BlockView({
       );
 
     case "CatalogBlock":
+      if (mode === "public" && context) {
+        return <PublicCatalogBlock siteId={context.siteId} title={props.title} phone={props.phone} items={props.items ?? []} />;
+      }
       return (
         <div>
           {props.title && <h3 className="mb-2 font-semibold">{props.title}</h3>}

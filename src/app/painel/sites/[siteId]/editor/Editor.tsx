@@ -13,6 +13,7 @@ import {
   toggleBlockVisibleAction,
   updateBlockPropsAction,
 } from "./actions";
+import SiteSettings from "./SiteSettings";
 
 type SiteWithBlocks = BioSite & { blocks: SiteBlock[]; theme: SiteTheme | null };
 type MobileTab = "blocks" | "preview" | "settings";
@@ -85,6 +86,13 @@ export default function Editor({ site }: { site: SiteWithBlocks }) {
         <span className={`hidden rounded-full px-2 py-1 text-xs font-medium sm:inline ${published ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700"}`}>
           {published ? "Publicado" : "Rascunho"}
         </span>
+        <SiteSettings
+          siteId={site.id}
+          title={site.title}
+          seoTitle={site.seoTitle ?? ""}
+          seoDesc={site.seoDesc ?? ""}
+          primary={(site.theme?.tokens as any)?.primary ?? "#5b6cff"}
+        />
         <button
           type="button"
           onClick={handlePublishToggle}

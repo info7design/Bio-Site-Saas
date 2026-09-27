@@ -60,6 +60,18 @@ export async function submitLeadAction(siteId: string, _prev: LeadFormState, for
   return { success: true };
 }
 
+export async function submitOrderAction(siteId: string, lines: { name: string; qty: number; priceCents: number }[], totalCents: number) {
+  await prisma.lead.create({
+    data: {
+      siteId,
+      data: { kind: "pedido_cardapio", items: lines, totalCents },
+      consent: true,
+      source: "cardapio",
+      device: device(),
+    },
+  });
+}
+
 export async function getSlotsAction(siteId: string, serviceId: string, date: string) {
   const [service, weekly, exceptions, bookings] = await Promise.all([
     prisma.service.findUnique({ where: { id: serviceId } }),

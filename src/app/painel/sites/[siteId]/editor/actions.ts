@@ -49,6 +49,25 @@ export async function reorderBlocksAction(siteId: string, orderedIds: string[]) 
   revalidatePath(`/painel/sites/${siteId}/editor`);
 }
 
+export async function updateSiteMetaAction(
+  siteId: string,
+  data: { title?: string; seoTitle?: string; seoDesc?: string; primary?: string }
+) {
+  await assertOwnedSite(siteId);
+  const { primary, ...siteFields } = data;
+  await prisma.bioSite.update({ where: { id: siteId }, data: siteFields });
+  if (primary) {
+    const current = await prisma.siteTheme.findUnique({ where: { siteId } });
+    const tokens = { ...(current?.tokens as Record<string, any> | undefined), primary };
+    await prisma.siteTheme.upsert({
+      where: { siteId },
+      update: { tokens },
+      create: { siteId, preset: "moderno", tokens },
+    });
+  }
+  revalidatePath(`/painel/sites/${siteId}/editor`);
+}
+
 export async function publishSiteAction(siteId: string, published: boolean) {
   await assertOwnedSite(siteId);
   await prisma.bioSite.update({
