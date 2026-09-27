@@ -3,122 +3,140 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Icon from "./Icon";
+import "@/styles/manifesti.css";
 
 type NavItem = { href: string; label: string; icon: string };
+
+const SOON = [
+  { label: "Domínios", icon: "globe" },
+  { label: "Integrações", icon: "plug" },
+  { label: "Usuários", icon: "user" },
+  { label: "Assinatura", icon: "card" },
+];
 
 export default function PanelChrome({
   children,
   nav,
   orgName,
   userName,
+  planName,
+  siteCount,
+  maxSites,
   logoutAction,
+  salesPageHref = "/",
+  siteSwitcher,
+  topRight,
 }: {
   children: React.ReactNode;
   nav: NavItem[];
   orgName: string;
   userName: string;
+  planName?: string;
+  siteCount?: number;
+  maxSites?: number;
   logoutAction: () => Promise<void>;
+  salesPageHref?: string;
+  siteSwitcher?: React.ReactNode;
+  topRight?: React.ReactNode;
 }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+
+  const usagePct = maxSites ? Math.min(100, Math.round(((siteCount ?? 0) / maxSites) * 100)) : 0;
+  const activeLabel = nav.find((item) => pathname === item.href || pathname?.startsWith(item.href + "/"))?.label ?? "Painel";
   const isEditor = pathname?.includes("/editor");
 
   return (
-    <div className="flex min-h-dvh flex-col bg-slate-50 lg:flex-row">
-      {/* Sidebar desktop / gaveta mobile */}
-      <aside
-        className={`fixed inset-y-0 left-0 z-40 flex w-72 flex-col border-r border-slate-200 bg-white transition-transform lg:static lg:translate-x-0 ${
-          open ? "translate-x-0" : "-translate-x-full"
-        }`}
-      >
-        <div className="flex items-center justify-between border-b border-slate-100 px-4 py-4">
-          <div className="flex items-center gap-2 font-semibold">
-            <span className="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-violet-600 to-fuchsia-500 text-white">
-              M
-            </span>
-            {orgName}
-          </div>
-          <button
-            type="button"
-            onClick={() => setOpen(false)}
-            className="touch-target grid place-items-center rounded-lg text-slate-500 lg:hidden"
-            aria-label="Fechar menu"
-          >
-            ✕
+    <div className={`app ${open ? "side-open" : ""}`}>
+      <aside className="side">
+        <div className="brand">
+          <span className="logo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M5 19V6.5a1.5 1.5 0 0 1 2.6-1L12 10l4.4-4.5A1.5 1.5 0 0 1 19 6.5V19" />
+            </svg>
+          </span>
+          <span>manifesti</span>
+          <button type="button" className="btn ib sideclose" onClick={() => setOpen(false)} aria-label="Fechar menu">
+            ×
           </button>
         </div>
 
-        <nav className="flex flex-1 flex-col gap-1 p-3">
+        {siteSwitcher}
+
+        <nav className="nav">
           {nav.map((item) => {
-            const active = pathname === item.href;
+            const active = pathname === item.href || pathname?.startsWith(item.href + "/");
             return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setOpen(false)}
-                className={`touch-target flex items-center rounded-xl px-3 py-2.5 text-sm font-medium ${
-                  active ? "bg-violet-50 text-violet-700" : "text-slate-600 hover:bg-slate-50"
-                }`}
-              >
+              <Link key={item.href} href={item.href} aria-current={active ? "page" : undefined} onClick={() => setOpen(false)}>
+                <Icon name={item.icon} />
                 {item.label}
               </Link>
             );
           })}
         </nav>
 
-        <div className="border-t border-slate-100 p-3">
-          <div className="flex items-center gap-2 rounded-xl px-2 py-2 text-sm">
-            <span className="grid h-8 w-8 place-items-center rounded-full bg-slate-200 text-xs font-semibold">
-              {userName.slice(0, 2).toUpperCase()}
+        <div className="navlabel">Em breve</div>
+        <nav className="nav">
+          {SOON.map((item) => (
+            <button key={item.label} type="button" className="soon" disabled>
+              <Icon name={item.icon} />
+              {item.label}
+              <small>pró</small>
+            </button>
+          ))}
+        </nav>
+
+        <div className="foot">
+          <Link href={salesPageHref} className="btn sm" style={{ justifyContent: "center" }}>
+            Ver página de vendas
+          </Link>
+
+          {maxSites != null && (
+            <div className="usage">
+              <div className="ut">
+                <span>Sites</span>
+                <b>
+                  {siteCount} de {maxSites}
+                </b>
+              </div>
+              <div className="ub">
+                <i style={{ width: `${usagePct}%` }} />
+              </div>
+              {planName && <small>Plano {planName}</small>}
+            </div>
+          )}
+
+          <div className="me">
+            <span className="mav">{userName.slice(0, 2).toUpperCase()}</span>
+            <span>
+              <b>{userName}</b>
+              <small>{orgName}</small>
             </span>
-            <span className="truncate font-medium">{userName}</span>
           </div>
           <form action={logoutAction}>
-            <button type="submit" className="touch-target mt-1 w-full rounded-xl px-3 py-2 text-left text-sm text-slate-500 hover:bg-slate-50">
+            <button type="submit" className="btn sm" style={{ width: "100%", justifyContent: "center" }}>
               Sair
             </button>
           </form>
         </div>
       </aside>
 
-      {open && (
-        <button
-          aria-label="Fechar menu"
-          onClick={() => setOpen(false)}
-          className="fixed inset-0 z-30 bg-black/30 lg:hidden"
-        />
-      )}
-
-      <div className="relative flex min-h-dvh flex-1 flex-col">
-        {isEditor ? (
-          <button
-            type="button"
-            onClick={() => setOpen(true)}
-            aria-label="Abrir menu do painel"
-            className="touch-target absolute left-2 top-2 z-20 grid h-9 w-9 place-items-center rounded-full bg-white/90 text-slate-600 shadow-sm backdrop-blur lg:hidden"
-          >
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <div className="main">
+        <header className="top">
+          <button type="button" className="btn ib" onClick={() => setOpen(true)} aria-label="Abrir menu">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
               <path d="M4 7h16M4 12h16M4 17h10" />
             </svg>
           </button>
-        ) : (
-          <header className="sticky top-0 z-20 flex items-center gap-3 border-b border-slate-200 bg-white/90 px-4 py-3 backdrop-blur lg:hidden">
-            <button
-              type="button"
-              onClick={() => setOpen(true)}
-              aria-label="Abrir menu"
-              className="touch-target grid place-items-center rounded-lg text-slate-600"
-            >
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <path d="M4 7h16M4 12h16M4 17h10" />
-              </svg>
-            </button>
-            <span className="font-semibold">{orgName}</span>
-          </header>
-        )}
+          <h1>{activeLabel}</h1>
+          {topRight}
+        </header>
 
-        <main className={`flex-1 ${isEditor ? "" : "p-4 pb-24 lg:p-8"}`}>{children}</main>
+        <section className={`view ${isEditor ? "editor-host" : ""}`}>{children}</section>
       </div>
+
+      <button type="button" className="scrim" aria-label="Fechar menu" onClick={() => setOpen(false)} />
     </div>
   );
 }
