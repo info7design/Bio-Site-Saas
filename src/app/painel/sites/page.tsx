@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { prisma } from "@/lib/prisma";
 import { requireCurrentOrg } from "@/lib/current-org";
 import NewSiteForm from "./NewSiteForm";
 
@@ -6,6 +7,7 @@ export default async function SitesPage() {
   const { org } = await requireCurrentOrg();
   const maxSites = org.subscription?.plan?.maxBioSites ?? 1;
   const canCreate = org.bioSites.length < maxSites;
+  const templates = await prisma.template.findMany({ where: { active: true }, orderBy: { name: "asc" } });
 
   return (
     <div className="mx-auto max-w-3xl">
@@ -28,7 +30,13 @@ export default async function SitesPage() {
       </div>
 
       {canCreate ? (
-        <NewSiteForm />
+        <NewSiteForm
+          templates={templates.map((t) => ({
+            id: t.id,
+            name: t.name,
+            primary: (t.theme as any)?.tokens?.primary ?? "#5b6cff",
+          }))}
+        />
       ) : (
         <p className="mt-6 rounded-2xl bg-amber-50 p-4 text-sm text-amber-700">
           Você atingiu o limite de sites do seu plano atual.

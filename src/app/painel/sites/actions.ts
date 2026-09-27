@@ -6,7 +6,10 @@ import { prisma } from "@/lib/prisma";
 import { requireCurrentOrg } from "@/lib/current-org";
 import { newBlock } from "@/lib/blocks";
 
-const schema = z.object({ title: z.string().trim().min(2, "Dê um nome ao seu site") });
+const schema = z.object({
+  title: z.string().trim().min(2, "Dê um nome ao seu site"),
+  templateId: z.string().optional(),
+});
 
 function slugify(text: string) {
   return text
@@ -21,7 +24,7 @@ function slugify(text: string) {
 export type CreateSiteState = { error?: string };
 
 export async function createSiteAction(_prev: CreateSiteState, formData: FormData): Promise<CreateSiteState> {
-  const parsed = schema.safeParse({ title: formData.get("title") });
+  const parsed = schema.safeParse({ title: formData.get("title"), templateId: formData.get("templateId") || undefined });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Dados inválidos" };
 
   const { org } = await requireCurrentOrg();
@@ -41,12 +44,20 @@ export async function createSiteAction(_prev: CreateSiteState, formData: FormDat
   const profile = newBlock("ProfileBlock");
   profile.props.name = parsed.data.title;
 
+  const template = parsed.data.templateId ? await prisma.template.findUnique({ where: { id: parsed.data.templateId } }) : null;
+  const themeFromTemplate = (template?.theme as { preset?: string; tokens?: Record<string, any> } | null) ?? null;
+
   const site = await prisma.bioSite.create({
     data: {
       orgId: org.id,
       slug,
       title: parsed.data.title,
-      theme: { create: { preset: "moderno", tokens: { primary: "#5b6cff", radius: "1rem" } } },
+      theme: {
+        create: {
+          preset: themeFromTemplate?.preset ?? "moderno",
+          tokens: themeFromTemplate?.tokens ?? { primary: "#5b6cff", radius: "1rem" },
+        },
+      },
       blocks: { create: [{ type: profile.type, position: 0, props: profile.props, animation: profile.animation }] },
     },
   });
