@@ -1,0 +1,41 @@
+# Stack isolada do Bio-Site-Saas (Manifesti). Nome de projeto próprio evita
+# qualquer colisão de rede/volume com outros projetos (ex.: o SaaS de WhatsApp)
+# rodando na mesma VPS. Use sempre: docker compose -p biosite ...
+name: biosite
+
+services:
+  biosite-db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: biosite
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?defina POSTGRES_PASSWORD no .env}
+      POSTGRES_DB: biosite
+    volumes:
+      - biosite_db_data:/var/lib/postgresql/data
+    networks:
+      - biosite_net
+    # Não publica porta no host: só a app deste projeto acessa o banco.
+
+  biosite-app:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://biosite:${POSTGRES_PASSWORD}@biosite-db:5432/biosite?schema=public
+    depends_on:
+      - biosite-db
+    networks:
+      - biosite_net
+    expose:
+      - "3000"
+    # Publique/roteie via reverse proxy (Nginx/Caddy) já existente na VPS,
+    # apontando linkbio.manifesti.com.br para este serviço na porta 3000.
+
+networks:
+  biosite_net:
+    name: biosite_net
+
+volumes:
+  biosite_db_data:
+    name: biosite_db_data

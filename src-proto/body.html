@@ -1,0 +1,98 @@
+<div class="app">
+  <aside class="side">
+    <div class="brand"><span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19V6.5a1.5 1.5 0 0 1 2.6-1L12 10l4.4-4.5A1.5 1.5 0 0 1 19 6.5V19"/></svg></span><span>manifesti</span><button type="button" class="btn ib sideclose" data-sideclose="1" aria-label="Fechar menu">×</button></div>
+    <label class="orgsw"><span>Site ativo</span><select id="siteSel" aria-label="Site ativo"></select></label>
+    <nav class="nav" id="nav"></nav>
+    <div class="navlabel">Em breve</div>
+    <nav class="nav" id="soonNav"></nav>
+    <div class="foot">
+      <button type="button" class="btn sm" data-nav="landing" style="justify-content:center">Ver página de vendas</button>
+      <div class="usage"><div class="ut"><span>Sites</span><b id="useCnt">5 de 30</b></div><div class="ub"><i id="useBar" style="width:17%"></i></div><small id="useTxt">Plano Premium · renova em 12/10</small><label class="planlab" for="planSel">Testar plano (demonstração)</label><select id="planSel"><option value="gratis">Grátis</option><option value="pro">Pro</option><option value="premium" selected>Premium</option><option value="scale">Scale</option></select></div>
+      <div class="me"><span class="mav">CD</span><span><b>Camila Duarte</b><small>Agência Pulso</small></span></div>
+    </div>
+  </aside>
+  <div class="main">
+    <header class="top">
+      <button type="button" class="btn ib" id="menuBtn" aria-label="Mostrar ou ocultar a barra lateral" aria-expanded="true" title="Mostrar ou ocultar a barra lateral"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg></button>
+      <h1 id="title">Dashboard</h1>
+      <span class="pill live hide-sm" id="slug">manifesti.com.br/site</span>
+      <span class="save hide-sm" id="saveSt">Publicado</span>
+      <button class="btn" id="themeBtn" type="button">Tema</button>
+      <button class="btn primary" id="publish" type="button">Publicar</button>
+    </header>
+
+    <section class="land" id="v-landing"></section>
+
+    <section class="view" id="v-dashboard" hidden>
+      <div class="hello"><div><h2 id="hi">Bom dia, Camila</h2><p id="hiSub"></p></div>
+        <div class="seg" role="group" aria-label="Período"><button type="button" data-period="7" aria-pressed="false">7 dias</button><button type="button" data-period="14" aria-pressed="true">14 dias</button><button type="button" data-period="30" aria-pressed="false">30 dias</button></div></div>
+      <div class="grid kpis" id="kpis"></div>
+      <div class="grid two" style="margin-top:16px">
+        <div class="card"><h3>Visitas e cliques por dia</h3><div id="chart"></div></div>
+        <div class="card"><h3>Origem dos visitantes</h3><div class="bars" id="sources"></div></div>
+      </div>
+      <div class="grid three" style="margin-top:16px">
+        <div class="card"><h3>Botões mais acessados</h3><div class="bars" id="topbtn"></div></div>
+        <div class="card"><h3>Dispositivos</h3><div class="bars" id="devices"></div></div>
+        <div class="card"><h3>Conversão</h3><div id="conv"></div></div>
+        <div class="card"><h3>Atividade recente</h3><ul class="feed" id="feed"></ul></div>
+      </div>
+    </section>
+
+    <section class="view editor" id="v-editor" data-tab="stage" hidden>
+      <section class="panel l">
+        <button type="button" class="btn sm mob-only" data-tab="stage">← Voltar à prévia</button>
+        <h3>Páginas do site <span id="pgCount"></span></h3>
+        <div class="pages" id="pages"></div>
+        <button type="button" class="btn sm" id="addPage">+ Nova página</button>
+        <h3>Adicionar bloco</h3><div class="chips" id="palette"></div>
+        <h3>Estrutura da página</h3><ul class="layers" id="layers"></ul>
+        <p class="note">Arraste para reordenar.</p>
+      </section>
+      <section class="stage">
+        <div class="bar2">
+          <div class="seg devseg" role="group" aria-label="Tela"><button type="button" data-dev="mobile" aria-pressed="true">Celular</button><button type="button" data-dev="desktop" aria-pressed="false">Computador</button></div>
+          <button type="button" class="btn sm" data-movetoggle="1" aria-pressed="false" title="Mostra setas em cada módulo para reordenar">Mover módulos</button>
+          <div class="seg" role="group" aria-label="Modo"><button type="button" data-mode="edit" aria-pressed="true">Editar</button><button type="button" data-mode="view" aria-pressed="false">Visualizar</button></div>
+        </div>
+        <div class="device" id="device">
+          <div class="bio" id="bio"></div>
+          <div class="sv" id="sv" hidden></div>
+        </div>
+      </section>
+      <section class="panel r" id="inspector"></section>
+      <nav class="etabs" id="etabs" aria-label="Seções do editor"></nav>
+      <button type="button" class="editfab" id="editFab" data-tab="inspector" hidden>Editar bloco ›</button>
+    </section>
+
+    <section class="view" id="v-orders" hidden>
+      <div class="hello"><div><h2>Pedidos do cardápio</h2><p>Pedidos enviados pelos clientes para o seu WhatsApp. Teste no editor: monte um pedido no bloco Cardápio e envie.</p></div></div>
+      <div class="card scroll"><table><thead><tr><th>Quando</th><th>Cliente</th><th>Itens</th><th>Tipo</th><th>Total</th><th>Status</th></tr></thead><tbody id="orderRows"></tbody></table></div>
+    </section>
+
+    <section class="view" id="v-leads" hidden>
+      <div class="card scroll"><table><thead><tr><th>Data</th><th>Nome</th><th>Contato</th><th>Origem</th><th>Dispositivo</th><th>Botão</th></tr></thead><tbody id="leadRows"></tbody></table></div>
+    </section>
+
+    <section class="view" id="v-bookings" hidden>
+      <div class="grid two">
+        <div class="card"><h3>Agenda</h3><div class="scroll"><table><thead><tr><th>Data</th><th>Hora</th><th>Serviço</th><th>Cliente</th><th>Status</th></tr></thead><tbody id="bkRows"></tbody></table></div></div>
+        <div class="card" style="display:flex;flex-direction:column;gap:12px">
+          <h3>Testar horários</h3>
+          <div class="fld"><label for="bkSvc">Serviço</label><select id="bkSvc"></select></div>
+          <div class="fld"><label for="bkDate">Data</label><input type="date" id="bkDate"></div>
+          <div class="fld"><span class="lb">Horários livres</span><div class="slots" id="bkSlots" style="--text:var(--ink);--bg:var(--surface)"></div></div>
+          <p class="note">Atendimento de segunda a sexta, das 08:00 às 18:00. Horários ocupados ou passados não aparecem.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="v-templates" hidden>
+      <div class="tplhead"><div><h2>60 templates para começar</h2><p class="note" style="font-size:14px;margin:4px 0 0">Do mais simples ao mais sofisticado. Todos editáveis: cores, fontes, botões, blocos e até 3 páginas.</p></div>
+        <div class="fchips" id="tplFilters"></div></div>
+      <div class="tplgrid" id="tplGrid"></div>
+    </section>
+  </div>
+</div>
+<div class="scrim" id="scrim" data-sideclose="1"></div>
+<div id="toastHost"></div>

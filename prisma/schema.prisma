@@ -1,0 +1,393 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ───────── Tenancy & Auth ─────────
+
+enum Role {
+  MASTER
+  OWNER
+  ADMIN
+  EDITOR
+  VIEWER
+}
+
+model User {
+  id           String       @id @default(cuid())
+  email        String       @unique
+  name         String
+  passwordHash String
+  isMaster     Boolean      @default(false)
+  blocked      Boolean      @default(false)
+  createdAt    DateTime     @default(now())
+  memberships  TeamMember[]
+  sessions     Session[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model Organization {
+  id             String         @id @default(cuid())
+  name           String
+  slug           String         @unique
+  parentId       String? // agência -> subconta de cliente
+  parent         Organization?  @relation("OrgTree", fields: [parentId], references: [id])
+  children       Organization[] @relation("OrgTree")
+  whiteLabel     Json? // logo, favicon, cores, domínio do painel
+  createdAt      DateTime       @default(now())
+  members        TeamMember[]
+  bioSites       BioSite[]
+  subscription   Subscription?
+  integrations   Integration[]
+  media          Media[]
+  notifications  Notification[]
+  categories     Category[]
+  auditLogs      AuditLog[]
+}
+
+model TeamMember {
+  id     String       @id @default(cuid())
+  userId String
+  orgId  String
+  role   Role         @default(EDITOR)
+  user   User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  org    Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, orgId])
+}
+
+model Plan {
+  id            String         @id @default(cuid())
+  key           String         @unique // individual, profissional, agencia, scale, whitelabel
+  name          String
+  priceCents    Int
+  maxBioSites   Int
+  maxSubaccounts Int          @default(0)
+  features      Json // flags configuráveis pelo master
+  subscriptions Subscription[]
+}
+
+model Subscription {
+  id        String       @id @default(cuid())
+  orgId     String       @unique
+  planId    String
+  status    String       @default("active")
+  renewsAt  DateTime?
+  org       Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  plan      Plan         @relation(fields: [planId], references: [id])
+}
+
+// ───────── Bio Site ─────────
+
+model BioSite {
+  id           String   @id @default(cuid())
+  orgId        String
+  slug         String   @unique
+  title        String
+  published    Boolean  @default(false)
+  publishedAt  DateTime?
+  seoTitle     String?
+  seoDesc      String?
+  ogImageId    String?
+  faviconId    String?
+  tracking     Json? // metaPixel, ga4, gtm, tiktokPixel
+  conversionEvents Json? // quais ações contam como conversão
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  org          Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  theme        SiteTheme?
+  blocks       SiteBlock[]
+  links        Link[]
+  socialLinks  SocialLink[]
+  products     Product[]
+  services     Service[]
+  bookings     Booking[]
+  availability Availability[]
+  leads        Lead[]
+  events       AnalyticsEvent[]
+  domains      Domain[]
+  qrCode       QRCode?
+  wifi         Wifi[]
+  pix          PixConfiguration?
+  tours        Tour360[]
+
+  @@index([orgId])
+}
+
+model SiteTheme {
+  id      String  @id @default(cuid())
+  siteId  String  @unique
+  preset  String  @default("moderno")
+  tokens  Json // cores, gradientes, fontes, radius, sombras, espaçamento, fundo
+  site    BioSite @relation(fields: [siteId], references: [id], onDelete: Cascade)
+}
+
+model SiteBlock {
+  id       String  @id @default(cuid())
+  siteId   String
+  type     String // ProfileBlock, ButtonBlock, CatalogBlock, ...
+  position Int
+  visible  Boolean @default(true)
+  props    Json // conteúdo
+  style    Json? // estilo por bloco
+  animation String?
+  site     BioSite @relation(fields: [siteId], references: [id], onDelete: Cascade)
+
+  @@index([siteId, position])
+}
+
+model Link {
+  id          String  @id @default(cuid())
+  siteId      String
+  title       String
+  description String?
+  url         String
+  kind        String  @default("url") // url, whatsapp, phone, email, maps...
+  icon        String?
+  imageId     String?
+  style       Json?
+  position    Int     @default(0)
+  active      Boolean @default(true)
+  site        BioSite @relation(fields: [siteId], references: [id], onDelete: Cascade)
+
+  @@index([siteId])
+}
+
+model SocialLink {
+  id       String  @id @default(cuid())
+  siteId   String
+  network  String
+  url      String
+  position Int     @default(0)
+  site     BioSite @relation(fields: [siteId], references: [id], onDelete: Cascade)
+}
+
+model Category {
+  id       String       @id @default(cuid())
+  orgId    String
+  name     String
+  org      Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  products Product[]
+  services Service[]
+}
+
+model Product {
+  id           String    @id @default(cuid())
+  siteId       String
+  categoryId   String?
+  name         String
+  description  String?
+  priceCents   Int?
+  promoCents   Int?
+  imageId      String?
+  available    Boolean   @default(true)
+  featured     Boolean   @default(false)
+  buttonLabel  String?
+  whatsappMsg  String?
+  position     Int       @default(0)
+  site         BioSite   @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  category     Category? @relation(fields: [categoryId], references: [id])
+
+  @@index([siteId])
+}
+
+model Service {
+  id          String    @id @default(cuid())
+  siteId      String
+  categoryId  String?
+  name        String
+  description String?
+  priceCents  Int?
+  durationMin Int       @default(60)
+  imageId     String?
+  available   Boolean   @default(true)
+  whatsappMsg String?
+  site        BioSite   @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  category    Category? @relation(fields: [categoryId], references: [id])
+  bookings    Booking[]
+
+  @@index([siteId])
+}
+
+// ───────── Agendamento ─────────
+
+model Availability {
+  id          String  @id @default(cuid())
+  siteId      String
+  weekday     Int? // 0-6; null quando for exceção por data
+  date        DateTime? // bloqueio/folga/feriado específico
+  startTime   String? // "08:00"
+  endTime     String? // "18:00"
+  breakMin    Int     @default(0) // intervalo entre atendimentos
+  blocked     Boolean @default(false)
+  note        String?
+  site        BioSite @relation(fields: [siteId], references: [id], onDelete: Cascade)
+
+  @@index([siteId])
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  DONE
+}
+
+model Booking {
+  id         String        @id @default(cuid())
+  siteId     String
+  serviceId  String
+  startsAt   DateTime
+  endsAt     DateTime
+  name       String
+  phone      String
+  email      String?
+  status     BookingStatus @default(CONFIRMED)
+  createdAt  DateTime      @default(now())
+  site       BioSite       @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  service    Service       @relation(fields: [serviceId], references: [id])
+
+  @@index([siteId, startsAt])
+}
+
+// ───────── Leads, Analytics ─────────
+
+model Lead {
+  id        String   @id @default(cuid())
+  siteId    String
+  data      Json // campos configuráveis
+  source    String?
+  device    String?
+  buttonId  String?
+  consent   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  site      BioSite  @relation(fields: [siteId], references: [id], onDelete: Cascade)
+
+  @@index([siteId, createdAt])
+}
+
+model AnalyticsEvent {
+  id         String   @id @default(cuid())
+  siteId     String
+  type       String // view, click, lead, booking, pix_copy...
+  targetId   String? // id do botão/bloco
+  visitorId  String // hash anônimo (LGPD)
+  source     String?
+  device     String?
+  os         String?
+  browser    String?
+  region     String?
+  createdAt  DateTime @default(now())
+  site       BioSite  @relation(fields: [siteId], references: [id], onDelete: Cascade)
+
+  @@index([siteId, createdAt])
+  @@index([siteId, type])
+}
+
+// ───────── Extras ─────────
+
+model Domain {
+  id       String  @id @default(cuid())
+  siteId   String
+  host     String  @unique
+  verified Boolean @default(false)
+  site     BioSite @relation(fields: [siteId], references: [id], onDelete: Cascade)
+}
+
+model QRCode {
+  id     String  @id @default(cuid())
+  siteId String  @unique
+  style  Json? // cores, logo
+  site   BioSite @relation(fields: [siteId], references: [id], onDelete: Cascade)
+}
+
+model PixConfiguration {
+  id        String  @id @default(cuid())
+  siteId    String  @unique
+  keyType   String
+  key       String
+  receiver  String
+  copyPaste String?
+  site      BioSite @relation(fields: [siteId], references: [id], onDelete: Cascade)
+}
+
+model Wifi {
+  id       String  @id @default(cuid())
+  siteId   String
+  ssid     String
+  password String // criptografar em repouso
+  security String  @default("WPA")
+  site     BioSite @relation(fields: [siteId], references: [id], onDelete: Cascade)
+}
+
+model Tour360 {
+  id     String  @id @default(cuid())
+  siteId String
+  kind   String // link, iframe, image
+  source String
+  site   BioSite @relation(fields: [siteId], references: [id], onDelete: Cascade)
+}
+
+model Integration {
+  id     String       @id @default(cuid())
+  orgId  String
+  kind   String
+  config Json
+  org    Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id        String       @id @default(cuid())
+  orgId     String
+  type      String
+  payload   Json
+  readAt    DateTime?
+  createdAt DateTime     @default(now())
+  org       Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+}
+
+model Template {
+  id       String @id @default(cuid())
+  category String
+  name     String
+  preview  String?
+  theme    Json
+  blocks   Json
+  active   Boolean @default(true)
+}
+
+model Media {
+  id        String       @id @default(cuid())
+  orgId     String
+  url       String
+  kind      String // image, video
+  mime      String?
+  sizeBytes Int?
+  createdAt DateTime     @default(now())
+  org       Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+}
+
+model AuditLog {
+  id        String       @id @default(cuid())
+  orgId     String?
+  userId    String?
+  action    String
+  meta      Json?
+  createdAt DateTime     @default(now())
+  org       Organization? @relation(fields: [orgId], references: [id])
+}
