@@ -124,7 +124,7 @@ export default function Editor({ site, maxPages }: { site: SiteWithPages; maxPag
 
   return (
     <div className="flex h-[calc(100dvh-56px)] flex-col lg:h-dvh">
-      <header className="flex items-center gap-2 border-b border-slate-200 bg-white px-3 py-2 lg:px-6">
+      <header className="flex items-center gap-2 border-b border-slate-200 bg-white py-2 pl-12 pr-3 lg:px-6">
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-semibold">{site.title}</p>
           <p className="truncate text-xs text-slate-400">linkbio.manifesti.com.br/{site.slug}</p>
