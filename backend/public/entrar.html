@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Entrar — manifesti</title>
+<link rel="stylesheet" href="auth.css">
+</head>
+<body>
+<div class="card">
+  <div class="brand"><span class="logo">M</span><b>manifesti</b></div>
+  <h1>Bem-vindo de volta</h1>
+  <p class="sub">Entre para continuar editando seu site.</p>
+
+  <form id="f">
+    <label for="email">E-mail</label>
+    <input id="email" type="email" required autocomplete="email">
+    <label for="password">Senha</label>
+    <input id="password" type="password" required autocomplete="current-password">
+    <button class="btn" type="submit">Entrar</button>
+  </form>
+  <div class="err" id="err"></div>
+  <div class="foot">Não tem conta? <a href="criar-conta.html">Criar conta grátis</a></div>
+</div>
+
+<script>
+const API = "/api";
+const $ = s => document.querySelector(s);
+$("#f").addEventListener("submit", async e => {
+  e.preventDefault();
+  const btn = $("#f button"), err = $("#err");
+  err.style.display = "none"; btn.disabled = true; btn.textContent = "Entrando...";
+  try {
+    const r = await fetch(`${API}/auth.php?action=login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: $("#email").value, password: $("#password").value })
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error || "Não foi possível entrar.");
+    localStorage.setItem("mf_api_key", d.api_key);
+    localStorage.setItem("mf_user", JSON.stringify(d.user));
+    location.href = "../index.html"; // volta pro editor (ajuste o caminho se preciso)
+  } catch (ex) {
+    err.textContent = ex.message; err.style.display = "block";
+  } finally {
+    btn.disabled = false; btn.textContent = "Entrar";
+  }
+});
+</script>
+</body>
+</html>

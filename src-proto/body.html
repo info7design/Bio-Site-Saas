@@ -7,7 +7,7 @@
     <nav class="nav" id="soonNav"></nav>
     <div class="foot">
       <button type="button" class="btn sm" data-nav="landing" style="justify-content:center">Ver página de vendas</button>
-      <div class="usage"><div class="ut"><span>Sites</span><b id="useCnt">5 de 30</b></div><div class="ub"><i id="useBar" style="width:17%"></i></div><small id="useTxt">Plano Premium · renova em 12/10</small><label class="planlab" for="planSel">Testar plano (demonstração)</label><select id="planSel"><option value="gratis">Grátis</option><option value="pro">Pro</option><option value="premium" selected>Premium</option><option value="scale">Scale</option></select></div>
+      <div class="usage"><div class="ut"><span>Sites</span><b id="useCnt">1 de 1</b></div><div class="ub"><i id="useBar" style="width:100%"></i></div><small id="useTxt">Plano Grátis · sem cobrança</small><label class="planlab" for="planSel">Testar plano (demonstração)</label><select id="planSel"><option value="gratis" selected>Grátis</option><option value="pro">Pro</option><option value="premium">Premium</option><option value="master">Master</option></select></div>
       <div class="me"><span class="mav">CD</span><span><b>Camila Duarte</b><small>Agência Pulso</small></span></div>
     </div>
   </aside>
@@ -17,25 +17,49 @@
       <h1 id="title">Dashboard</h1>
       <span class="pill live hide-sm" id="slug">manifesti.com.br/site</span>
       <span class="save hide-sm" id="saveSt">Publicado</span>
+      <button class="btn" id="copyLink" type="button" title="Copiar o link público do site">Copiar link</button>
       <button class="btn" id="themeBtn" type="button">Tema</button>
       <button class="btn primary" id="publish" type="button">Publicar</button>
     </header>
 
+    <a class="wafab" id="waFab" href="https://wa.me/5512992201153?text=Ol%C3%A1!%20Preciso%20de%20ajuda%20com%20a%20Manifesti." target="_blank" rel="noopener" aria-label="Falar com o suporte no WhatsApp"><svg viewBox="0 0 32 32" width="28" height="28" fill="#fff" aria-hidden="true"><path d="M16.04 3C9.4 3 4 8.38 4 15.02c0 2.12.55 4.19 1.6 6.01L4 29l8.14-1.56a12.03 12.03 0 0 0 3.9.65C22.68 28.09 28 22.7 28 16.06 28 9.4 22.68 3 16.04 3Zm0 22.07c-1.2 0-2.38-.24-3.48-.7l-.5-.2-4.83.93.96-4.7-.22-.5a9.98 9.98 0 0 1-1.53-5.3c0-5.52 4.5-10 10.04-10 5.53 0 10.03 4.48 10.03 10s-4.5 10.47-10.47 10.47Zm5.5-7.5c-.3-.15-1.78-.88-2.06-.98-.27-.1-.47-.15-.67.15-.2.3-.77.98-.95 1.18-.17.2-.35.22-.65.07-.3-.15-1.27-.47-2.42-1.5a9.1 9.1 0 0 1-1.68-2.08c-.18-.3-.02-.46.13-.6.13-.14.3-.35.45-.52.15-.18.2-.3.3-.5.1-.2.05-.38-.02-.53-.08-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.5h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.22 3.08c.15.2 2.1 3.2 5.08 4.48.7.3 1.26.48 1.7.62.72.23 1.37.2 1.88.12.57-.08 1.78-.73 2.03-1.43.25-.7.25-1.3.17-1.43-.07-.12-.27-.2-.57-.35Z"/></svg><span>Suporte</span></a>
+
     <section class="land" id="v-landing"></section>
+
+    <section class="view" id="v-auth" hidden>
+      <div class="authwrap">
+        <div class="authcard">
+          <div class="brand" style="margin-bottom:18px"><span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19V6.5a1.5 1.5 0 0 1 2.6-1L12 10l4.4-4.5A1.5 1.5 0 0 1 19 6.5V19"/></svg></span><span>manifesti</span></div>
+          <div class="seg" role="group" aria-label="Entrar ou criar conta" style="margin-bottom:16px">
+            <button type="button" data-authtab="login" aria-pressed="true">Entrar</button>
+            <button type="button" data-authtab="register" aria-pressed="false">Criar conta</button>
+          </div>
+          <form id="authForm">
+            <div class="fld" data-authfield="name" hidden><span class="lb">Nome</span><input type="text" id="authName" autocomplete="name"></div>
+            <div class="fld"><span class="lb">E-mail</span><input type="email" id="authEmail" autocomplete="email" required></div>
+            <div class="fld"><span class="lb">Senha</span><input type="password" id="authPass" autocomplete="current-password" required minlength="6"></div>
+            <p class="note" id="authErr" style="color:var(--warn,#e5484d);min-height:18px"></p>
+            <button type="submit" class="btn primary" id="authSubmit" style="width:100%;justify-content:center">Entrar</button>
+          </form>
+          <p class="note" id="authSkipP" style="margin-top:14px">Sem conta real ainda? Você pode continuar <button type="button" class="linklike" id="authSkip">explorando a demonstração</button> sem fazer login.</p>
+        </div>
+      </div>
+    </section>
 
     <section class="view" id="v-dashboard" hidden>
       <div class="hello"><div><h2 id="hi">Bom dia, Camila</h2><p id="hiSub"></p></div>
         <div class="seg" role="group" aria-label="Período"><button type="button" data-period="7" aria-pressed="false">7 dias</button><button type="button" data-period="14" aria-pressed="true">14 dias</button><button type="button" data-period="30" aria-pressed="false">30 dias</button></div></div>
-      <div class="grid kpis" id="kpis"></div>
-      <div class="grid two" style="margin-top:16px">
-        <div class="card"><h3>Visitas e cliques por dia</h3><div id="chart"></div></div>
-        <div class="card"><h3>Origem dos visitantes</h3><div class="bars" id="sources"></div></div>
-      </div>
-      <div class="grid three" style="margin-top:16px">
-        <div class="card"><h3>Botões mais acessados</h3><div class="bars" id="topbtn"></div></div>
-        <div class="card"><h3>Dispositivos</h3><div class="bars" id="devices"></div></div>
-        <div class="card"><h3>Conversão</h3><div id="conv"></div></div>
-        <div class="card"><h3>Atividade recente</h3><ul class="feed" id="feed"></ul></div>
+      <div class="dboard">
+        <div class="card linkcard s8"><div class="lkt"><b>Link do seu site</b><small>Compartilhe na bio do Instagram, no WhatsApp ou onde quiser. O link só abre depois de publicar.</small></div><div class="lkrow"><input type="text" id="lkInput" readonly aria-label="Link público do seu site"><button type="button" class="btn primary" id="lkCopy">Copiar</button><a class="btn" id="lkOpen" href="#" target="_blank" rel="noopener">Abrir</a></div></div>
+        <div class="card quick s4"><h3>Atalhos</h3><div class="qk"><button type="button" class="btn" data-nav="editor">Editar meu site</button><button type="button" class="btn" data-nav="templates">Trocar de template</button><button type="button" class="btn" data-nav="billing">Meu plano</button></div></div>
+        <div class="card sitescard s12" id="sitesCard" hidden><h3>Seus sites</h3><div id="siteList"></div></div>
+        <div class="grid kpis s12" id="kpis"></div>
+        <div class="card s8"><h3>Visitas e cliques por dia</h3><div id="chart"></div></div>
+        <div class="card s4"><h3>Origem dos visitantes</h3><div class="bars" id="sources"></div></div>
+        <div class="card s4"><h3>Botões mais acessados</h3><div class="bars" id="topbtn"></div></div>
+        <div class="card s4"><h3>Dispositivos</h3><div class="bars" id="devices"></div></div>
+        <div class="card s4"><h3>Conversão</h3><div id="conv"></div></div>
+        <div class="card s12"><h3>Atividade recente</h3><ul class="feed" id="feed"></ul></div>
       </div>
     </section>
 
@@ -87,8 +111,31 @@
       </div>
     </section>
 
+    <section class="view" id="v-domains" hidden>
+      <div class="hello"><div><h2>Domínio próprio</h2><p>Use o endereço do seu negócio, como meunegocio.com.br, no lugar do link da Manifesti. Recurso do plano Premium.</p></div></div>
+      <div id="domBox"></div>
+    </section>
+
+    <section class="view" id="v-users" hidden>
+      <div class="hello"><div><h2>Usuários</h2><p>Quem se cadastrou na plataforma e quem está com o site ativo (publicado). Área exclusiva da conta master.</p></div><button type="button" class="btn" id="usTestMail">Enviar e-mail de teste</button></div>
+      <div class="grid kpis" id="usKpis"></div>
+      <div class="card" style="margin-top:16px">
+        <div class="usbar"><input type="search" id="usQ" placeholder="Buscar por nome ou e-mail" aria-label="Buscar usuário"><select id="usF" aria-label="Filtrar"><option value="all">Todos</option><option value="active">Com site ativo</option><option value="inactive">Sem site publicado</option><option value="gratis">Plano Grátis</option><option value="pro">Plano Pro</option><option value="premium">Plano Premium</option><option value="master">Master</option></select><span class="note" id="usCount"></span><button type="button" class="btn sm" id="usReload">Atualizar</button><button type="button" class="btn sm primary" id="usCsv">Exportar CSV</button></div>
+        <div class="scroll"><table><thead><tr><th>Nome</th><th>E-mail</th><th>Plano</th><th>Cadastro</th><th>Sites e ações</th><th>Visitas</th><th>Última atividade</th><th>Conta</th></tr></thead><tbody id="usRows"></tbody></table></div>
+      </div>
+      <div class="card" style="margin-top:16px"><h3>Domínios dos clientes</h3>
+        <p class="note">Quando o cliente aponta o DNS, o status vira "Apontamento certo". Ative assim: no cPanel, em <b>Domínios → Criar um novo domínio</b>, digite o domínio, <b>desmarque</b> "Compartilhar raiz de documentos" e em Raiz de documentos escreva <code>minisite.manifesti.com.br</code>. Depois volte aqui e clique em "Marcar como ativo".</p>
+        <div class="scroll"><table><thead><tr><th>Domínio</th><th>Cliente</th><th>Site</th><th>Status</th><th>Ação</th></tr></thead><tbody id="usDomRows"></tbody></table></div></div>
+    </section>
+
+    <section class="view" id="v-billing" hidden>
+      <div class="hello"><div><h2>Assinatura</h2><p>Comece grátis, evolua quando fizer sentido. Todos os recursos do editor já vêm liberados em qualquer plano — o Pro libera mais páginas, todos os templates e tira a marca d'água do rodapé.</p></div></div>
+      <div class="plancards" id="planCards"></div>
+      <div class="card" id="invCard" style="margin-top:18px" hidden><h3>Suas faturas</h3><div class="scroll"><table><thead><tr><th>Vencimento</th><th>Plano</th><th>Valor</th><th>Situação</th><th></th></tr></thead><tbody id="invRows"></tbody></table></div></div>
+    </section>
+
     <section class="view" id="v-templates" hidden>
-      <div class="tplhead"><div><h2>60 templates para começar</h2><p class="note" style="font-size:14px;margin:4px 0 0">Do mais simples ao mais sofisticado. Todos editáveis: cores, fontes, botões, blocos e até 3 páginas.</p></div>
+      <div class="tplhead"><div><h2>Templates para começar</h2><p class="note" style="font-size:14px;margin:4px 0 0">Do mais simples ao mais sofisticado. Todos editáveis: cores, fontes, botões, blocos e até 3 páginas.</p></div>
         <div class="fchips" id="tplFilters"></div></div>
       <div class="tplgrid" id="tplGrid"></div>
     </section>
@@ -96,3 +143,7 @@
 </div>
 <div class="scrim" id="scrim" data-sideclose="1"></div>
 <div id="toastHost"></div>
+<div class="fsprev" id="fsPrev" hidden>
+  <button type="button" class="fsback" id="fsBack" aria-label="Voltar ao editor" title="Voltar ao editor"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+  <div class="fsstage" id="fsStage"></div>
+</div>

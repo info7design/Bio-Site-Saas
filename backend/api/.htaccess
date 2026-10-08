@@ -1,0 +1,39 @@
+# Bloqueia acesso direto aos arquivos de configuração e amostra
+<FilesMatch "^(config|config\.sample)\.php$">
+  Require all denied
+</FilesMatch>
+
+# Desliga listagem de diretório
+Options -Indexes
+
+# Garante que o cabeçalho Authorization (login do painel) chegue ao PHP
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+</IfModule>
+<IfModule mod_setenvif.c>
+  SetEnvIfNoCase ^Authorization$ "(.+)" HTTP_AUTHORIZATION=$1
+</IfModule>
+
+# Não mostrar o arquivo de limites do PHP
+<Files ".user.ini">
+  Require all denied
+</Files>
+
+# Limites de envio (só aplicados quando o PHP roda como módulo do Apache/LiteSpeed;
+# nos demais casos vale o arquivo .user.ini desta pasta)
+<IfModule mod_php.c>
+  php_value upload_max_filesize 512M
+  php_value post_max_size 520M
+  php_value max_execution_time 600
+</IfModule>
+<IfModule mod_php8.c>
+  php_value upload_max_filesize 512M
+  php_value post_max_size 520M
+  php_value max_execution_time 600
+</IfModule>
+<IfModule lsapi_module>
+  php_value upload_max_filesize 512M
+  php_value post_max_size 520M
+  php_value max_execution_time 600
+</IfModule>

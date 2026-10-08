@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Planos — manifesti</title>
+<link rel="stylesheet" href="auth.css">
+</head>
+<body>
+<div class="card" style="max-width:480px">
+  <div class="brand"><span class="logo">M</span><b>manifesti</b></div>
+  <h1>Escolha seu plano</h1>
+  <p class="sub">Todos os blocos do editor já vêm liberados em qualquer plano. Comece no Grátis a qualquer momento, ou assine o Pro — o pagamento é feito numa página segura do Asaas (cartão de crédito).</p>
+
+  <div class="plans" id="plans">
+    <div class="plan" data-plan="gratis">
+      <h3>Grátis <span class="price">R$ 0</span></h3>
+      <p>1 site, 1 página, com todos os blocos liberados</p>
+    </div>
+    <div class="plan sel" data-plan="pro">
+      <h3>Pro <span class="price">R$ 12,90/mês</span></h3>
+      <p>1 site, até 3 páginas, todos os templates e sem marca d'água</p>
+    </div>
+  </div>
+
+  <div id="payBlock">
+    <label for="cpf">CPF ou CNPJ (necessário para emitir a cobrança)</label>
+    <input id="cpf" placeholder="000.000.000-00">
+    <label for="phone">Celular (opcional)</label>
+    <input id="phone" placeholder="(00) 00000-0000">
+  </div>
+
+  <button class="btn" id="go">Continuar com o Pro</button>
+  <button class="btn ghost" id="skip">Continuar no Grátis</button>
+  <div class="err" id="err"></div>
+  <div class="ok" id="ok"></div>
+</div>
+
+<script>
+const API = "/api";
+const $ = s => document.querySelector(s);
+const key = localStorage.getItem("mf_api_key");
+if (!key) location.href = "entrar.html";
+
+let plan = "pro";
+const PLAN_LABEL = { gratis: "Grátis", pro: "Pro" };
+
+$("#plans").addEventListener("click", e => {
+  const el = e.target.closest(".plan"); if (!el) return;
+  document.querySelectorAll(".plan").forEach(p => p.classList.remove("sel"));
+  el.classList.add("sel");
+  plan = el.dataset.plan;
+  $("#go").textContent = plan === "gratis" ? "Continuar no Grátis" : `Continuar com o ${PLAN_LABEL[plan]}`;
+  $("#payBlock").style.display = plan === "gratis" ? "none" : "block";
+});
+
+$("#skip").addEventListener("click", () => location.href = "../index.html");
+
+$("#go").addEventListener("click", async () => {
+  const err = $("#err"), ok = $("#ok"), btn = $("#go");
+  err.style.display = "none"; ok.style.display = "none";
+
+  if (plan === "gratis") { location.href = "../index.html"; return; }
+
+  const cpf = $("#cpf").value.trim();
+  if (cpf.replace(/\D/g, "").length < 11) {
+    err.textContent = "Informe um CPF ou CNPJ válido."; err.style.display = "block"; return;
+  }
+
+  btn.disabled = true; btn.textContent = "Gerando cobrança...";
+  try {
+    const r = await fetch(`${API}/billing.php?action=checkout`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${key}` },
+      body: JSON.stringify({ plan, cpf_cnpj: cpf, phone: $("#phone").value.trim() })
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error || "Não foi possível gerar a cobrança.");
+    ok.textContent = "Cobrança gerada! Abrindo a página de pagamento (cartão de crédito)...";
+    ok.style.display = "block";
+    window.open(d.invoice_url, "_blank");
+  } catch (ex) {
+    err.textContent = ex.message; err.style.display = "block";
+  } finally {
+    btn.disabled = false; btn.textContent = `Continuar com o ${PLAN_LABEL[plan]}`;
+  }
+});
+</script>
+</body>
+</html>

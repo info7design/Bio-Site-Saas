@@ -2,7 +2,7 @@
 
 Conteúdo deste pacote
 
-- `prototype/index.html`: mockup navegável (abra direto no navegador). Editor de 3 painéis, dashboard, leads, agendamentos, 60 templates (incluindo estilos de cartão digital), cardápio com pedido no WhatsApp e página de vendas, capa em foto/vídeo, texto animado, stories, botões (17 estilos), biblioteca de ícones, fundos e molduras, QR Code real, redes com links, botão para mover módulos, botões e cartões personalizáveis, até 3 páginas por site. Todos os dados são de exemplo e nada é salvo ao recarregar.
+- `prototype/index.html`: mockup navegável (abra direto no navegador). Editor de 3 painéis, dashboard, leads, agendamentos, 64 templates (60 gerais + 4 editoriais em destaque no plano Pro) (incluindo estilos de cartão digital), cardápio com pedido no WhatsApp e página de vendas, capa em foto/vídeo, texto animado, stories, botões (17 estilos), biblioteca de ícones, fundos e molduras, QR Code real, redes com links, botão para mover módulos, botões e cartões personalizáveis, até 3 páginas por site. Todos os dados são de exemplo e nada é salvo ao recarregar.
 - `prisma/schema.prisma`: banco multi-tenant (PostgreSQL) com todas as entidades da especificação.
 - `src/lib/`: lógica base já testada em isolamento.
   - `pix.ts`: gerador de PIX copia e cola (CRC16 conferido).
@@ -34,3 +34,8 @@ Marca usada no protótipo: Manifesti.
 
 ## Planos
 Grátis (1 site, 1 página, só links e redes sociais, templates básicos), Pro R$ 97,90, Premium R$ 197,90 (destaque), Scale R$ 297,90 e Whitelabel (em breve). No painel, o seletor "Testar plano" na barra lateral aplica os limites do plano na hora. Valores de exemplo.
+
+## Mais controles por módulo (v8)
+- Velocidade da animação de texto (Lenta/Normal/Rápida) nos blocos Capa, Título grande e Texto, para letreiro, digitação, palavras alternadas e subida por letra.
+- Escurecer foto por item nos blocos Cartões, Blocos com imagem, Stories, Catálogo e Serviços; e por bloco inteiro em Faixas de fotos, Galeria e Carrossel.
+- Galeria com número de colunas ajustável (2, 3 ou 4).

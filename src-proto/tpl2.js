@@ -94,3 +94,168 @@ X("Terracota geométrico","Criadores",2,"Nádia Sales","nadiasales","Creme com a
  T({bg:"#f6eee5",text:"#4a2c22",muted:"#8a6a5c",primary:"#c9694a",secondary:"#ecd9c8",btnBg:"#4a2c22",btnText:"#f6eee5",font:F.dm,hf:F.allura,radius:2,btnStyle:"minimal",pattern:"rings"}),()=>[
  pg("Início",[CV(NC({img:"person:cobre:347",shape:"edge",height:"m",overlay:0})),LR("","NÃO TENHA MEDO DE FALHAR.","",{size:"m"}),BT(B("Portfólio"),B("Contatos"),B("Grupo VIP"),B("Blog")),HL("NS",{size:"l",align:"center",font:"Allura (script)"})])])
 ]);
+
+/* ───────── v7 · editorial de luxo (estilo "link na bio" premium) ───────── */
+const editT=(o)=>T(Object.assign({bg:"#0c0b0a",text:"#f3ead9",muted:"#c9b48f",primary:"#e8c992",secondary:"#171412",btnBg:"#171412",btnText:"#f3ead9",btnStyle:"glass",cardStyle:"soft",radius:22,frame:"none",avRing:"gold",avSize:118,hf:F.cg,font:F.dm,gap:14,pattern:"none",profile:"center"},o));
+P2([
+X("Editorial dourado","Criadores",3,"Estelle Duarte","estelleduarte","Capa em retrato, boas-vindas em script e cartões escuros com foto, no estilo revista de luxo.",
+ editT({}),()=>[
+ pg("Início",[
+  CV({img:"person:vinho:401",shape:"edge",align:"left",height:"l",overlay:60,headline:"*Bem-vindo(a)*",fx:"mark",sub:"",badge:""}),
+  HL("Página de Link na Bio",{size:"m",align:"left",font:"DM Sans",upper:false}),
+  TX("","Olá, seja bem-vindo(a).\nAqui você encontra os links de **serviços e cursos** que ofereço.","none"),
+  LR("MEUS","LINKS","",{size:"s"}),
+  mk("ServiceBlock",{title:"",phone:PH1,items:[
+    S("Curso online",0,0,"Clique aqui","person:vinho:402"),
+    S("Curso presencial",0,0,"Clique aqui","person:brasa:403"),
+    S("Mentoria 1:1",0,0,"Quero saber mais","person:cobre:404"),
+    S("E-book gratuito",0,0,"Baixar agora","person:vinho:405")]}),
+  PF({avatar:"person:vinho:401",name:"Estelle Duarte",handle:"@estelleduarte",verified:true,headline:"Especialista em Harmonização Facial",bio:"Cursos, mentorias e atendimento presencial.",location:"São Paulo, SP"}),
+  SO("Instagram","TikTok","WhatsApp","YouTube"),
+  mk("DividerBlock",{style:"line"}),
+  LR("","© 2026 · todos os direitos reservados","")])]),
+
+X("Retrato dourado","Criadores",3,"Marina Costa","marinacosta","Perfil grande no topo, botões em vidro escuro e depoimentos, para consultoras e mentoras.",
+ editT({avatar:"arch",profile:"card"}),()=>[
+ pg("Início",[
+  PF({avatar:"ai:executiva",name:"Marina Costa",handle:"@marinacosta",verified:true,headline:"Consultoria de Imagem & Estilo",bio:"Ajudo você a construir uma imagem autêntica e confiante.",location:"Rio de Janeiro, RJ"}),
+  HL("*Seja bem-vinda* à sua transformação",{size:"l",align:"center",font:"Cormorant Garamond"}),
+  BT(B("Agendar consultoria",""),B("Ver meu portfólio",""),B("Grupo VIP no WhatsApp","")),
+  mk("CardsBlock",{title:"Serviços",cols:2,items:[
+    C("Consultoria completa","Análise de estilo e coloração pessoal.","person:cobre:411",{span:"2x1",cta:"Saiba mais"}),
+    C("Personal shopper","Acompanhamento em compras.","person:vinho:412",{span:"1x1",cta:"Ver mais"}),
+    C("Curso online","Módulos gravados, no seu ritmo.","person:brasa:413",{span:"1x1",cta:"Ver mais"})]}),
+  TS(["Camila R.","Atendimento impecável, mudou minha forma de me vestir."],["Bruna A.","Profissional e atenciosa do início ao fim."]),
+  SO("Instagram","WhatsApp","Pinterest"),
+  mk("DividerBlock",{style:"line"})])]),
+
+X("Boutique noturna","Beleza & Saúde",3,"Studio Noir","studionoir",
+ "Fundo preto absoluto, capa em arco e catálogo de serviços com fotos, para clínicas de estética e estúdios de beleza.",
+ editT({bg:"#050505",secondary:"#121012",btnStyle:"gold",pattern:"glow"}),()=>[
+ pg("Início",[
+  CV({img:"person:magenta:420",shape:"arch",align:"center",height:"l",overlay:65,headline:"Studio *Noir*",fx:"words",sub:"Estética avançada e bem-estar",badge:"Agenda aberta"}),
+  LR("SEG A SÁB","10H ÀS 20H","AGENDE ONLINE"),
+  mk("ServiceBlock",{title:"Procedimentos",phone:PH1,items:[
+    S("Limpeza de pele profunda",8000,0,"Agendar","person:magenta:421"),
+    S("Massagem modeladora",12000,0,"Agendar","person:vinho:422"),
+    S("Design de sobrancelhas",6000,0,"Agendar","person:cobre:423")]}),
+  IG([IT("chat","WhatsApp",PH1),IT("instagram","Instagram"),IT("pin","Como chegar"),IT("cal","Agenda")],{cols:4,shape:"circle",fill:"gold"}),
+  SO("Instagram","WhatsApp","Google"),
+  mk("DividerBlock",{style:"line"})])]),
+
+X("Mentoria autoral","Serviços",3,"Renata Prado","renataprado",
+ "Capa cheia com nome em script, faixa de conquistas e cartões escuros para infoprodutores e mentores.",
+ editT({hf:F.gv,btnStyle:"outline"}),()=>[
+ pg("Início",[
+  CV({img:"person:oliva:430",shape:"card",align:"left",height:"xl",overlay:58,headline:"Renata Prado",fx:"none",sub:"Mentora de carreira e negócios",badge:""}),
+  LR("+500 alunas","4.9 de avaliação","3 anos de mentoria"),
+  BT(B("Quero ser mentorada",""),B("Baixar e-book grátis",""),B("Assistir masterclass","")),
+  mk("CardsBlock",{title:"Programas",cols:2,items:[
+    C("Mentoria individual","3 meses de acompanhamento próximo.","person:oliva:431",{span:"2x1",cta:"Saber mais"}),
+    C("Curso self-paced","Estude no seu ritmo, com suporte.","person:cobre:432",{span:"1x1",cta:"Ver curso"}),
+    C("Comunidade VIP","Grupo fechado com encontros mensais.","person:vinho:433",{span:"1x1",cta:"Entrar"})]}),
+  TS(["Paula M.","Em 3 meses mudei de área com a mentoria dela."],["Luiza F.","Direta, prática e humana."]),
+  SO("Instagram","YouTube","LinkedIn"),
+  mk("DividerBlock",{style:"line"})])])
+]);
+
+/* ───────── cantores e artistas: do descolado ao sério ───────── */
+P2([
+X("MC do bairro","Música",1,"MC Dan7","mcdan7",
+ "Preto com verde-limão, tipografia de impacto e foco no single novo e nos shows.",
+ Object.assign(tk("neon"),{bg:"#0a0a0a",secondary:"#181818",primary:"#c6f432",btnBg:"#c6f432",btnText:"#0a0a0a",btnStyle:"block",radius:2,font:F.brc,hf:F.anton,pattern:"grid",profile:"row",gap:12}),()=>[
+ pg("Início",[
+  CV({img:"art:neon:500",shape:"edge",height:"l",overlay:62,headline:"Single novo *NA VEIA* já tá tocando",fx:"type",sub:"Batida pesada, letra de rua.",badge:"Lançamento"}),
+  PF({avatar:"ai:musico",name:"MC Dan7",handle:"@mcdan7",verified:true,headline:"Funk / Trap · Zona Leste, SP",bio:"De casa pro topo das paradas.",location:"São Paulo, SP"}),
+  BT(B("Ouvir no Spotify","Single novo",{badge:"novo",anim:"pulse"}),B("Assistir o clipe","YouTube"),B("Chamar pra evento","")),
+  SO("Instagram","TikTok","Spotify","YouTube")]),
+ pg("Agenda",[
+  LR("40+ shows/ano","1.2M streams","12 cidades"),
+  mk("CardsBlock",{title:"Próximos shows",cols:2,items:[
+   C("Rio de Janeiro","Sáb · 22h · Casa Preta","art:brasa:502",{span:"2x1",badge:"ingressos",cta:"Garantir"}),
+   C("Curitiba","","art:mata:503",{cta:"Ver"}),
+   C("Belo Horizonte","","art:vinho:504",{cta:"Ver"})]}),
+  wa("Contratar pra evento",PH1,"Fala! Quero contratar o MC Dan7 pro meu evento."),
+  mk("DividerBlock",{style:"line"})])]),
+
+X("Popstar em turnê","Música",2,"Lua Nunes","luanunes",
+ "Rosa e amarelo vibrantes, stories de bastidores e agenda de turnê com fã-clube.",
+ Object.assign(tk("magenta"),{bg:"#ff2e9a",text:"#ffffff",secondary:"#ffd93d",primary:"#2ee6d6",btnBg:"#ffffff",btnText:"#ff2e9a",btnStyle:"pill",radius:30,pattern:"mesh",font:F.pop,hf:F.unb,profile:"center"}),()=>[
+ pg("Início",[
+  CV({img:"art:magenta:510",shape:"arch",align:"center",height:"l",overlay:35,headline:"Turnê *Coração Neon* 2026",fx:"words",sub:"12 cidades · ingressos à venda",badge:"Turnê nova"}),
+  mk("StoryBlock",{shape:"circle",items:[ST("Bastidores","art:magenta:511","Ensaio geral da turnê."),ST("Clipe novo","art:royal:512","Assista agora","Assistir"),ST("Loja oficial","art:sol:513","Camisetas e vinil da turnê.")]}),
+  BT(B("Ouvir álbum completo","Spotify e Apple Music",{badge:"novo",anim:"shine"}),B("Ingressos da turnê",""),B("Entrar no fã-clube","")),
+  SO("Instagram","TikTok","Spotify","YouTube")]),
+ pg("Turnê",[
+  mk("CardsBlock",{title:"Próximas datas",cols:2,items:[
+   C("São Paulo","Arena Sul · 20h","art:magenta:514",{span:"2x1",badge:"quase esgotado",cta:"Comprar"}),
+   C("Recife","","art:sol:515",{cta:"Comprar"}),
+   C("Porto Alegre","","art:royal:516",{cta:"Comprar"})]}),
+  mk("LeadFormBlock",{title:"Entrar no fã-clube",button:"Quero entrar",note:"Novidades e pré-venda em primeira mão."}),
+  mk("DividerBlock",{style:"line"})])]),
+
+X("Banda indie","Música",2,"Garotos de Vinil","garotosdevinil",
+ "Tons terrosos, fotografia granulada e tipografia de máquina de escrever para banda autoral.",
+ Object.assign(tk("terra"),{bg:"#3a2c22",text:"#f3e9da",secondary:"#4d3c2e",primary:"#e8cfae",btnBg:"#f3e9da",btnText:"#3a2c22",btnStyle:"outline",radius:2,font:F.bar,hf:F.lora,pattern:"none",profile:"left"}),()=>[
+ pg("Início",[
+  CV({img:"art:terra:520",shape:"edge",align:"left",height:"l",overlay:55,headline:"Garotos de Vinil",fx:"rise",sub:"EP *Estação* já disponível em todas as plataformas.",badge:""}),
+  TX("Sobre a banda","Quatro amigos, um estúdio de garagem e canções sobre o dia a dia. Rock e MPB com um pé no lo-fi.",""),
+  BT(B("Ouvir o EP","Spotify",{badge:"novo"}),B("Letras e cifras",""),B("Ver próximos shows","")),
+  mk("GalleryBlock",{count:6,pal:"terra"})]),
+ pg("Imprensa",[
+  TS(["Rolling Stone BR","Uma das revelações mais honestas do indie nacional este ano."],["Scenario Cultural","Letras que ficam na cabeça e um som que respira."]),
+  SO("Instagram","YouTube","Spotify"),
+  wa("Contratar pra evento",PH1,"Olá! Gostaria de contratar a banda para um evento."),
+  mk("DividerBlock",{style:"line"})])]),
+
+X("DJ set eletrônico","Música",2,"DJ Nyx","djnyx",
+ "Grade neon sobre fundo escuro, estatísticas de carreira e reserva de datas para casas e festivais.",
+ Object.assign(tk("neon"),{bg:"#07070f",secondary:"#12122a",primary:"#00e0c6",btnBg:"#00e0c6",btnText:"#07070f",btnStyle:"glass",radius:14,font:F.sg,hf:F.sg,pattern:"grid",profile:"center"}),()=>[
+ pg("Início",[
+  CV({img:"art:neon:530",shape:"card",align:"center",height:"l",overlay:60,headline:"DJ NYX",fx:"type",sub:"Techno e house para pistas que não param.",badge:"Sets mensais"}),
+  LR("+180 sets","30 cidades","4 países"),
+  BT(B("Ouvir sets no Spotify","",{anim:"pulse"}),B("Assistir ao vivo","Último set gravado"),B("Reservar para evento","")),
+  mk("VideoBlock",{title:"Set ao vivo · Warehouse 2026",poster:"art:neon:531"}),
+  SO("Instagram","TikTok","Spotify","YouTube")]),
+ pg("Contato",[
+  wa("Falar sobre uma data",PH1,"Olá! Quero reservar a DJ Nyx para um evento."),
+  mk("LeadFormBlock",{title:"Pedido de booking",button:"Enviar pedido",note:"Responder em até 48h."}),
+  mk("DividerBlock",{style:"line"})])]),
+
+X("Cantora autoral MPB","Música",3,"Iara Bastos","iarabastos",
+ "Editorial em tons terracota, retrato em destaque e agenda de shows para cantora e compositora.",
+ Object.assign(tk("areia"),{bg:"#f6ede1","text":"#3a2416",secondary:"#ecdcc4",primary:"#a3622b",btnBg:"#3a2416",btnText:"#f6ede1",btnStyle:"outline",radius:10,font:F.dm,hf:F.fr,pattern:"none",profile:"left"}),()=>[
+ pg("Início",[
+  CV({img:"person:areia:540",shape:"edge",align:"left",height:"xl",overlay:38,headline:"Iara Bastos",fx:"none",sub:"Cantora e compositora",badge:"Álbum *Sertão e Mar* já disponível"}),
+  TX("Sobre","Iara mistura MPB, jazz e ritmos nordestinos em canções sobre memória e pertencimento.",""),
+  BT(B("Ouvir o álbum novo","Spotify e Apple Music",{badge:"novo"}),B("Ver agenda de shows",""),B("Assistir sessão acústica","")),
+  mk("CardsBlock",{title:"Discografia",cols:2,items:[
+   C("Sertão e Mar","Álbum, 2026","person:areia:541",{span:"2x1",badge:"novo",cta:"Ouvir"}),
+   C("Raiz","EP, 2024","person:terra:542",{cta:"Ouvir"}),
+   C("Ao vivo no Sesc","Registro, 2023","person:oliva:543",{cta:"Ouvir"})]})]),
+ pg("Agenda",[
+  mk("CardsBlock",{title:"Próximos shows",cols:2,items:[
+   C("Sesc Pompeia, São Paulo","Sex · 21h","person:areia:544",{span:"2x1",cta:"Ingressos"}),
+   C("Teatro Rival, Rio de Janeiro","","person:terra:545",{cta:"Ingressos"}),
+   C("Blue Note, Curitiba","","person:oliva:546",{cta:"Ingressos"})]}),
+  TS(["Folha da Música","Uma das vozes mais sensíveis da nova MPB."],["Rádio Cultura","Arranjos sofisticados e letras que emocionam."]),
+  SO("Instagram","YouTube","Spotify"),
+  mk("DividerBlock",{style:"line"})])]),
+
+X("Maestro e regente clássico","Música",3,"Mtro. Heitor Braga","heitorbraga",
+ "Preto e dourado, tipografia clássica e agenda de temporada para maestro e músico erudito.",
+ editT({hf:F.cin,font:F.cg,btnStyle:"gold",avRing:"gold",profile:"center"}),()=>[
+ pg("Início",[
+  CV({img:"person:ouro:550",shape:"card",align:"center",height:"xl",overlay:55,headline:"Heitor Braga",fx:"none",sub:"Maestro e regente",badge:""}),
+  LR("25 anos de carreira","+40 orquestras","3 continentes"),
+  BT(B("Agenda de concertos",""),B("Biografia completa",""),B("Imprensa e crítica","")),
+  TX("Sobre","Regente titular convidado por orquestras sinfônicas no Brasil e no exterior, com repertório que vai do barroco ao contemporâneo.","")]),
+ pg("Temporada",[
+  mk("CardsBlock",{title:"Próxima temporada",cols:2,items:[
+   C("Sinfonia n.º 9, Beethoven","Sala São Paulo · Out. 2026","person:ouro:551",{span:"2x1",cta:"Programação"}),
+   C("Noites de Câmara","Theatro Municipal","person:grafite:552",{cta:"Programação"}),
+   C("Turnê Europa","Viena · Berlim · Paris","person:oceano:553",{cta:"Programação"})]}),
+  TS(["O Estado de S. Paulo","Regência precisa e uma leitura profunda da partitura."],["Concerto Clássico","Uma das batutas mais respeitadas de sua geração."]),
+  SO("Instagram","YouTube","Spotify","Site"),
+  mk("DividerBlock",{style:"line"})])])
+]);

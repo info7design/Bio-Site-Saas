@@ -1,6 +1,6 @@
 import re
 css=open('style.css').read(); body=open('body.html').read()
-js=open('core.js').read()+"\n"+open("icons.js").read()+"\n"+open("qr.js").read()+"\n"+open('tpl.js').read()+"\n"+open('tpl2.js').read()+"\n"+open('boot.js').read()
+js=open('core.js').read()+"\n"+open("icons.js").read()+"\n"+open("qr.js").read()+"\n"+open('api.js').read()+"\n"+open('tpl.js').read()+"\n"+open('tpl2.js').read()+"\n"+open('boot.js').read()
 fonts='<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;700&family=Manrope:wght@400;600;800&family=Poppins:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=Sora:wght@400;600;700&family=Space+Grotesk:wght@400;500;700&family=Playfair+Display:wght@500;700;800&family=Fraunces:opsz,wght@9..144,400..800&family=Cormorant+Garamond:wght@500;600;700&family=Lora:wght@400;600&family=Oswald:wght@500;700&family=Anton&family=Bebas+Neue&family=Archivo+Black&family=Great+Vibes&family=Allura&family=Pacifico&family=Dancing+Script:wght@500;700&family=Syne:wght@500;700;800&family=Unbounded:wght@500;700&family=Cinzel:wght@500;700&family=DM+Serif+Display&family=Bricolage+Grotesque:wght@400;600;800&family=Caveat:wght@500;700&family=Barlow+Condensed:wght@500;700&display=swap">'
 inner=f'<title>Manifesti</title>\n{fonts}\n<style>\n{css}\n</style>\n{body}\n<script>\n{js}\n</script>\n'
 open('/tmp/fragment.html','w').write(inner)

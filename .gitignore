@@ -1,3 +1,15 @@
 node_modules
 .next
 .env
+
+# segredos e artefatos
+backend/api/config.php
+deploy/site/api/config.php
+**/config.php
+!**/config.sample.php
+deploy/*.zip
+uploads/*
+!uploads/.gitkeep
+.DS_Store
+deploy/site/
+backend/api/status.php

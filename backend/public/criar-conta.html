@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Criar conta — manifesti</title>
+<link rel="stylesheet" href="auth.css">
+</head>
+<body>
+<div class="card">
+  <div class="brand"><span class="logo">M</span><b>manifesti</b></div>
+  <h1>Criar sua conta</h1>
+  <p class="sub">Comece grátis — monte seu bio site em minutos.</p>
+
+  <form id="f">
+    <label for="name">Nome</label>
+    <input id="name" required autocomplete="name">
+    <label for="email">E-mail</label>
+    <input id="email" type="email" required autocomplete="email">
+    <label for="password">Senha</label>
+    <input id="password" type="password" required minlength="6" autocomplete="new-password" placeholder="Mínimo 6 caracteres">
+    <button class="btn" type="submit">Criar conta grátis</button>
+  </form>
+  <div class="err" id="err"></div>
+  <div class="foot">Já tem conta? <a href="entrar.html">Entrar</a></div>
+</div>
+
+<script>
+const API = "/api"; // ajuste se a API estiver em outro caminho/subdomínio
+const $ = s => document.querySelector(s);
+$("#f").addEventListener("submit", async e => {
+  e.preventDefault();
+  const btn = $("#f button"), err = $("#err");
+  err.style.display = "none"; btn.disabled = true; btn.textContent = "Criando...";
+  try {
+    const r = await fetch(`${API}/auth.php?action=register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: $("#name").value, email: $("#email").value, password: $("#password").value })
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error || "Não foi possível criar a conta.");
+    localStorage.setItem("mf_api_key", d.api_key);
+    localStorage.setItem("mf_user", JSON.stringify(d.user));
+    location.href = "planos.html";
+  } catch (ex) {
+    err.textContent = ex.message; err.style.display = "block";
+  } finally {
+    btn.disabled = false; btn.textContent = "Criar conta grátis";
+  }
+});
+</script>
+</body>
+</html>

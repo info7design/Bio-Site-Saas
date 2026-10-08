@@ -36,20 +36,39 @@ function art(pal,seed){
   const svg=`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 600' preserveAspectRatio='xMidYMid slice'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='${c[0]}'/><stop offset='1' stop-color='${c[3]}'/></linearGradient><filter id='b'><feGaussianBlur stdDeviation='38'/></filter><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .35 0'/></filter></defs><rect width='600' height='600' fill='url(#g)'/><g filter='url(#b)'>${blobs}</g><rect x='${Math.round(r()*200)+60}' y='${Math.round(r()*120)+330}' width='${200+Math.round(r()*160)}' height='${110+Math.round(r()*120)}' fill='${c[2]}' opacity='.18'/><rect width='600' height='600' filter='url(#n)'/></svg>`;
   const uri="data:image/svg+xml;utf8,"+encodeURIComponent(svg).replace(/['()]/g,ch=>"%"+ch.charCodeAt(0).toString(16));
   artCache.set(key,uri);return uri}
+const SKIN=["#4a2c17","#6a4023","#8d5524","#c68642","#e0ac69","#f1c27d","#ffdbac"];
+const HAIRC=["#141210","#2b1c14","#4a2f1c","#6b4423","#8b5a2b","#3d3a38","#8d8d8d","#d6c8a8"];
 function person(pal,seed){
   const key="p"+pal+seed;if(artCache.has(key))return artCache.get(key);
   const c=PAL[pal]||PAL.grafite;let s=seed*9301+49297;const r=()=>{s=(s*9301+49297)%233280;return s/233280};
-  const hx=Math.round(285+r()*30),hy=Math.round(215+r()*24),hr=Math.round(88+r()*14);
-  const svg=`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 600' preserveAspectRatio='xMidYMid slice'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='${c[1]}'/><stop offset='1' stop-color='${c[0]}'/></linearGradient><linearGradient id='p' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='${c[3]}' stop-opacity='.9'/><stop offset='1' stop-color='${c[3]}' stop-opacity='.65'/></linearGradient><filter id='b'><feGaussianBlur stdDeviation='46'/></filter><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .3 0'/></filter></defs><rect width='600' height='600' fill='url(#g)'/><g filter='url(#b)'><ellipse cx='${Math.round(r()*600)}' cy='${Math.round(r()*300)}' rx='230' ry='170' fill='${c[2]}' opacity='.55'/></g><path d='M70 620C70 470 170 400 ${hx} 400S530 470 530 620Z' fill='url(#p)'/><rect x='${hx-26}' y='${hy+hr-14}' width='52' height='${400-hy-hr+20}' rx='20' fill='url(#p)'/><ellipse cx='${hx}' cy='${hy}' rx='${hr}' ry='${hr+16}' fill='url(#p)'/><rect width='600' height='600' filter='url(#n)'/></svg>`;
+  const skin=SKIN[Math.floor(r()*SKIN.length)],hair=HAIRC[Math.floor(r()*HAIRC.length)];
+  const cloth=r()>.5?c[1]:c[3];
+  const cx=300,cy=252,hr=76; /* cabeça */
+  const style=Math.floor(r()*4);
+  const hairR=hr+8+Math.round(r()*16),hairDX=Math.round((r()-.5)*14),hairDY=-Math.round(10+r()*16);
+  const eyeDX=18+Math.round(r()*4),eyeY=cy-6,mouthW=20+Math.round(r()*10);
+  let extra="";
+  if(style===1)extra=`<circle cx="${cx+hairDX-hairR*.7}" cy="${cy+hairDY+hairR*.35}" r="${Math.round(hairR*.42)}" fill="${hair}"/><circle cx="${cx+hairDX+hairR*.7}" cy="${cy+hairDY+hairR*.35}" r="${Math.round(hairR*.42)}" fill="${hair}"/>`;
+  else if(style===2)extra=`<circle cx="${cx+hairDX}" cy="${cy+hairDY-hairR*.7}" r="20" fill="${hair}"/>`;
+  else if(style===3)extra=`<path d="M${cx-hairR*.9} ${cy+hairDY+10} q-14 90-4 150 q18 8 26-4 q-10-70 6-140z" fill="${hair}"/><path d="M${cx+hairR*.9} ${cy+hairDY+10} q14 90 4 150 q-18 8-26-4 q10-70-6-140z" fill="${hair}"/>`;
+  const svg=`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 600' preserveAspectRatio='xMidYMid slice'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='${c[2]}'/><stop offset='1' stop-color='${c[0]}'/></linearGradient><filter id='b'><feGaussianBlur stdDeviation='50'/></filter></defs><rect width='600' height='600' fill='url(#g)'/><g filter='url(#b)' opacity='.6'><ellipse cx='${Math.round(r()*600)}' cy='90' rx='260' ry='190' fill='${c[1]}'/></g><path d="M120 600 Q120 430 300 430 Q480 430 480 600 Z" fill="${cloth}"/><ellipse cx="${cx}" cy="${cy+58}" rx="30" ry="26" fill="${skin}"/>${extra}<circle cx="${cx+hairDX}" cy="${cy+hairDY}" r="${hairR}" fill="${hair}"/><circle cx="${cx}" cy="${cy}" r="${hr}" fill="${skin}"/><ellipse cx="${cx-eyeDX}" cy="${eyeY}" rx="6" ry="7" fill="#1c1c1c"/><ellipse cx="${cx+eyeDX}" cy="${eyeY}" rx="6" ry="7" fill="#1c1c1c"/><path d="M${cx-mouthW/2} ${cy+30} Q${cx} ${cy+42} ${cx+mouthW/2} ${cy+30}" stroke="#1c1c1c" stroke-width="4" fill="none" stroke-linecap="round"/></svg>`;
   const uri="data:image/svg+xml;utf8,"+encodeURIComponent(svg).replace(/['()]/g,ch=>"%"+ch.charCodeAt(0).toString(16));
   artCache.set(key,uri);return uri}
-const src=v=>{if(!v)return"";if(v.startsWith("art:")){const p=v.split(":");return art(p[1],+p[2]||1)}if(v.startsWith("person:")){const p=v.split(":");return person(p[1],+p[2]||1)}return v};
+const AI_PEOPLE={
+  empreendedora:["Empreendedora","https://cdn.kairogen.ai/gallery/images/6aae173bb2073da09de2fbeb/dc15086d-5e0c-4538-84f9-948cdaa4e914.jpg"],
+  empreendedor:["Empreendedor",  "https://cdn.kairogen.ai/gallery/images/6aae173bb2073da09de2fbeb/33d3c6d0-8dc6-44fb-a1b3-90f3cfcc0efa.jpg"],
+  musico:["Músico/artista","https://cdn.kairogen.ai/gallery/images/6aae173bb2073da09de2fbeb/4ef0cf62-bb9f-4203-836b-cd896b9532a1.jpg"],
+  executiva:["Executiva","https://cdn.kairogen.ai/gallery/images/6aae173bb2073da09de2fbeb/facaaa7c-926f-4696-95e4-4f37722bf602.jpg"],
+  chef:["Chef de cozinha","https://cdn.kairogen.ai/gallery/images/6aae173bb2073da09de2fbeb/b1573c9b-3419-4bb4-b293-751563e4587c.jpg"]
+};
+const src=v=>{if(!v)return"";if(v.startsWith("art:")){const p=v.split(":");return art(p[1],+p[2]||1)}if(v.startsWith("person:")){const p=v.split(":");return person(p[1],+p[2]||1)}if(v.startsWith("ai:")){const k=v.slice(3);return AI_PEOPLE[k]?AI_PEOPLE[k][1]:""}return v};
 const bgi=v=>v?`background-image:url(${src(v)})`:"";
+const darkOv=v=>{const n=+v||0;return n?`;box-shadow:inset 0 0 0 999px rgba(0,0,0,${(n/100).toFixed(2)})`:""};
 
 /* ───────── temas ───────── */
 const F={inter:"Inter,sans-serif",pjs:"'Plus Jakarta Sans',sans-serif",dm:"'DM Sans',sans-serif",man:"Manrope,sans-serif",pop:"Poppins,sans-serif",out:"Outfit,sans-serif",sora:"Sora,sans-serif",sg:"'Space Grotesk',sans-serif",pf:"'Playfair Display',serif",fr:"Fraunces,serif",cg:"'Cormorant Garamond',serif",lora:"Lora,serif",osw:"Oswald,sans-serif",anton:"Anton,sans-serif",bebas:"'Bebas Neue',sans-serif",abl:"'Archivo Black',sans-serif",gv:"'Great Vibes',cursive",allura:"Allura,cursive",pac:"Pacifico,cursive",dance:"'Dancing Script',cursive",syne:"Syne,sans-serif",unb:"Unbounded,sans-serif",cin:"Cinzel,serif",dmsd:"'DM Serif Display',serif",brc:"'Bricolage Grotesque',sans-serif",cav:"Caveat,cursive",bar:"'Barlow Condensed',sans-serif"};
 const FONTS={"Inter":F.inter,"Plus Jakarta Sans":F.pjs,"DM Sans":F.dm,"Manrope":F.man,"Poppins":F.pop,"Outfit":F.out,"Sora":F.sora,"Space Grotesk":F.sg,"Playfair Display":F.pf,"Fraunces":F.fr,"Cormorant Garamond":F.cg,"Lora":F.lora,"Oswald":F.osw,"Anton (impacto)":F.anton,"Bebas Neue (impacto)":F.bebas,"Archivo Black":F.abl,"Syne":F.syne,"Unbounded":F.unb,"Bricolage Grotesque":F.brc,"Barlow Condensed":F.bar,"DM Serif Display":F.dmsd,"Cinzel":F.cin,"Great Vibes (script)":F.gv,"Allura (script)":F.allura,"Dancing Script (script)":F.dance,"Pacifico (script)":F.pac,"Caveat (manuscrita)":F.cav};
-const T=(o)=>Object.assign({radius:18,shadow:"none",font:F.inter,hf:F.inter,gap:14,fs:15,btnStyle:"solid",cardStyle:"soft",pattern:"none",profile:"center",avatar:"circle",avRing:"solid",avSize:92,bgMode:"solid",bg2:"",bg3:"",bgAngle:160,bgImg:"",bgOv:55,frame:"none",frameClr:"#e9a8bd",btnAlign:"left",btnCase:"none"},o);
+const T=(o)=>Object.assign({radius:18,shadow:"none",font:F.inter,hf:F.inter,gap:14,fs:15,btnStyle:"solid",cardStyle:"soft",pattern:"none",profile:"center",avatar:"circle",avRing:"solid",avSize:92,bgMode:"solid",bg2:"",bg3:"",bgAngle:160,bgImg:"",bgOv:55,frame:"none",frameClr:"#e9a8bd",btnAlign:"left",btnCase:"none",top:36,side:0,width:"normal"},o);
 const P={
  marfim:["Marfim",T({bg:"#faf8f4",text:"#1c1b19",muted:"#77736b",primary:"#1c1b19",secondary:"#efeae1",btnBg:"#1c1b19",btnText:"#faf8f4"})],
  grafite:["Grafite",T({bg:"#0f1012",text:"#f3f3f5",muted:"#9a9ca6",primary:"#8b83ff",secondary:"#1b1c21",btnBg:"#f3f3f5",btnText:"#0f1012",cardStyle:"glass",pattern:"glow"})],
@@ -79,82 +98,104 @@ const BTN_STYLES=[["","Padrão da página"],["solid","Sólido"],["soft","Suave"]
 const ANIMS=[["none","Nenhuma"],["pulse","Pulsar"],["shine","Brilho"],["shake","Balançar"]];
 const it=(o)=>Object.assign({id:uid()},o);
 const META={
-HeadlineBlock:{label:"Título grande",d:{text:"SEU NOME",sub:"",align:"center",size:"l",font:"",upper:false,tight:false,color:"",fx:"none"}},
+HeadlineBlock:{label:"Título grande",d:{text:"SEU NOME",sub:"",align:"center",size:"l",font:"",upper:false,tight:false,color:"",fx:"none",fxSpeed:"normal"}},
 LabelRow:{label:"Linha de detalhes",d:{left:"CRIADOR DE CONTEÚDO",center:"",right:"PARA MARCAS",size:"s",upper:true}},
-IconGrid:{label:"Grade de ícones",d:{cols:3,shape:"circle",fill:"outline",size:"m",labels:true,hint:"Toque nos ícones",items:[it({icon:"chat",label:"Mensagem",url:"5500000000000",bg:"",fg:""}),it({icon:"call",label:"Chamada",url:"5500000000000",bg:"",fg:""}),it({icon:"mail",label:"E-mail",url:"contato@exemplo.com",bg:"",fg:""}),it({icon:"instagram",label:"Instagram",url:"https://instagram.com",bg:"",fg:""}),it({icon:"globe",label:"Site",url:"https://exemplo.com",bg:"",fg:""}),it({icon:"pin",label:"Localização",url:"https://maps.google.com",bg:"",fg:""})]}},
+IconGrid:{label:"Grade de ícones",d:{cols:3,dir:"grid",shape:"circle",fill:"outline",size:"m",labels:true,hint:"Toque nos ícones",items:[it({icon:"chat",label:"Mensagem",url:"5500000000000",bg:"",fg:""}),it({icon:"call",label:"Chamada",url:"5500000000000",bg:"",fg:""}),it({icon:"mail",label:"E-mail",url:"contato@exemplo.com",bg:"",fg:""}),it({icon:"instagram",label:"Instagram",url:"https://instagram.com",bg:"",fg:""}),it({icon:"globe",label:"Site",url:"https://exemplo.com",bg:"",fg:""}),it({icon:"pin",label:"Localização",url:"https://maps.google.com",bg:"",fg:""})]}},
 TileGrid:{label:"Blocos com imagem",d:{mode:"grid",cols:2,space:8,round:"m",color:"",items:[it({title:"Loja",img:"art:rosa:201",url:"https://exemplo.com",span:"1x1",color:"",fg:""}),it({title:"Novidades",img:"art:lavanda:202",url:"https://exemplo.com",span:"1x1",color:"",fg:""}),it({title:"Promoção",img:"art:coral:203",url:"https://exemplo.com",span:"1x1",color:"",fg:""}),it({title:"Galeria",img:"art:creme:204",url:"https://exemplo.com",span:"1x1",color:"",fg:""})]}},
 StripBlock:{label:"Faixas de fotos",d:{upper:true,thumb:"m",items:[it({title:"Portfólio",more:"ver mais",url:"https://exemplo.com",count:5,pal:"areia",shape:"sq",photos:[]}),it({title:"Site",more:"ver mais",url:"https://exemplo.com",count:5,pal:"cobre",shape:"sq",photos:[]}),it({title:"Contato",more:"ver mais",url:"https://exemplo.com",count:5,pal:"creme",shape:"round",photos:[]})]}},
 DockBlock:{label:"Barra de ícones",d:{style:"neu",play:false,items:[it({icon:"mail",label:"E-mail",url:"contato@exemplo.com"}),it({icon:"call",label:"Ligar",url:"5500000000000"}),it({icon:"globe",label:"Site",url:"https://exemplo.com"}),it({icon:"pin",label:"Local",url:"https://maps.google.com"})]}},
-CoverBlock:{label:"Capa",d:{media:"image",img:"art:sol:1",video:"",shape:"card",align:"left",height:"m",overlay:55,headline:"Seu título com *destaque*",fx:"mark",sub:"Uma linha de apoio sobre o que você faz.",badge:"Aberto hoje"}},
+CoverBlock:{label:"Capa",d:{media:"image",img:"art:sol:1",video:"",shape:"card",align:"left",height:"m",overlay:55,headline:"Seu título com *destaque*",fx:"mark",fxSpeed:"normal",sub:"Uma linha de apoio sobre o que você faz.",badge:"Aberto hoje",dark:0}},
 StoryBlock:{label:"Stories",d:{shape:"portrait",items:[it({title:"Novidades",img:"art:mar:2",caption:"O que há de novo esta semana.",cta:"",url:""}),it({title:"Bastidores",img:"art:brasa:3",caption:"Um pouco do nosso dia a dia.",cta:"",url:""}),it({title:"Promoção",img:"art:uva:4",caption:"Condição especial até domingo.",cta:"Aproveitar",url:"https://exemplo.com"})]}},
 ProfileBlock:{label:"Perfil",d:{lift:0,avatar:"person:grafite:3",name:"Nome da Marca",handle:"@usuario",verified:true,headline:"Categoria | Especialidade",bio:"Uma frase curta explicando o que você oferece.",location:"Cidade, UF"}},
-TextBlock:{label:"Texto",d:{align:"left",title:"Sobre",fx:"none",text:"Escreva aqui um texto de apresentação."}},
+TextBlock:{label:"Texto",d:{align:"left",title:"Sobre",fx:"none",fxSpeed:"normal",text:"Escreva aqui um texto de apresentação."}},
 ButtonBlock:{label:"Botões",d:{cols:1,join:false,items:[it({title:"Agendar horário",sub:"Resposta em minutos",url:"https://exemplo.com",img:"",icon:"",badge:"novo",style:"",size:"m",anim:"none",bg:"",fg:""}),it({title:"Ver catálogo",sub:"",url:"https://exemplo.com/catalogo",img:"",icon:"",badge:"",style:"",size:"m",anim:"none",bg:"",fg:""})]}},
 CardsBlock:{label:"Cartões",d:{title:"Destaques",cols:2,items:[it({img:"art:sol:5",title:"Título do card",text:"Texto curto de apoio.",url:"https://exemplo.com",cta:"Ver mais",span:"2x1",tone:"dark",pos:"bottom",badge:"",color:""}),it({img:"art:mar:6",title:"Outro card",text:"",url:"https://exemplo.com",cta:"Abrir",span:"1x1",tone:"dark",pos:"bottom",badge:"novo",color:""}),it({img:"art:brasa:7",title:"Mais um",text:"",url:"https://exemplo.com",cta:"Abrir",span:"1x1",tone:"dark",pos:"bottom",badge:"",color:""})]}},
 SocialBlock:{label:"Redes sociais",d:{mode:"pill",items:[it({net:"Instagram",url:"https://instagram.com/usuario",label:""}),it({net:"TikTok",url:"https://tiktok.com/@usuario",label:""}),it({net:"YouTube",url:"https://youtube.com/@usuario",label:""}),it({net:"LinkedIn",url:"https://linkedin.com/in/usuario",label:""})]}},
 WhatsAppBlock:{label:"WhatsApp",d:{phone:"5500000000000",label:"Fale comigo no WhatsApp",message:"Olá! Vim pelo seu site e gostaria de saber mais."}},
-CatalogBlock:{label:"Catálogo",d:{title:"Catálogo",items:[it({img:"art:sol:8",name:"Produto exemplo A",price:14990,promo:0,btn:"Comprar"}),it({img:"art:mata:9",name:"Produto exemplo B",price:8900,promo:6900,btn:"Comprar"})]}},
+CatalogBlock:{label:"Catálogo",d:{title:"Catálogo",layout:"grid",items:[it({img:"art:sol:8",name:"Produto exemplo A",desc:"Descrição curta do produto.",badge:"Mais vendido",price:14990,promo:0,btn:"Comprar"}),it({img:"art:mata:9",name:"Produto exemplo B",desc:"",badge:"Novidade",price:8900,promo:6900,btn:"Comprar"})]}},
 MenuBlock:{label:"Cardápio WhatsApp",d:{title:"Cardápio",phone:"5500000000000",brand:"Minha Loja",fee:0,delivery:true,pickup:true,pix:true,items:[it({cat:"Mais pedidos",img:"art:brasa:80",name:"Item de exemplo A",desc:"Descrição curta do item.",price:2990,badge:"popular"}),it({cat:"Mais pedidos",img:"art:sol:81",name:"Item de exemplo B",desc:"",price:1890,badge:""}),it({cat:"Bebidas",img:"",name:"Refrigerante lata",desc:"350 ml",price:600,badge:""})]}},
 ServiceBlock:{label:"Serviços",d:{title:"Serviços",items:[it({img:"",name:"Consulta inicial",price:12000,promo:0,btn:"Agendar"}),it({img:"",name:"Sessão completa",price:25000,promo:0,btn:"Agendar"})]}},
 BookingBlock:{label:"Agendamento",d:{title:"Agende seu horário",service:"Consulta clínica",duration:50}},
 PixBlock:{label:"PIX",d:{key:"chave-exemplo@email.com",receiver:"Nome do Recebedor",city:"Cidade",label:"Pagar com PIX"}},
+PaymentButtonsBlock:{label:"Botões de pagamento",d:{title:"Formas de pagamento",items:[it({method:"pix",label:"Pagar com PIX",url:""}),it({method:"picpay",label:"Pagar com PicPay",url:""}),it({method:"mercadopago",label:"Pagar com Mercado Pago",url:""})]}},
 MapBlock:{label:"Mapa",d:{title:"",btn:"Como chegar",address:"Rua Exemplo, 123, Centro, Cidade"}},
 GalleryBlock:{label:"Galeria",d:{count:6,pal:"sol",photos:[]}},
 VideoBlock:{label:"Vídeo",d:{title:"Vídeo de apresentação",file:"",poster:"art:uva:10",url:""}},
 LeadFormBlock:{label:"Formulário",d:{title:"Peça um orçamento",button:"Enviar",namePh:"Nome",contactPh:"WhatsApp ou e-mail",consent:"Concordo com o uso dos meus dados (LGPD)",note:""}},
+FaqBlock:{label:"Perguntas frequentes",d:{title:"Perguntas frequentes",items:[it({q:"Como funciona?",a:"Explique aqui em poucas palavras."}),it({q:"Qual o prazo?",a:"Responda de forma direta."})]}},
+HoursBlock:{label:"Horário de funcionamento",d:{title:"Horário de funcionamento",items:[it({day:"Segunda a sexta",time:"09:00 – 18:00"}),it({day:"Sábado",time:"09:00 – 13:00"}),it({day:"Domingo",time:"Fechado"})],note:""}},
+StatsBlock:{label:"Números de destaque",d:{title:"",items:[it({n:"+500",l:"clientes"}),it({n:"10",l:"anos"}),it({n:"4,9★",l:"avaliação"})]}},
+CountdownBlock:{label:"Contagem regressiva",d:{title:"Termina em",date:"",endText:"Oferta encerrada",btn:"",url:""}},
+CouponBlock:{label:"Cupom de desconto",d:{title:"Cupom exclusivo",code:"BEMVINDO10",desc:"10% de desconto na primeira compra",btn:"Copiar cupom"}},
+PricingBlock:{label:"Planos e preços",d:{title:"Planos",items:[it({name:"Básico",price:"R$ 49",per:"/mês",feats:"Item incluso 1\nItem incluso 2",btn:"Quero este",url:"",hot:false}),it({name:"Completo",price:"R$ 99",per:"/mês",feats:"Tudo do Básico\nItem extra\nSuporte",btn:"Quero este",url:"",hot:true})]}},
 WifiBlock:{label:"Wi-Fi",d:{title:"Wi-Fi",ssid:"Rede-Exemplo",password:"senha1234"}},
 Tour360Block:{label:"Tour 360°",d:{title:"Tour 360°",btn:"Abrir tour",source:"https://exemplo.com/tour"}},
 QRCodeBlock:{label:"QR Code",d:{title:"Compartilhe esta página",url:"",caption:"Aponte a câmera do celular",fg:"#000000",bg:"#ffffff",size:"m"}},
 DividerBlock:{label:"Divisor",d:{style:"line",space:"m",label:""}},
+FooterBlock:{label:"Rodapé",d:{text:"Feito com carinho ✨",items:[it({emoji:"📷",label:"Instagram",url:"https://instagram.com/usuario"}),it({emoji:"📱",label:"WhatsApp",url:""}),it({emoji:"📍",label:"Localização",url:""})]}},
 CarouselBlock:{label:"Carrossel",d:{count:4,pal:"mar",photos:[]}},
-TestimonialsBlock:{label:"Depoimentos",d:{title:"Depoimentos",items:[it({name:"Cliente Exemplo",role:"",stars:5,text:"Atendimento rápido e resultado acima do esperado."}),it({name:"Outra Cliente",role:"",stars:5,text:"Recomendo, foi simples do início ao fim."})]}}
+TestimonialsBlock:{label:"Depoimentos",d:{title:"Depoimentos",items:[it({name:"Cliente Exemplo",role:"",stars:5,text:"Atendimento rápido e resultado acima do esperado."}),it({name:"Outra Cliente",role:"",stars:5,text:"Recomendo, foi simples do início ao fim."})]}},
+FreeBlock:{label:"Camada livre (fotos, texto, emoji)",d:{height:360,items:[it({kind:"emoji",text:"✨",img:"",x:22,y:24,w:100,rot:-12,z:2,color:"",anim:"float"}),it({kind:"text",text:"Seu texto aqui",img:"",x:62,y:72,w:100,rot:0,z:3,color:"",anim:"none"})]}},
+CodeBlock:{label:"Código personalizado",d:{html:"<!-- cole aqui seu HTML -->"}}
 };
 /* esquemas do inspetor: [chave, rótulo, tipo, opções] */
 const FIELDS={
-HeadlineBlock:[["text","Texto (Enter quebra linha, *destaque*)","area"],["sub","Subtítulo","area"],["align","Alinhamento","seg",[["left","Esq."],["center","Centro"],["right","Dir."]]],["size","Tamanho","seg",[["s","P"],["m","M"],["l","G"],["xl","XG"],["xxl","XXG"]]],["font","Fonte","sel",[["","Fonte dos títulos"],...Object.keys(FONTS).map(f=>[f,f])]],["upper","Maiúsculas","bool"],["tight","Linhas coladas","bool"],["color","Cor do texto","clr"],["fx","Animação","sel",FX]],
+HeadlineBlock:[["text","Texto (Enter quebra linha, *destaque*)","area"],["sub","Subtítulo","area"],["align","Alinhamento","seg",[["left","Esq."],["center","Centro"],["right","Dir."]]],["size","Tamanho","seg",[["s","P"],["m","M"],["l","G"],["xl","XG"],["xxl","XXG"]]],["font","Fonte","sel",[["","Fonte dos títulos"],...Object.keys(FONTS).map(f=>[f,f])]],["upper","Maiúsculas","bool"],["tight","Linhas coladas","bool"],["color","Cor do texto","clr"],["fx","Animação","sel",FX],["fxSpeed","Velocidade da animação","seg",[["slow","Lenta"],["normal","Normal"],["fast","Rápida"]]]],
 LabelRow:[["left","Esquerda","text"],["center","Centro","text"],["right","Direita","text"],["size","Tamanho","seg",[["s","P"],["m","M"]]],["upper","Maiúsculas","bool"]],
-IconGrid:[["cols","Colunas","seg",[[2,"2"],[3,"3"],[4,"4"],[5,"5"]]],["shape","Formato","seg",[["circle","Círculo"],["round","Arredondado"],["square","Quadrado"],["none","Só ícone"]]],["fill","Estilo","seg",[["outline","Contorno"],["solid","Sólido"],["soft","Suave"],["neu","Relevo"],["gold","Dourado"],["glass","Vidro"]]],["size","Tamanho","seg",[["s","P"],["m","M"],["l","G"]]],["labels","Mostrar nomes","bool"],["hint","Texto de dica (vazio oculta)","text"]],
+IconGrid:[["dir","Direção","seg",[["grid","Grade"],["row","Linha (lado a lado)"],["col","Coluna (empilhado)"]]],["cols","Colunas (só na Grade)","seg",[[2,"2"],[3,"3"],[4,"4"],[5,"5"]]],["shape","Formato","seg",[["circle","Círculo"],["round","Arredondado"],["square","Quadrado"],["none","Só ícone"]]],["fill","Estilo","seg",[["outline","Contorno"],["solid","Sólido"],["soft","Suave"],["neu","Relevo"],["gold","Dourado"],["glass","Vidro"]]],["size","Tamanho","seg",[["s","P"],["m","M"],["l","G"]]],["labels","Mostrar nomes","bool"],["hint","Texto de dica (vazio oculta)","text"]],
 TileGrid:[["mode","Layout","seg",[["grid","Grade"],["list","Lista"],["mosaic","Mosaico"]]],["cols","Colunas (grade e mosaico)","seg",[[2,"2"],[3,"3"]]],["space","Espaço entre blocos","range",[0,20]],["round","Cantos","seg",[["n","Retos"],["m","Médios"],["l","Grandes"]]],["color","Cor padrão da faixa","clr"]],
 StripBlock:[["upper","Títulos em maiúsculas","bool"],["thumb","Tamanho das miniaturas","seg",[["s","P"],["m","M"],["l","G"]]]],
 DockBlock:[["style","Estilo","seg",[["neu","Relevo"],["glass","Vidro"],["solid","Sólido"],["outline","Contorno"]]],["play","Botão de play","bool"]],
 ButtonBlock:[["cols","Colunas","seg",[[1,"1"],[2,"2"]]],["join","Colar botões (sem espaço)","bool"]],
-CoverBlock:[["media","Fundo","seg",[["image","Foto"],["video","Vídeo"],["none","Cor"]]],["img","Foto de capa","img"],["video","Vídeo de capa","vid"],["shape","Formato","seg",[["card","Cartão"],["edge","Tela cheia"],["arch","Arco"],["wave","Onda"],["diag","Diagonal"],["blob","Orgânico"]]],["align","Texto","seg",[["left","Esquerda"],["center","Centro"]]],["height","Altura","seg",[["xs","Faixa"],["s","Baixa"],["m","Média"],["l","Alta"],["full","Cheia"]]],["overlay","Escurecer fundo","range",[0,85]],["headline","Título (use *asteriscos* para destacar)","text"],["fx","Animação do texto","sel",FX],["sub","Subtítulo","area"],["badge","Selo","text"]],
+CoverBlock:[["media","Fundo","seg",[["image","Foto"],["video","Vídeo"],["none","Cor"]]],["img","Foto de capa","img"],["video","Vídeo de capa","vid"],["shape","Formato","seg",[["card","Cartão"],["edge","Tela cheia"],["arch","Arco"],["wave","Onda"],["diag","Diagonal"],["blob","Orgânico"]]],["align","Texto","seg",[["left","Esquerda"],["center","Centro"]]],["height","Altura","seg",[["xs","Faixa"],["s","Baixa"],["m","Média"],["l","Alta"],["full","Cheia"]]],["overlay","Escurecer fundo","range",[0,85]],["headline","Título (use *asteriscos* para destacar)","text"],["fx","Animação do texto","sel",FX],["fxSpeed","Velocidade da animação","seg",[["slow","Lenta"],["normal","Normal"],["fast","Rápida"]]],["sub","Subtítulo","area"],["badge","Selo","text"]],
 StoryBlock:[["shape","Formato","seg",[["portrait","Retrato"],["circle","Círculo"]]]],
 ProfileBlock:[["avatar","Foto","img"],["lift","Sobrepor à capa (px)","range",[0,90]],["name","Nome","text"],["handle","Usuário","text"],["verified","Selo de verificação","bool"],["headline","Chamada","text"],["bio","Descrição","area"],["location","Localização","text"]],
-TextBlock:[["align","Alinhamento","seg",[["left","Esquerda"],["center","Centro"]]],["title","Título","text"],["fx","Animação do título","sel",FX],["text","Texto","area"]],
+TextBlock:[["align","Alinhamento","seg",[["left","Esquerda"],["center","Centro"]]],["title","Título","text"],["fx","Animação do título","sel",FX],["fxSpeed","Velocidade da animação","seg",[["slow","Lenta"],["normal","Normal"],["fast","Rápida"]]],["text","Texto","area"]],
 SocialBlock:[["mode","Aparência","seg",[["pill","Rótulo"],["icons","Só ícones"],["text","Só texto"]]]],
 QRCodeBlock:[["title","Título","text"],["url","Endereço que o QR abre (vazio = esta página)","text"],["caption","Legenda","text"],["fg","Cor do QR","clr"],["bg","Cor do fundo","clr"],["size","Tamanho","seg",[["s","P"],["m","M"],["l","G"]]]],
 DividerBlock:[["style","Estilo","seg",[["line","Linha"],["dots","Pontos"],["wave","Onda"],["orn","Ornamento"],["space","Espaço"]]],["space","Altura","seg",[["s","P"],["m","M"],["l","G"]]],["label","Texto no centro (opcional)","text"]],
 TestimonialsBlock:[["title","Título","text"]],
 WhatsAppBlock:[["phone","Número com DDI e DDD","text"],["label","Texto do botão","text"],["message","Mensagem padrão","area"]],
-CatalogBlock:[["title","Título da seção","text"],["phone","WhatsApp para os botões (DDI+DDD)","text"]],ServiceBlock:[["title","Título da seção","text"],["phone","WhatsApp para os botões (DDI+DDD)","text"]],
+CatalogBlock:[["title","Título da seção","text"],["phone","WhatsApp para os botões (DDI+DDD)","text"],["layout","Layout","seg",[["grid","Grade"],["list","Lista"],["single","Destaque (1 item, bloco inteiro)"]]]],ServiceBlock:[["title","Título da seção","text"],["phone","WhatsApp para os botões (DDI+DDD)","text"],["layout","Layout","seg",[["grid","Grade"],["list","Lista"],["single","Destaque (1 item, bloco inteiro)"]]]],
 MenuBlock:[["title","Título","text"],["brand","Nome no pedido","text"],["phone","WhatsApp que recebe (DDI+DDD)","text"],["delivery","Aceitar entrega","bool"],["pickup","Aceitar retirada","bool"],["fee","Taxa de entrega","money"],["pix","Oferecer PIX no pagamento","bool"]],
 CardsBlock:[["title","Título da seção","text"],["cols","Colunas","seg",[[2,"2"],[3,"3"]]]],
 BookingBlock:[["title","Título","text"],["service","Serviço","text"],["duration","Duração (min)","num"]],
 PixBlock:[["key","Chave PIX","text"],["receiver","Recebedor","text"],["city","Cidade","text"],["label","Texto do botão","text"]],
-MapBlock:[["title","Título (opcional)","text"],["address","Endereço","area"],["btn","Texto do botão","text"]],GalleryBlock:[["photos","Fotos (um link por linha; vazio usa exemplos)","lines"],["count","Quantidade de exemplos","num"],["pal","Paleta de exemplo","sel",Object.entries(PAL_LABEL)]],CarouselBlock:[["photos","Fotos (um link por linha; vazio usa exemplos)","lines"],["count","Quantidade de exemplos","num"],["pal","Paleta de exemplo","sel",Object.entries(PAL_LABEL)]],
+PaymentButtonsBlock:[["title","Título","text"]],
+MapBlock:[["title","Título (opcional)","text"],["address","Endereço","area"],["btn","Texto do botão","text"]],GalleryBlock:[["photos","Fotos (vazio usa exemplos)","imgs"],["count","Quantidade de exemplos","num"],["pal","Paleta de exemplo","sel",Object.entries(PAL_LABEL)],["dark","Escurecer fotos","range",[0,80]],["cols","Colunas","seg",[[2,"2"],[3,"3"],[4,"4"]]]],CarouselBlock:[["photos","Fotos (vazio usa exemplos)","imgs"],["count","Quantidade de exemplos","num"],["pal","Paleta de exemplo","sel",Object.entries(PAL_LABEL)],["dark","Escurecer fotos","range",[0,80]]],
 VideoBlock:[["title","Título","text"],["file","Enviar vídeo","vid"],["poster","Imagem de capa","img"],["url","Ou link do vídeo","text"]],
 LeadFormBlock:[["title","Título","text"],["namePh","Texto do campo nome","text"],["contactPh","Texto do campo contato","text"],["consent","Texto de consentimento (LGPD)","text"],["button","Texto do botão","text"],["note","Observação abaixo (opcional)","text"]],
-WifiBlock:[["title","Título","text"],["ssid","Nome da rede","text"],["password","Senha","text"]],Tour360Block:[["title","Título","text"],["source","Link do tour","text"],["btn","Texto do botão","text"]]
+FaqBlock:[["title","Título","text"]],HoursBlock:[["title","Título","text"],["note","Observação (ex: feriados)","text"]],StatsBlock:[["title","Título (opcional)","text"]],CountdownBlock:[["title","Título","text"],["date","Data e hora final","datetime"],["endText","Texto ao terminar","text"],["btn","Texto do botão (opcional)","text"],["url","Link do botão","text"]],CouponBlock:[["title","Título","text"],["code","Código do cupom","text"],["desc","Descrição","text"],["btn","Texto do botão","text"]],PricingBlock:[["title","Título","text"]],
+WifiBlock:[["title","Título","text"],["ssid","Nome da rede","text"],["password","Senha","text"]],Tour360Block:[["title","Título","text"],["source","Link do tour","text"],["btn","Texto do botão","text"]],
+FreeBlock:[["height","Altura da camada (px)","range",[200,700]]],
+CodeBlock:[["html","Código HTML","code"]],
+FooterBlock:[["text","Texto do rodapé (opcional)","text"]]
 };
 const LISTS={
+FaqBlock:[["q","Pergunta","text"],["a","Resposta","area"]],
+HoursBlock:[["day","Dia(s)","text"],["time","Horário","text"]],
+StatsBlock:[["n","Número","text"],["l","Legenda","text"]],
+PricingBlock:[["name","Nome do plano","text"],["price","Preço","text"],["per","Período (ex: /mês)","text"],["feats","Itens incluídos (um por linha)","area"],["btn","Texto do botão","text"],["url","Link ou WhatsApp","text"],["hot","Destacar este plano","bool"]],
 ButtonBlock:[["title","Título","text"],["sub","Descrição","text"],["url","Link, telefone ou e-mail","text"],["icon","Ícone","icon"],["img","Miniatura","img"],["badge","Selo / texto à direita","text"],["style","Estilo","sel",BTN_STYLES],["size","Tamanho","seg",[["s","P"],["m","M"],["l","G"],["xl","Gigante"]]],["anim","Animação","sel",ANIMS],["bg","Cor do fundo","clr"],["fg","Cor do texto","clr"]],
-CardsBlock:[["img","Foto","img"],["title","Título","text"],["text","Texto","area"],["url","Link (URL)","text"],["cta","Texto do link","text"],["span","Tamanho","seg",[["1x1","1×1"],["2x1","2×1"],["1x2","1×2"],["2x2","2×2"]]],["tone","Texto","seg",[["dark","Claro"],["light","Escuro"]]],["pos","Posição","seg",[["top","Topo"],["center","Meio"],["bottom","Base"]]],["badge","Selo","text"],["color","Cor sem foto","clr"]],
-StoryBlock:[["title","Título","text"],["img","Imagem","img"],["caption","Legenda","area"],["cta","Texto do botão","text"],["url","Link (URL)","text"]],
-CatalogBlock:[["img","Foto","img"],["name","Nome","text"],["price","Preço (R$)","money"],["promo","Promoção (R$)","money"],["btn","Botão","text"],["url","Link do botão (vazio = WhatsApp)","text"]],
+CardsBlock:[["img","Foto","img"],["title","Título","text"],["text","Texto","area"],["url","Link (URL)","text"],["cta","Texto do link","text"],["span","Tamanho","seg",[["1x1","1×1"],["2x1","2×1"],["1x2","1×2"],["2x2","2×2"]]],["tone","Texto","seg",[["dark","Claro"],["light","Escuro"]]],["pos","Posição","seg",[["top","Topo"],["center","Meio"],["bottom","Base"]]],["badge","Selo","text"],["color","Cor sem foto","clr"],["dark","Escurecer foto","range",[0,80]]],
+StoryBlock:[["title","Título","text"],["img","Imagem","img"],["caption","Legenda","area"],["cta","Texto do botão","text"],["url","Link (URL)","text"],["dark","Escurecer foto","range",[0,80]]],
+CatalogBlock:[["img","Foto","img"],["name","Nome","text"],["desc","Descrição curta","text"],["badge","Selo (ex: Mais vendido)","text"],["price","Preço (R$)","money"],["promo","Promoção (R$)","money"],["btn","Texto do botão","text"],["action","Ação do botão","sel",[["whatsapp","Abrir WhatsApp"],["link","Abrir link"],["call","Ligar"],["email","Enviar e-mail"]]],["url","Link / telefone / e-mail (conforme a ação)","text"],["dark","Escurecer foto","range",[0,80]]],
 MenuBlock:[["name","Nome do item","text"],["desc","Descrição","area"],["price","Preço (R$)","money"],["cat","Categoria","text"],["img","Foto","img"],["badge","Selo (ex: popular)","text"]],
-ServiceBlock:[["img","Foto","img"],["name","Nome","text"],["price","Preço (R$)","money"],["promo","Promoção (R$)","money"],["btn","Botão","text"],["url","Link do botão (vazio = WhatsApp)","text"]],
+ServiceBlock:[["img","Foto","img"],["name","Nome","text"],["desc","Descrição curta","text"],["badge","Selo (ex: Mais vendido)","text"],["price","Preço (R$)","money"],["promo","Promoção (R$)","money"],["btn","Texto do botão","text"],["action","Ação do botão","sel",[["whatsapp","Abrir WhatsApp"],["link","Abrir link"],["call","Ligar"],["email","Enviar e-mail"]]],["url","Link / telefone / e-mail (conforme a ação)","text"],["dark","Escurecer foto","range",[0,80]]],
 TestimonialsBlock:[["name","Nome","text"],["role","Cargo ou cidade","text"],["stars","Estrelas","seg",[[5,"5"],[4,"4"],[0,"Sem"]]],["text","Depoimento","area"]],
 SocialBlock:[["net","Rede","sel",["Instagram","TikTok","YouTube","LinkedIn","Facebook","WhatsApp","Telegram","X","Pinterest","Behance","Spotify","Vimeo","Site","E-mail","Outro"].map(n=>[n,n])],["url","Link, @ ou telefone","text"],["label","Texto exibido (opcional)","text"]],
 IconGrid:[["icon","Ícone","icon"],["label","Nome","text"],["url","Link, telefone ou e-mail","text"],["bg","Cor do fundo do ícone","clr"],["fg","Cor do desenho","clr"]],
-TileGrid:[["title","Título","text"],["img","Imagem","img"],["url","Link (URL)","text"],["span","Tamanho (mosaico)","seg",[["1x1","1×1"],["2x1","2×1"],["1x2","1×2"],["2x2","2×2"]]],["color","Cor da faixa","clr"],["fg","Cor do texto","clr"]],
-StripBlock:[["title","Título","text"],["more","Texto do link","text"],["url","Link (URL)","text"],["shape","Formato","seg",[["sq","Quadrado"],["round","Redondo"],["tall","Retrato"]]],["photos","Fotos (um link por linha; vazio usa exemplos)","lines"],["count","Quantidade de exemplos","num"],["pal","Paleta de exemplo","sel",Object.entries(PAL_LABEL)]],
-DockBlock:[["icon","Ícone","icon"],["label","Nome (acessibilidade)","text"],["url","Link, telefone ou e-mail","text"]]
+TileGrid:[["title","Título","text"],["img","Imagem","img"],["url","Link (URL)","text"],["span","Tamanho (mosaico)","seg",[["1x1","1×1"],["2x1","2×1"],["1x2","1×2"],["2x2","2×2"]]],["color","Cor da faixa","clr"],["fg","Cor do texto","clr"],["dark","Escurecer foto","range",[0,80]]],
+StripBlock:[["title","Título","text"],["more","Texto do link","text"],["url","Link (URL)","text"],["shape","Formato","seg",[["sq","Quadrado"],["round","Redondo"],["tall","Retrato"]]],["photos","Fotos (vazio usa exemplos)","imgs"],["count","Quantidade de exemplos","num"],["pal","Paleta de exemplo","sel",Object.entries(PAL_LABEL)],["dark","Escurecer fotos","range",[0,80]]],
+DockBlock:[["icon","Ícone","icon"],["label","Nome (acessibilidade)","text"],["url","Link, telefone ou e-mail","text"]],
+FooterBlock:[["emoji","Emoji","text"],["label","Texto (opcional)","text"],["url","Link, telefone ou e-mail","text"]],
+PaymentButtonsBlock:[["method","Meio de pagamento","sel",[["pix","PIX"],["picpay","PicPay"],["mercadopago","Mercado Pago"],["infinitepay","InfinitePay"],["asaas","Asaas"],["outro","Outro"]]],["label","Texto do botão","text"],["url","Link de pagamento (checkout, cobrança ou chave)","text"]],
+FreeBlock:[["kind","Tipo de camada","seg",[["img","Foto"],["text","Texto"],["emoji","Emoji"]]],["img","Foto (aceita PNG transparente)","img"],["text","Texto ou emoji","text"],["x","Posição horizontal (%)","range",[-20,120]],["y","Posição vertical (%)","range",[-20,120]],["w","Tamanho (%)","range",[20,220]],["rot","Rotação (°)","range",[-180,180]],["z","Camada (ordem)","range",[1,20]],["color","Cor do texto","clr"],["anim","Movimento","sel",[["none","Parado"],["float","Flutuar"],["pulse","Pulsar"],["spin","Girar"],["bounce","Balançar"]]]]
 };
 const mk=(type,extra)=>({id:type+"-"+uid(),type,visible:true,anim:"fade",props:Object.assign(structuredClone(META[type].d),extra||{})});
 
 /* ───────── estado ───────── */
-const state={view:"dashboard",device:"mobile",mode:"edit",period:14,pages:[],pageIdx:0,tokens:tk("marfim"),sel:null,siteIdx:0,dirty:false,loading:false,
+const state={view:"dashboard",device:"mobile",mode:"edit",period:14,pages:[],pageIdx:0,tokens:tk("marfim"),sel:null,siteIdx:0,dirty:false,loading:false,seoTitle:"",seoDesc:"",metaPixel:"",gaId:"",bgMusic:"",bgMusicOn:false,
   orders:[
     {d:"hoje 12:41",who:"Rafael Dias",items:"2x Combo X-Burger, 1x Refri",type:"Entrega",total:8280,st:"Novo"},
     {d:"hoje 12:18",who:"Aline Souza",items:"1x Pizza Calabresa G",type:"Retirada",total:5490,st:"Em preparo"},
@@ -184,6 +225,7 @@ function slotsFor(date,dur){
   if(!date)return[];const [y,m,d]=date.split("-").map(Number);const wd=new Date(y,m-1,d).getDay();
   if(wd===0||wd===6)return[];
   const busy=state.bookings.filter(b=>b.date===date&&b.st!=="Cancelado").map(b=>{const[h,mi]=b.time.split(":").map(Number);const s=h*60+mi;return[s,s+(SERVICES[b.svc]||60)]});
+  takenFor(date).forEach(hm=>{const[h,mi]=hm.split(":").map(Number);const st=h*60+mi;busy.push([st,st+(dur||50)])});
   const out=[];const now=new Date();
   for(let t=8*60;t+dur<=18*60;t+=dur<=30?15:30){
     const at=new Date(y,m-1,d,Math.floor(t/60),t%60);if(at<=now)continue;
@@ -202,24 +244,27 @@ const timers=[];
 const clearTimers=()=>{timers.splice(0).forEach(t=>{clearInterval(t);clearTimeout(t)})};
 const noMotion=()=>matchMedia("(prefers-reduced-motion:reduce)").matches;
 const plain=s=>String(s??"").replace(/\*/g,"");
-function fx(text,mode){
-  text=String(text??"");
+const FX_MS={slow:1,normal:1,fast:1};
+const spdMul=s=>s==="slow"?1.7:s==="fast"?0.55:1;
+function fx(text,mode,speed){
+  text=String(text??"");const sp=spdMul(speed);
   if(noMotion()&&mode!=="mark"&&mode!=="marquee")mode="none";
   switch(mode){
-    case"type":return `<span data-fx="type" data-t="${esc(plain(text))}">${esc(plain(text))}</span><i class="caret"></i>`;
-    case"words":{const w=plain(text).split("|").map(s=>s.trim()).filter(Boolean);return `<span data-fx="words" data-t="${esc(w.join("|"))}"><span class="fx-w">${esc(w[0]||"")}</span></span>`}
-    case"rise":{let n=0;return `<span class="rise" aria-label="${esc(plain(text))}">${plain(text).split(" ").map(w=>`<span style="white-space:nowrap">${[...w].map(c=>`<i aria-hidden="true" style="animation-delay:${(n++)*35}ms">${esc(c)}</i>`).join("")}</span>`).join(" ")}</span>`}
-    case"marquee":{const t=esc(plain(text));return `<span class="mq"><span>${(t+" &nbsp;•&nbsp; ").repeat(4)}</span></span>`}
+    case"type":return `<span data-fx="type" data-t="${esc(plain(text))}" data-sp="${sp}">${esc(plain(text))}</span><i class="caret"></i>`;
+    case"words":{const w=plain(text).split("|").map(s=>s.trim()).filter(Boolean);return `<span data-fx="words" data-t="${esc(w.join("|"))}" data-sp="${sp}"><span class="fx-w">${esc(w[0]||"")}</span></span>`}
+    case"rise":{let n=0;return `<span class="rise" aria-label="${esc(plain(text))}">${plain(text).split(" ").map(w=>`<span style="white-space:nowrap">${[...w].map(c=>`<i aria-hidden="true" style="animation-delay:${(n++)*35*sp}ms">${esc(c)}</i>`).join("")}</span>`).join(" ")}</span>`}
+    case"marquee":{const t=esc(plain(text));return `<span class="mq"><span style="animation-duration:${(14*sp).toFixed(1)}s">${(t+" &nbsp;•&nbsp; ").repeat(4)}</span></span>`}
     case"mark":return esc(text).replace(/\*([^*]+)\*/g,'<mark class="mk">$1</mark>');
     default:return esc(plain(text));
   }}
 function runFx(root){
+  root.querySelectorAll('.cd[data-cd]').forEach(el=>{const tick=()=>{el.innerHTML=cdHtml(el.dataset.cd,el.dataset.end)};timers.push(setInterval(tick,1000))});
   root.querySelectorAll('[data-fx="type"]').forEach(el=>{
-    const full=el.dataset.t;let i=0,dir=1,hold=0;el.textContent="";
-    timers.push(setInterval(()=>{if(hold>0){hold--;return}i+=dir;el.textContent=full.slice(0,i);if(i>=full.length){dir=-1;hold=18}else if(i<=0){dir=1;hold=4}},90))});
+    const full=el.dataset.t;const sp=+el.dataset.sp||1;let i=0,dir=1,hold=0;el.textContent="";
+    timers.push(setInterval(()=>{if(hold>0){hold--;return}i+=dir;el.textContent=full.slice(0,i);if(i>=full.length){dir=-1;hold=18}else if(i<=0){dir=1;hold=4}},Math.round(90*sp)))});
   root.querySelectorAll('[data-fx="words"]').forEach(el=>{
-    const w=el.dataset.t.split("|");if(w.length<2)return;let i=0;
-    timers.push(setInterval(()=>{i=(i+1)%w.length;el.innerHTML=`<span class="fx-w">${esc(w[i])}</span>`},2000))});
+    const w=el.dataset.t.split("|");if(w.length<2)return;const sp=+el.dataset.sp||1;let i=0;
+    timers.push(setInterval(()=>{i=(i+1)%w.length;el.innerHTML=`<span class="fx-w">${esc(w[i])}</span>`},Math.round(2000*sp)))});
 }
 
 /* ───────── blocos públicos ───────── */
@@ -239,7 +284,7 @@ function menuHtml(b){
   const cats=[...new Set(p.items.map(i=>i.cat||"Itens"))];if(!b.cat||!cats.includes(b.cat))b.cat=cats[0];
   const t=menuTotals(b),f=b.form;
   const list=p.items.filter(i=>(i.cat||"Itens")===b.cat).map(i=>{const q=b.cart[i.id]||0;
-    return `<div class="mn-it ${i.img?"has-img":""}">${i.img?`<div class="pimg" style="${bgi(i.img)}"></div>`:""}<div><b>${esc(i.name)}${i.badge?`<span class="bg2">${esc(i.badge)}</span>`:""}</b>${i.desc?`<div class="ds">${esc(i.desc)}</div>`:""}<div class="pr">${brl(i.price)}</div></div><div class="mn-act">${q?`<div class="mn-step"><button type="button" class="mn-dec" data-id="${i.id}" aria-label="Menos">−</button><span>${q}</span><button type="button" class="mn-inc" data-id="${i.id}" aria-label="Mais">+</button></div>`:`<button type="button" class="mn-add" data-id="${i.id}" aria-label="Adicionar ${esc(i.name)}">+</button>`}</div></div>`}).join("");
+    return `<div class="mn-it ${i.img?"has-img":""}">${i.img?`<div class="pimg" style="${bgi(i.img)}${darkOv(i.dark)}"></div>`:""}<div><b>${esc(i.name)}${i.badge?`<span class="bg2">${esc(i.badge)}</span>`:""}</b>${i.desc?`<div class="ds">${esc(i.desc)}</div>`:""}<div class="pr">${brl(i.price)}</div></div><div class="mn-act">${q?`<div class="mn-step"><button type="button" class="mn-dec" data-id="${i.id}" aria-label="Menos">−</button><span>${q}</span><button type="button" class="mn-inc" data-id="${i.id}" aria-label="Mais">+</button></div>`:`<button type="button" class="mn-add" data-id="${i.id}" aria-label="Adicionar ${esc(i.name)}">+</button>`}</div></div>`}).join("");
   const seg=(cls,arr,cur)=>`<div class="segm">${arr.map(([v,l])=>`<button type="button" class="${cls}" data-v="${v}" aria-pressed="${cur===v}">${l}</button>`).join("")}</div>`;
   const types=[p.delivery&&["entrega","Entrega"],p.pickup&&["retirada","Retirada"]].filter(Boolean);
   const pays=[p.pix&&["pix","PIX"],["cartao","Cartão"],["dinheiro","Dinheiro"]].filter(Boolean);
@@ -254,59 +299,118 @@ function renderBlock(b){
     const bg=p.media==="video"&&p.video?`<video src="${esc(p.video)}" autoplay muted loop playsinline></video>`
       :p.media==="none"?`<div class="bgm" style="background:var(--primary)"></div>`
       :`<div class="bgm ${p.media==="video"?"kb":""}" style="${bgi(p.img)}"></div>`;
-    h=`${bg}${p.media==="video"&&!p.video?'<span class="vtag">vídeo de exemplo</span>':""}<div class="ct">${p.badge?`<span class="bd">${esc(p.badge)}</span>`:""}${p.headline?`<h2>${fx(p.headline,p.fx)}</h2>`:""}${p.sub?`<p>${esc(p.sub)}</p>`:""}</div>`;break}
-  case"StoryBlock":h=`<div class="stories">${p.items.map((s,i)=>`<button type="button" class="st ${p.shape==="circle"?"circle":""}" data-act="story" data-i="${i}"><span class="sr" style="${bgi(s.img)}"></span><span class="sl">${esc(s.title)}</span></button>`).join("")}</div>`;break;
+    h=`${bg}${p.media==="video"&&!p.video?'<span class="vtag">vídeo de exemplo</span>':""}<div class="ct">${p.badge?`<span class="bd">${esc(p.badge)}</span>`:""}${p.headline?`<h2>${fx(p.headline,p.fx,p.fxSpeed)}</h2>`:""}${p.sub?`<p>${esc(p.sub)}</p>`:""}</div>`;break}
+  case"StoryBlock":h=`<div class="stories">${p.items.map((s,i)=>`<button type="button" class="st ${p.shape==="circle"?"circle":""}" data-act="story" data-i="${i}"><span class="sr" style="${bgi(s.img)}${darkOv(s.dark)}"></span><span class="sl">${esc(s.title)}</span></button>`).join("")}</div>`;break;
   case"ProfileBlock":if(+p.lift)sty=`margin-top:-${+p.lift}px;z-index:2`;h=`<div class="pfl"><div class="av" style="${bgi(p.avatar)}">${p.avatar?"":esc((p.name||"?").trim().charAt(0).toUpperCase())}</div><h2 class="pname">${esc(p.name)}${p.verified?'<svg class="vf" viewBox="0 0 24 24" aria-label="Verificado"><circle cx="12" cy="12" r="11" fill="var(--primary)"/><path d="M7 12.5l3.2 3.2L17 9" fill="none" stroke="var(--bg)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>':""}</h2><div class="hnd">${esc(p.handle)}</div><div class="phead">${esc(p.headline)}</div>${p.bio?`<p class="pbio">${esc(p.bio)}</p>`:""}${p.location?`<div class="loc"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>${esc(p.location)}</div>`:""}</div>`;break;
-  case"TextBlock":h=`<div class="pcard" style="text-align:${p.align==="center"?"center":"left"}">${p.title?`<div class="ptitle">${fx(p.title,p.fx)}</div>`:""}<div>${esc(p.text)}</div></div>`;break;
+  case"TextBlock":h=`<div class="pcard" style="text-align:${p.align==="center"?"center":"left"}">${p.title?`<div class="ptitle">${fx(p.title,p.fx,p.fxSpeed)}</div>`:""}<div>${esc(p.text)}</div></div>`;break;
   case"ButtonBlock":h=`<div class="pbtns ${+p.cols===2?"c2":""} ${p.join?"join":""}">${p.items.map(btn).join("")}</div>`;break;
-  case"CardsBlock":h=`${sect(p.title)}<div class="bento" style="--cols:${p.cols}">${p.items.map(c=>`<a class="bc s-${c.span} tone-${c.tone==="light"?"light":"dark"} pos-${c.pos}" href="${esc(c.url||"#")}" target="_blank" rel="noopener" data-act="link" data-label="${esc(c.title)}" style="${c.img?bgi(c.img):`background:${c.color||"var(--primary)"}`}">${c.badge?`<span class="bdg">${esc(c.badge)}</span>`:""}<span class="arw">↗</span><h4>${esc(c.title)}</h4>${c.text?`<p>${esc(c.text)}</p>`:""}${c.cta?`<span class="cta">${esc(c.cta)}</span>`:""}</a>`).join("")}</div>`;break;
+  case"CardsBlock":h=`${sect(p.title)}<div class="bento" style="--cols:${p.cols}">${p.items.map(c=>`<a class="bc s-${c.span} tone-${c.tone==="light"?"light":"dark"} pos-${c.pos}" href="${esc(c.url||"#")}" target="_blank" rel="noopener" data-act="link" data-label="${esc(c.title)}" style="${c.img?bgi(c.img)+darkOv(c.dark):`background:${c.color||"var(--primary)"}`}">${c.badge?`<span class="bdg">${esc(c.badge)}</span>`:""}<span class="arw">↗</span><h4>${esc(c.title)}</h4>${c.text?`<p>${esc(c.text)}</p>`:""}${c.cta?`<span class="cta">${esc(c.cta)}</span>`:""}</a>`).join("")}</div>`;break;
   case"SocialBlock":{const m=p.mode||"pill";h=`<div class="soc m-${m}">${p.items.map(n=>{if(typeof n==="string")n={net:n,url:"#",label:""};const nm=n.label||n.net;return `<a href="${esc(href(n.url))}" target="_blank" rel="noopener" data-act="link" data-label="${esc(nm)}" aria-label="${esc(nm)}" title="${esc(nm)}">${m==="text"?"":pic(socIc(n.net))}${m==="icons"?"":esc(nm)}</a>`}).join("")}</div>`;break}
   case"HeadlineBlock":{const f=p.font?FONTS[p.font]:"";const stl=[f?`font-family:${f}`:"",p.color?`color:${p.color}`:""].filter(Boolean).join(";");
-    const txt=p.fx&&p.fx!=="none"?fx(p.text,p.fx):esc(p.text).replace(/\*([^*]+)\*/g,'<mark class="mk">$1</mark>').replace(/\n/g,"<br>");
+    const txt=p.fx&&p.fx!=="none"?fx(p.text,p.fx,p.fxSpeed):esc(p.text).replace(/\*([^*]+)\*/g,'<mark class="mk">$1</mark>').replace(/\n/g,"<br>");
     h=`<div class="hl al-${p.align} sz-${p.size} ${p.upper?"up":""} ${p.tight?"tight":""}"><h2 style="${stl}">${txt}</h2>${p.sub?`<p>${esc(p.sub).replace(/\n/g,"<br>")}</p>`:""}</div>`;break}
   case"LabelRow":h=`<div class="lrow sz-${p.size} ${p.upper?"up":""}"><span>${esc(p.left)}</span><span>${esc(p.center)}</span><span>${esc(p.right)}</span></div>`;break;
-  case"IconGrid":h=`<div class="ig c${p.cols} ig-${p.shape} ig-${p.fill} ig-${p.size}">${p.items.map(i=>`<a class="igi" href="${esc(href(i.url))}" target="_blank" rel="noopener" data-act="link" data-label="${esc(i.label)}" aria-label="${esc(i.label)}" style="${[i.bg?`--ib:${i.bg}`:"",i.fg?`--if:${i.fg}`:""].filter(Boolean).join(";")}"><span class="igc">${pic(i.icon)}</span>${p.labels&&i.label?`<span class="igl">${esc(i.label)}</span>`:""}</a>`).join("")}</div>${p.hint?`<div class="ighint">${pic("hand")}<span>${esc(p.hint)}</span></div>`:""}`;break;
-  case"TileGrid":h=`<div class="tg tg-${p.mode} rd-${p.round}" style="--cols:${p.cols};--sp:${p.space}px;${p.color?`--tile:${p.color}`:""}">${p.items.map(i=>`<a class="tgi s-${i.span||"1x1"}" href="${esc(href(i.url))}" target="_blank" rel="noopener" data-act="link" data-label="${esc(i.title)}" style="${i.color?`--tile:${i.color};`:""}${i.fg?`--tf:${i.fg}`:""}"><span class="tgp" style="${bgi(i.img)}"></span><span class="tgl">${esc(i.title)}</span></a>`).join("")}</div>`;break;
+  case"IconGrid":h=`<div class="ig ig-dir-${p.dir||"grid"} ${p.dir==="grid"||!p.dir?"c"+p.cols:""} ig-${p.shape} ig-${p.fill} ig-${p.size}">${p.items.map(i=>`<a class="igi" href="${esc(href(i.url))}" target="_blank" rel="noopener" data-act="link" data-label="${esc(i.label)}" aria-label="${esc(i.label)}" style="${[i.bg?`--ib:${i.bg}`:"",i.fg?`--if:${i.fg}`:""].filter(Boolean).join(";")}"><span class="igc">${pic(i.icon)}</span>${p.labels&&i.label?`<span class="igl">${esc(i.label)}</span>`:""}</a>`).join("")}</div>${p.hint?`<div class="ighint">${pic("hand")}<span>${esc(p.hint)}</span></div>`:""}`;break;
+  case"TileGrid":h=`<div class="tg tg-${p.mode} rd-${p.round}" style="--cols:${p.cols};--sp:${p.space}px;${p.color?`--tile:${p.color}`:""}">${p.items.map(i=>`<a class="tgi s-${i.span||"1x1"}" href="${esc(href(i.url))}" target="_blank" rel="noopener" data-act="link" data-label="${esc(i.title)}" style="${i.color?`--tile:${i.color};`:""}${i.fg?`--tf:${i.fg}`:""}"><span class="tgp" style="${bgi(i.img)}${darkOv(i.dark)}"></span><span class="tgl">${esc(i.title)}</span></a>`).join("")}</div>`;break;
   case"StripBlock":h=p.items.map(x=>{const ph=(x.photos||[]).filter(Boolean);const list=ph.length?ph:Array.from({length:Math.min(10,+x.count||0)},(_,k)=>`art:${x.pal||"areia"}:${k+31}`);
-    return `<div class="stp ${p.upper?"up":""}"><div class="sthd"><b>${esc(x.title)}</b>${x.more?`<a href="${esc(href(x.url))}" target="_blank" rel="noopener" data-act="link" data-label="${esc(x.title)}">${esc(x.more)}</a>`:""}</div><div class="stth th-${p.thumb} sh-${x.shape||"sq"}">${list.map(u=>`<i style="${bgi(u)}"></i>`).join("")}</div></div>`}).join("");break;
+    return `<div class="stp ${p.upper?"up":""}"><div class="sthd"><b>${esc(x.title)}</b>${x.more?`<a href="${esc(href(x.url))}" target="_blank" rel="noopener" data-act="link" data-label="${esc(x.title)}">${esc(x.more)}</a>`:""}</div><div class="stth th-${p.thumb} sh-${x.shape||"sq"}">${list.map(u=>`<i style="${bgi(u)}${darkOv(x.dark)}"></i>`).join("")}</div></div>`}).join("");break;
   case"DockBlock":cls="dockb";h=`<div class="dock dk-${p.style}">${p.play?`<span class="dkp">${pic("play")}</span>`:""}${p.items.map(i=>`<a class="dki" href="${esc(href(i.url))}" target="_blank" rel="noopener" data-act="link" data-label="${esc(i.label||i.icon)}" aria-label="${esc(i.label||i.icon)}">${pic(i.icon)}</a>`).join("")}</div>`;break;
   case"WhatsAppBlock":h=btn({title:p.label,sub:"",badge:"WhatsApp",icon:"whatsapp",url:`https://wa.me/${p.phone.replace(/\D/g,"")}?text=${encodeURIComponent(p.message)}`,size:"m",anim:"none"});break;
   case"MenuBlock":h=menuHtml(b);break;
-  case"CatalogBlock":case"ServiceBlock":h=`<div class="pcard"><div class="ptitle">${esc(p.title)}</div>${p.items.map(i=>`<div class="pprod"><div class="pimg" style="${bgi(i.img)}"></div><div><div style="font-weight:700">${esc(i.name)}</div><div>${i.promo?`<span class="old">${brl(i.price)}</span> ${brl(i.promo)}`:(i.price?brl(i.price):"Sem custo")}</div></div><a class="pmini" ${i.url?`href="${esc(href(i.url))}" target="_blank" rel="noopener"`:p.phone?`href="${waUrl(p.phone,"Olá! Tenho interesse em: "+i.name)}" target="_blank" rel="noopener"`:'href="#"'} data-act="link" data-label="${esc(i.name)}">${esc(i.btn)}</a></div>`).join("")}</div>`;break;
+  case"CatalogBlock":case"ServiceBlock":{
+    const actUrl=i=>{const act=i.action||(i.url?"link":"whatsapp");
+      if(act==="call")return"tel:"+(i.url||"").replace(/[^\d+]/g,"");
+      if(act==="email")return"mailto:"+(i.url||"");
+      if(act==="whatsapp")return p.phone?waUrl(p.phone,"Olá! Tenho interesse em: "+i.name):(i.url?href(i.url):"#");
+      return i.url?href(i.url):"#"};
+    const actIcon=i=>({call:"call",email:"mail",link:"globe"}[i.action]||"whatsapp");
+    if(p.layout==="single"){
+      const i=p.items[0]||{};
+      h=`<a class="pghero" href="${esc(actUrl(i))}" target="_blank" rel="noopener" data-act="link" data-label="${esc(i.name)}"><div class="pgheroimg" style="${bgi(i.img)}${darkOv(i.dark)}">${i.badge?`<span class="pgbadge">${esc(i.badge)}</span>`:""}</div><div class="pgherobody">${p.title?`<div class="pgherotag">${esc(p.title)}</div>`:""}<div class="pgname lg">${esc(i.name)}</div>${i.desc?`<div class="pgdesc">${esc(i.desc)}</div>`:""}${(i.promo||i.price)?`<div class="pgprice">${i.promo?`<span class="old">${brl(i.price)}</span> ${brl(i.promo)}`:brl(i.price)}</div>`:""}<span class="pblk pghbtn">${pic(actIcon(i))}${esc(i.btn||"Saiba mais")}</span></div></a>`;
+    }else if(p.layout==="list"){
+      h=`<div class="pcard"><div class="ptitle">${esc(p.title)}</div>${p.items.map(i=>`<div class="pprod"><div class="pimg" style="${bgi(i.img)}"></div><div><div style="font-weight:700">${esc(i.name)}</div><div>${i.promo?`<span class="old">${brl(i.price)}</span> ${brl(i.promo)}`:(i.price?brl(i.price):"Sem custo")}</div></div><a class="pmini" href="${esc(actUrl(i))}" target="_blank" rel="noopener" data-act="link" data-label="${esc(i.name)}">${esc(i.btn)}</a></div>`).join("")}</div>`;
+    }else{
+      h=`<div class="pcard"><div class="ptitle">${esc(p.title)}</div><div class="pgrid">${p.items.map(i=>`<a class="pgcard" href="${esc(actUrl(i))}" target="_blank" rel="noopener" data-act="link" data-label="${esc(i.name)}"><div class="pgimg" style="${bgi(i.img)}${darkOv(i.dark)}">${i.badge?`<span class="pgbadge">${esc(i.badge)}</span>`:""}<span class="pgbtn" aria-hidden="true">${pic(actIcon(i))}</span></div><div class="pgbody"><div class="pgname">${esc(i.name)}</div>${i.desc?`<div class="pgdesc">${esc(i.desc)}</div>`:""}<div class="pgprice">${i.promo?`<span class="old">${brl(i.price)}</span> ${brl(i.promo)}`:(i.price?brl(i.price):"Sem custo")}</div></div></a>`).join("")}</div></div>`;
+    }
+    break}
   case"BookingBlock":h=`<div class="pcard"><div class="ptitle">${esc(p.title)}</div><div style="margin-bottom:8px">${esc(p.service)} · ${p.duration} min</div><input class="pfield bkd" type="date" aria-label="Data" value="${b.date||""}"><div class="slots">${slotsFor(b.date,+p.duration||50).slice(0,9).map(s=>`<button type="button" class="bks" aria-pressed="${b.pick===s}" data-t="${s}">${s}</button>`).join("")||`<span class="phead">${b.date?"Sem horários neste dia.":"Escolha uma data."}</span>`}</div>${b.pick?`<button type="button" class="pblk bkc" style="margin-top:10px">Confirmar ${esc(b.pick)}</button>`:""}</div>`;break;
   case"PixBlock":h=`<div class="pcard"><div class="ptitle">${esc(p.label)}</div><div class="phead" style="margin-bottom:8px">${esc(p.receiver)}</div><div style="display:flex;gap:8px"><button type="button" class="pblk pxc" style="flex:1">Copiar PIX</button><button type="button" class="pblk pxq" style="flex:1">${b.showQr?"Ocultar QR":"Mostrar QR"}</button></div>${b.showQr?`<div class="qrw q-m" style="margin:10px auto 0">${QR.svg(pix(p),"#000000","#ffffff","QR Code PIX")}</div>`:""}</div>`;break;
-  case"MapBlock":h=`<div class="pcard">${p.title?`<div class="ptitle">${esc(p.title)}</div>`:""}<div class="ph">Mapa de exemplo</div><div style="margin:8px 0">${esc(p.address)}</div><a class="pblk" target="_blank" rel="noopener" data-act="link" data-label="Mapa" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.address)}">${esc(p.btn||"Como chegar")}</a></div>`;break;
-  case"GalleryBlock":{const ph=(p.photos||[]).filter(Boolean);const l=ph.length?ph:Array.from({length:Math.min(12,+p.count||0)},(_,i)=>`art:${p.pal}:${i+11}`);h=`<div class="gal">${l.map(u=>`<div style="${bgi(u)}"></div>`).join("")}</div>`;break}
-  case"CarouselBlock":{const ph=(p.photos||[]).filter(Boolean);const l=ph.length?ph:Array.from({length:+p.count||0},(_,i)=>`art:${p.pal}:${i+21}`);h=`<div style="display:flex;gap:8px;overflow:auto">${l.map(u=>`<div class="pimg" style="flex:0 0 150px;height:150px;${bgi(u)}"></div>`).join("")}</div>`;break}
+  case"MapBlock":h=`<div class="pcard">${p.title?`<div class="ptitle">${esc(p.title)}</div>`:""}${(p.address||"").trim()?`<div class="mapfr"><iframe title="Mapa: ${esc(p.address)}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen src="https://www.google.com/maps?q=${encodeURIComponent(p.address)}&output=embed&hl=pt-BR"></iframe></div>`:`<div class="ph">Informe o endereço para ver o mapa</div>`}<div style="margin:8px 0">${esc(p.address)}</div><a class="pblk" target="_blank" rel="noopener" data-act="link" data-label="Mapa" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.address)}">${esc(p.btn||"Como chegar")}</a></div>`;break;
+  case"PaymentButtonsBlock":{const PAY_LABEL={pix:"PIX",picpay:"PicPay",mercadopago:"Mercado Pago",infinitepay:"InfinitePay",asaas:"Asaas",outro:"Pagamento"};const PAY_COLOR={pix:"#0d9488",picpay:"#21c25e",mercadopago:"#00b1ea",infinitepay:"#7c3aed",asaas:"#0ea5e9",outro:"var(--primary)"};
+    h=`<div class="pcard">${p.title?`<div class="ptitle">${esc(p.title)}</div>`:""}<div class="paybtns">${p.items.map(i=>`<a class="paybtn" style="--pc:${PAY_COLOR[i.method]||PAY_COLOR.outro}" href="${esc(href(i.url))}" target="_blank" rel="noopener" data-act="link" data-label="${esc(i.label||PAY_LABEL[i.method])}">${pic("wallet")}<span>${esc(i.label||PAY_LABEL[i.method])}</span></a>`).join("")}</div></div>`;break}
+  case"GalleryBlock":{const ph=(p.photos||[]).filter(Boolean);const l=ph.length?ph:Array.from({length:Math.min(12,+p.count||0)},(_,i)=>`art:${p.pal}:${i+11}`);h=`<div class="gal" style="--gcols:${+p.cols||3}">${l.map(u=>`<div style="${bgi(u)}${darkOv(p.dark)}"></div>`).join("")}</div>`;break}
+  case"CarouselBlock":{const ph=(p.photos||[]).filter(Boolean);const l=ph.length?ph:Array.from({length:+p.count||0},(_,i)=>`art:${p.pal}:${i+21}`);h=`<div style="display:flex;gap:8px;overflow:auto">${l.map(u=>`<div class="pimg" style="flex:0 0 150px;height:150px;${bgi(u)}${darkOv(p.dark)}"></div>`).join("")}</div>`;break}
   case"VideoBlock":h=`<div class="pcard"><div class="ptitle">${esc(p.title)}</div>${p.file?`<div class="vid"><video src="${esc(p.file)}" controls playsinline poster="${esc(src(p.poster))}"></video></div>`:`<a class="vid" data-act="link" ${p.url?`href="${esc(p.url)}" target="_blank" rel="noopener"`:'href="#"'} style="${bgi(p.poster)}"><span class="pl">▶</span></a>`}</div>`;break;
   case"LeadFormBlock":h=`<form class="pcard lf"><div class="ptitle">${esc(p.title)}</div><input class="pfield" name="n" required placeholder="${esc(p.namePh||"Nome")}" aria-label="${esc(p.namePh||"Nome")}"><input class="pfield" name="c" required placeholder="${esc(p.contactPh||"WhatsApp ou e-mail")}" aria-label="${esc(p.contactPh||"Contato")}"><label class="phead" style="display:flex;gap:6px;margin-bottom:8px"><input type="checkbox" required> ${esc(p.consent||"Concordo com o uso dos meus dados (LGPD)")}</label><button class="pblk" style="cursor:pointer">${esc(p.button)}</button>${p.note?`<div class="phead" style="margin-top:8px;font-size:12px">${esc(p.note)}</div>`:""}</form>`;break;
-  case"WifiBlock":h=`<div class="pcard"><div class="ptitle">${esc(p.title||"Wi-Fi")}</div><div>Rede: <b>${esc(p.ssid)}</b></div><button type="button" class="pblk wfc" style="margin-top:8px;cursor:pointer">Copiar senha</button></div>`;break;
+  case"FaqBlock":h=`<div class="pcard">${p.title?`<div class="ptitle">${esc(p.title)}</div>`:""}${p.items.map(i=>`<details class="faq-i"><summary>${esc(i.q)}</summary><p>${esc(i.a).replace(/\n/g,"<br>")}</p></details>`).join("")}</div>`;break;
+  case"HoursBlock":{const wd=new Date().getDay();h=`<div class="pcard">${p.title?`<div class="ptitle">${esc(p.title)}</div>`:""}${p.items.map(i=>`<div class="hrs"><span>${esc(i.day)}</span><b>${esc(i.time)}</b></div>`).join("")}${p.note?`<div class="phead" style="margin-top:8px;font-size:12px">${esc(p.note)}</div>`:""}</div>`;break}
+  case"StatsBlock":h=`<div class="pcard">${p.title?`<div class="ptitle">${esc(p.title)}</div>`:""}<div class="stats">${p.items.map(i=>`<div><b>${esc(i.n)}</b><span>${esc(i.l)}</span></div>`).join("")}</div></div>`;break;
+  case"CountdownBlock":h=`<div class="pcard cdw" style="text-align:center">${p.title?`<div class="ptitle">${esc(p.title)}</div>`:""}<div class="cd" data-cd="${esc(p.date||"")}" data-end="${esc(p.endText||"")}">${cdHtml(p.date,p.endText)}</div>${p.btn?`<a class="pblk" style="margin-top:12px" target="_blank" rel="noopener" data-act="link" data-label="Contagem" href="${esc(linkOf(p.url))}">${esc(p.btn)}</a>`:""}</div>`;break;
+  case"CouponBlock":h=`<div class="pcard cpn" style="text-align:center">${p.title?`<div class="ptitle">${esc(p.title)}</div>`:""}<div class="cpcode">${esc(p.code)}</div>${p.desc?`<div class="phead" style="margin:6px 0 10px">${esc(p.desc)}</div>`:""}<button type="button" class="pblk cpc">${esc(p.btn||"Copiar cupom")}</button></div>`;break;
+  case"PricingBlock":h=`<div class="pcard">${p.title?`<div class="ptitle">${esc(p.title)}</div>`:""}<div class="prc">${p.items.map(i=>`<div class="pln${i.hot?" hot":""}"><b>${esc(i.name)}</b><div class="pp">${esc(i.price)}<small>${esc(i.per||"")}</small></div><ul>${String(i.feats||"").split("\n").filter(x=>x.trim()).map(f=>`<li>${esc(f)}</li>`).join("")}</ul>${i.btn?`<a class="pblk" target="_blank" rel="noopener" data-act="link" data-label="Plano ${esc(i.name)}" href="${esc(linkOf(i.url))}">${esc(i.btn)}</a>`:""}</div>`).join("")}</div></div>`;break;
+  case"WifiBlock":{const wifiQr=`WIFI:T:WPA;S:${(p.ssid||"").replace(/([\\;,:"])/g,"\\$1")};P:${(p.password||"").replace(/([\\;,:"])/g,"\\$1")};;`;h=`<div class="pcard"><div class="ptitle">${esc(p.title||"Wi-Fi")}</div><div>Rede: <b>${esc(p.ssid)}</b></div><div style="display:flex;gap:8px;margin-top:8px"><button type="button" class="pblk wfc" style="flex:1">Copiar senha</button><button type="button" class="pblk wfq" style="flex:1">${b.showQr?"Ocultar QR":"Conectar por QR"}</button></div>${b.showQr?`<div class="qrw q-m" style="margin:10px auto 0">${QR.svg(wifiQr,"#000000","#ffffff","QR Code para conectar no Wi-Fi")}</div><div class="phead" style="text-align:center">Aponte a câmera do celular pra entrar na rede automaticamente.</div>`:""}</div>`;break}
   case"Tour360Block":h=`<div class="pcard"><div class="ptitle">${esc(p.title||"Tour 360°")}</div><div class="ph">Prévia do tour</div><a class="pblk" style="margin-top:8px" target="_blank" rel="noopener" data-act="link" data-label="Tour 360" href="${esc(href(p.source))}">${esc(p.btn||"Abrir tour")}</a></div>`;break;
-  case"QRCodeBlock":{const u=(p.url||"").trim()?href(p.url):"https://manifesti.com.br/"+(state.handle||"site");h=`<div class="pcard qrc">${p.title?`<div class="ptitle">${esc(p.title)}</div>`:""}<div class="qrw q-${p.size||"m"}">${QR.svg(u,p.fg||"#000000",p.bg||"#ffffff","QR Code para "+u)}</div>${p.caption?`<div class="phead">${esc(p.caption)}</div>`:""}<div class="phead qru">${esc(u.replace(/^https?:\/\//,""))}</div></div>`;break}
+  case"QRCodeBlock":{const u=(p.url||"").trim()?href(p.url):"https://"+PUB_HOST+"/"+(state.handle||"site");h=`<div class="pcard qrc">${p.title?`<div class="ptitle">${esc(p.title)}</div>`:""}<div class="qrw q-${p.size||"m"}">${QR.svg(u,p.fg||"#000000",p.bg||"#ffffff","QR Code para "+u)}</div>${p.caption?`<div class="phead">${esc(p.caption)}</div>`:""}<div class="phead qru">${esc(u.replace(/^https?:\/\//,""))}</div></div>`;break}
   case"DividerBlock":h=`<div class="dv dv-${p.style||"line"} sp-${p.space||"m"}">${p.label?`<span>${esc(p.label)}</span>`:""}</div>`;break;
+  case"FooterBlock":cls="footb";h=`<div class="pfoot">${p.items.length?`<div class="pfoot-items">${p.items.map(i=>`<a class="pfoot-i" ${i.url?`href="${esc(href(i.url))}" target="_blank" rel="noopener"`:'href="#"'} data-act="link" data-label="${esc(i.label||i.emoji)}"><span class="pfoot-emoji">${esc(i.emoji)}</span>${i.label?`<span>${esc(i.label)}</span>`:""}</a>`).join("")}</div>`:""}${p.text?`<div class="pfoot-text">${esc(p.text)}</div>`:""}</div>`;break;
   case"TestimonialsBlock":h=`<div class="pcard">${(p.title??"Depoimentos")?`<div class="ptitle">${esc(p.title??"Depoimentos")}</div>`:""}${p.items.map(i=>`<blockquote style="margin:0 0 12px">${+i.stars?`<div class="stars" aria-label="${i.stars} estrelas">${"★".repeat(+i.stars)}</div>`:""}<div>“${esc(i.text)}”</div><div class="phead mn" style="font-size:11px;margin-top:2px">${esc(i.name)}${i.role?" · "+esc(i.role):""}</div></blockquote>`).join("")}</div>`;break;
+  case"FreeBlock":{cls="freeb";sty=`height:${+p.height||360}px`;
+    h=`<div class="flcanvas">${(p.items||[]).map((fi,ix)=>{
+      const w=(+fi.w||100)/100,kcls=fi.kind==="img"?"fl-img":fi.kind==="emoji"?"fl-emoji":"fl-text";
+      const inner=fi.kind==="img"?`<img src="${esc(src(fi.img)||art("areia",ix+7))}" alt="" draggable="false">`:esc(fi.text||(fi.kind==="emoji"?"✨":"Texto"));
+      return `<div class="flit" data-fl="${ix}" style="left:${fi.x}%;top:${fi.y}%;z-index:${fi.z||1}"><div class="flin ${kcls} fl-a-${fi.anim||"none"}" style="--sc:${w};transform:rotate(${fi.rot||0}deg) scale(${w});${fi.color?`color:${fi.color}`:""}">${inner}</div></div>`;
+    }).join("")}</div>`;break}
+  case"CodeBlock":h=`<div class="codeb">${p.html||""}</div>`;break;
   }
   const mv=state.moveMode&&state.mode==="edit"&&state.view==="editor";
   const idx=mv?state.blocks.findIndex(x=>x.id===b.id):0;
   const bar=mv?`<div class="mvbar"><button type="button" data-mvblk="-1" ${idx<=0?"disabled":""} aria-label="Mover para cima" title="Mover para cima">↑</button><button type="button" data-mvblk="1" ${idx>=state.blocks.length-1?"disabled":""} aria-label="Mover para baixo" title="Mover para baixo">↓</button></div>`:"";
   const bs=b.sty||{};
-  if(bs.bg)sty+=`;background:${bs.bg}`;if(bs.fg)sty+=`;color:${bs.fg};--text:${bs.fg}`;if(+bs.pad)sty+=`;padding:${+bs.pad}px`;if(+bs.rd)sty+=`;border-radius:${+bs.rd}px;overflow:hidden`;if(bs.wide)cls+=" wide";
+  if(bs.bg)sty+=`;background:${bs.bg}`;if(bs.fg)sty+=`;color:${bs.fg};--text:${bs.fg}`;if(+bs.pad)sty+=`;padding:${+bs.pad}px`;if(+bs.rd)sty+=`;border-radius:${+bs.rd}px;overflow:hidden`;if(bs.wide)cls+=" wide";if(+bs.rot)sty+=`;transform:rotate(${+bs.rot}deg)`;if(bs.bleed)cls+=" bleed";
   return `<div class="blk a-${b.anim} ${cls} ${mv?"mv":""} ${state.mode==="edit"&&state.sel===b.id?"sel":""}" data-id="${b.id}" style="${sty}">${bar}${h}</div>`}
 
 /* ───────── página e prévia ───────── */
 const lum=h=>{const m=/^#?([0-9a-f]{6})$/i.exec(h||"");if(!m)return .5;const n=parseInt(m[1],16);return(.299*(n>>16)+.587*((n>>8)&255)+.114*(n&255))/255};
-function tokenStyle(t){const dk=lum(t.bg)<.5;return `--bg:${t.bg};--text:${t.text};--muted:${t.muted};--primary:${t.primary};--secondary:${t.secondary};--btn-bg:${t.btnBg};--btn-text:${t.btnText};--radius:${t.radius}px;--shadow:${t.shadow};--gap:${t.gap}px;--fs:${t.fs}px;--hf:${t.hf||t.font};--av:${t.avSize||92}px;--frameClr:${t.frameClr||t.primary};--shd-d:${dk?"rgba(0,0,0,.55)":"color-mix(in srgb,"+t.text+" 22%,transparent)"};--shd-l:${dk?"rgba(255,255,255,.07)":"rgba(255,255,255,.85)"};font-family:${t.font}`}
+function topPad(t){const fb=((state.pages||[])[state.pageIdx]?.blocks||[]).find(b=>b.visible);return fb&&fb.type==="CoverBlock"&&!t.topAlways?12:(t.top??36)}
+function tokenStyle(t){const dk=lum(t.bg)<.5;return `--bg:${t.bg};--text:${t.text};--muted:${t.muted};--primary:${t.primary};--secondary:${t.secondary};--btn-bg:${t.btnBg};--btn-text:${t.btnText};--radius:${t.radius}px;--shadow:${t.shadow};--gap:${t.gap}px;--top:${topPad(t)}px;--side:${t.side??0}px;--mw:${({narrow:"420px",normal:"520px",wide:"720px"})[t.width||"normal"]};--fs:${t.fs}px;--hf:${t.hf||t.font};--av:${t.avSize||92}px;--frameClr:${t.frameClr||t.primary};--shd-d:${dk?"rgba(0,0,0,.55)":"color-mix(in srgb,"+t.text+" 22%,transparent)"};--shd-l:${dk?"rgba(255,255,255,.07)":"rgba(255,255,255,.85)"};font-family:${t.font}`}
 const bioClass=t=>`bio pf-${t.profile} cs-${t.cardStyle} av-${t.avatar||"circle"} rg-${t.avRing||"solid"} ba-${t.btnAlign||"left"} bcs-${t.btnCase||"none"} fr-${t.frame||"none"}`;
+function spotifyEmbedUrl(url){
+  const m=url.match(/open\.spotify\.com\/(track|album|playlist|artist|episode|show)\/([a-zA-Z0-9]+)/);
+  return m?`https://open.spotify.com/embed/${m[1]}/${m[2]}`:""}
+function deezerEmbedUrl(url){
+  const m=url.match(/deezer\.com\/(?:[a-z]{2}\/)?(track|album|playlist|artist)\/(\d+)/);
+  return m?`https://widget.deezer.com/widget/dark/${m[1]}/${m[2]}`:""}
+function cdParts(date){const t=date?new Date(date).getTime():NaN;if(isNaN(t))return null;let s=Math.max(0,Math.floor((t-Date.now())/1000));return{s,d:Math.floor(s/86400),h:Math.floor(s%86400/3600),m:Math.floor(s%3600/60),sc:s%60}}
+function cdHtml(date,end){const p=cdParts(date);if(!p)return `<span class="phead">Defina a data final no editor.</span>`;if(p.s<=0)return `<b>${esc(end||"Encerrado")}</b>`;return [[p.d,"dias"],[p.h,"horas"],[p.m,"min"],[p.sc,"seg"]].map(([v,l])=>`<div class="cdu"><b>${String(v).padStart(2,"0")}</b><span>${l}</span></div>`).join("")}
+function linkOf(u){u=String(u||"").trim();if(!u)return "#";if(/^(https?:|mailto:|tel:)/i.test(u))return u;if(/^\d{10,15}$/.test(u.replace(/\D/g,""))&&!/[a-z@.]/i.test(u))return "https://wa.me/"+u.replace(/\D/g,"");if(/@/.test(u))return "mailto:"+u;return "https://"+u}
 function pageWrap(t,inner){
   let bg=`background:${t.bg}`;
   if(t.bgMode==="gradient")bg=`background:linear-gradient(${t.bgAngle??160}deg,${t.bg},${t.bg2||t.primary}${t.bg3?","+t.bg3:""})`;
   const img=t.bgMode==="image"&&t.bgImg?`<div class="pgbg" style="${bgi(t.bgImg)};--ov:${t.bgOv??55}"></div>`:"";
-  return `<div class="page pt-${t.pattern} fr-${t.frame||"none"}" style="${bg};--g1:${t.bg2||t.primary};--g2:${t.bg3||t.secondary}">${img}${inner}</div>`}
+  const foot=state.mode==="view"?`<footer class="sitefoot"><span>© ${new Date().getFullYear()} ${esc(state.brand||"")}</span>${plan().feat?"":`<span class="sfcredit">Feito com <a href="https://manifesti.com.br" target="_blank" rel="noopener">ManifesTI</a></span>`}</footer>`:"";
+  const isSpotifyHost=state.bgMusic&&/spotify\.com|spotify\.link/.test(state.bgMusic);
+  const isDeezerHost=state.bgMusic&&/deezer\.(com|page\.link)|link\.deezer\.com/.test(state.bgMusic);
+  const spotify=isSpotifyHost?spotifyEmbedUrl(state.bgMusic):"";
+  const deezer=!spotify&&isDeezerHost?deezerEmbedUrl(state.bgMusic):"";
+  const shortLink=state.bgMusic&&!spotify&&!deezer&&(isSpotifyHost||isDeezerHost);
+  const music=spotify?`<div class="bgmSpotify"><iframe src="${esc(spotify)}" width="100%" height="152" frameborder="0" allow="autoplay; encrypted-media" loading="lazy"></iframe><a class="bgmFallback" href="${esc(state.bgMusic)}" target="_blank" rel="noopener">${pic("music")}<span>Abrir no Spotify</span></a></div>`
+    :deezer?`<div class="bgmSpotify"><iframe src="${esc(deezer)}" width="100%" height="152" frameborder="0" allow="autoplay; encrypted-media; clipboard-write" loading="lazy"></iframe><a class="bgmFallback" href="${esc(state.bgMusic)}" target="_blank" rel="noopener">${pic("music")}<span>Abrir no Deezer</span></a></div>`
+    :shortLink?(state.mode==="edit"?`<div class="bgmWarn">Link curto de ${isSpotifyHost?"Spotify":"Deezer"} — abra esse link no navegador, copie o endereço completo da barra (com /track/, /album/ ou /playlist/) e cole aqui.</div>`:"")
+    :state.bgMusic?`<audio id="bgmAud" src="${esc(state.bgMusic)}" loop ${state.bgMusicOn?"autoplay":""}></audio><button type="button" class="bgmBtn" id="bgmBtn" data-bgmtoggle aria-pressed="${state.bgMusicOn}" aria-label="${state.bgMusicOn?"Pausar música":"Tocar música"}">${pic("music")}</button>`:"";
+  return `<div class="page pt-${t.pattern} fr-${t.frame||"none"}" style="${bg};--g1:${t.bg2||t.primary};--g2:${t.bg3||t.secondary}">${img}${inner}${foot}${music}</div>`}
 function pageHtml(pages,idx,sel){
   const pg=pages[idx];
   const tabs=pages.length>1?`<nav class="ptabs" aria-label="Páginas do site">${pages.map((p,i)=>`<button type="button" data-page="${i}" ${i===idx?'aria-current="page"':""}>${esc(p.name)}</button>`).join("")}</nav>`:"";
   return tabs+(pg.blocks.filter(b=>b.visible).map(renderBlock).join("")||`<p class="phead" style="padding:24px">Página vazia. Adicione um bloco.</p>`)}
-function renderPreview(){
+function normTokens(){const t=state.tokens;if(!t)return;if(t.top===undefined)t.top=36;if(t.side===undefined)t.side=0;if(!t.width)t.width="normal"}
+function fitDevice(){fitNow();requestAnimationFrame(fitNow)}
+function fitNow(){const d=$("#device"),ed=$("#v-editor");if(!d||!ed||ed.hidden||document.body.classList.contains("pub"))return;
+  if(innerWidth<=900){d.style.height="";return}
+  const avail=Math.floor(innerHeight-d.getBoundingClientRect().top-30);
+  d.style.height=Math.max(460,Math.min(880,avail))+"px"}
+addEventListener("resize",()=>fitDevice());
+function renderPreview(){try{buildNav()}catch(e){}
+  normTokens();
   if(!state.loading&&state.dirty===false){state.dirty=true;setSave()}
   clearTimers();
   const bio=$("#bio"),t=state.tokens,sy=bio.scrollTop;
@@ -316,6 +420,27 @@ function renderPreview(){
   bio.scrollTop=sy;
   runFx(bio);
   $("#device").className="device"+(state.device==="desktop"?" desktop":"");
+  fitDevice();
+  if(state.mode==="view")document.title=state.seoTitle||state.brand||"manifesti";
+}
+function openFullPreview(){
+  const ov=$("#fsPrev"),stage=$("#fsStage"),bio=$("#bio"),sv=$("#sv");
+  if(!ov||!stage||!bio)return;
+  stage.appendChild(bio);
+  if(sv)stage.appendChild(sv);
+  ov.hidden=false;
+  document.body.style.overflow="hidden";
+}
+function closeFullPreview(){
+  const ov=$("#fsPrev"),device=$("#device"),bio=$("#bio"),sv=$("#sv");
+  if(!ov||!device||!bio)return;
+  device.insertBefore(bio,device.firstChild);
+  if(sv)device.appendChild(sv);
+  ov.hidden=true;
+  document.body.style.overflow="";
+  state.mode="edit";
+  $$("[data-mode]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.mode===state.mode));
+  renderPreview();
 }
 
 /* ───────── stories ───────── */
@@ -330,21 +455,22 @@ function drawStory(){
 function storyStep(d){const n=sv.i+d;if(n<0){drawStory();return}if(n>=sv.b.props.items.length){closeStory();return}sv.i=n;drawStory()}
 
 /* ───────── painéis do editor ───────── */
-const META_ORDER=["CoverBlock","StoryBlock","ProfileBlock","HeadlineBlock","LabelRow","ButtonBlock","IconGrid","TileGrid","StripBlock","CardsBlock","MenuBlock","TextBlock","VideoBlock","GalleryBlock","CatalogBlock","ServiceBlock","TestimonialsBlock","WhatsAppBlock","BookingBlock","LeadFormBlock","PixBlock","MapBlock","SocialBlock","Tour360Block","CarouselBlock","WifiBlock","QRCodeBlock","DividerBlock","DockBlock"];
+const META_ORDER=["CoverBlock","StoryBlock","ProfileBlock","HeadlineBlock","LabelRow","ButtonBlock","IconGrid","TileGrid","StripBlock","CardsBlock","MenuBlock","TextBlock","VideoBlock","GalleryBlock","CatalogBlock","ServiceBlock","TestimonialsBlock","WhatsAppBlock","BookingBlock","LeadFormBlock","PixBlock","PaymentButtonsBlock","MapBlock","SocialBlock","Tour360Block","CarouselBlock","FaqBlock","HoursBlock","StatsBlock","CountdownBlock","CouponBlock","PricingBlock","WifiBlock","QRCodeBlock","DividerBlock","DockBlock","FreeBlock","CodeBlock","FooterBlock"];
+const FREE_BLOCKS=["CoverBlock","ProfileBlock","HeadlineBlock","LabelRow","ButtonBlock","IconGrid","TextBlock","GalleryBlock","WhatsAppBlock","MapBlock","SocialBlock","DividerBlock","FooterBlock","FaqBlock","HoursBlock","StatsBlock"];
 const PLANS={
- gratis:{n:"Grátis",sites:1,pages:1,tier:1,blocks:["CoverBlock","ProfileBlock","HeadlineBlock","LabelRow","ButtonBlock","IconGrid","TextBlock","SocialBlock","DividerBlock"],desc:"1 site, 1 página e só links e redes sociais"},
- pro:{n:"Pro",sites:1,pages:3,tier:3,blocks:null,desc:"1 site com todos os recursos"},
- premium:{n:"Premium",sites:30,pages:3,tier:3,blocks:null,desc:"até 30 sites"},
- scale:{n:"Scale",sites:100,pages:3,tier:3,blocks:null,desc:"até 100 sites"}};
-const plan=()=>PLANS[state.plan||"premium"];
+ gratis:{n:"Grátis",sites:1,pages:1,tier:1,blocks:FREE_BLOCKS,feat:false,desc:"1 site, 1 página, blocos básicos e marca d'água no rodapé"},
+ pro:{n:"Pro",sites:1,pages:1,tier:3,blocks:null,feat:true,desc:"1 site com 1 página, todos os blocos e sem marca d'água"},
+ premium:{n:"Premium",sites:10,pages:3,tier:3,blocks:null,feat:true,desc:"Até 10 sites, com 3 páginas em cada um"},
+ master:{n:"Master",sites:999,pages:3,tier:3,blocks:null,feat:true,desc:"Conta master: sem limites"}};
+const plan=()=>PLANS[state.plan||"gratis"];
 const canBlock=t=>!plan().blocks||plan().blocks.includes(t);
 const maxPages=()=>plan().pages;
-function renderPalette(){$("#palette").innerHTML=META_ORDER.map(t=>canBlock(t)?`<button type="button" data-add="${t}">+ ${META[t].label}</button>`:`<button type="button" class="lock" data-locked="${t}" title="Disponível a partir do plano Pro">${ic("lock")} ${META[t].label}</button>`).join("")}
+function renderPalette(){$("#palette").innerHTML=META_ORDER.map(t=>canBlock(t)?`<button type="button" data-add="${t}">+ ${META[t].label}</button>`:`<button type="button" class="lock" data-locked="${t}" title="Disponível a partir do plano Pro (R$ 9,90/mês)">${ic("lock")} ${META[t].label}</button>`).join("")}
 function renderPages(){
   $("#pgCount").textContent=`(${state.pages.length}/${maxPages()})`;
   $("#pages").innerHTML=state.pages.map((p,i)=>`<div class="pg" ${i===state.pageIdx?'aria-current="true"':""}>${i===state.pageIdx?`<input class="pgname" value="${esc(p.name)}" aria-label="Nome da página" style="border:0;background:transparent;font-weight:700;width:100%;padding:3px 2px">`:`<button type="button" class="nm" data-page="${i}">${esc(p.name)}</button>`}${state.pages.length>1?`<button type="button" class="btn sm" data-pgdel="${i}" aria-label="Remover página ${esc(p.name)}">×</button>`:"<span></span>"}</div>`).join("");
   $("#addPage").disabled=state.pages.length>=maxPages();
-  $("#addPage").title=state.pages.length>=maxPages()?(maxPages()===1?"O plano Grátis tem 1 página. Faça upgrade para o Pro.":"Limite de 3 páginas por site"):""}
+  $("#addPage").title=state.pages.length>=maxPages()?(maxPages()===1?"Seu plano tem 1 página por site. Faça upgrade para o Premium (3 páginas por site).":"Limite de 3 páginas por site"):""}
 function renderLayers(){
   $("#layers").innerHTML=state.blocks.map((b,i)=>`<li class="layer ${b.visible?"":"off"}" draggable="true" data-i="${i}" aria-selected="${state.sel===b.id}"><button type="button" class="nm" data-sel="${b.id}">${esc(META[b.type].label)}</button><button type="button" class="ic" title="Subir" aria-label="Subir" data-up="${i}">↑</button><button type="button" class="ic" title="Descer" aria-label="Descer" data-dn="${i}">↓</button><button type="button" class="ic" title="Mostrar ou ocultar" aria-label="Mostrar ou ocultar" data-vis="${b.id}">${b.visible?"◉":"○"}</button><button type="button" class="ic" title="Duplicar" aria-label="Duplicar" data-dup="${b.id}">⧉</button><button type="button" class="ic" title="Remover" aria-label="Remover" data-del="${b.id}">×</button></li>`).join("")}
 
@@ -352,14 +478,28 @@ let fid=0;
 const hx=v=>/^#[0-9a-f]{6}$/i.test(v||"")?v:"#888888";
 function imgField(label,val,path){
   const id="fu"+(++fid);
-  return `<div class="fld"><span class="lb">${label}</span><div class="imgf"><div class="th" style="${bgi(val)}"></div><div class="ac"><label class="btn sm" for="${id}">Enviar</label><input type="file" id="${id}" accept="image/*" data-upload="${path}" data-kind="img"><select data-art="${path}" aria-label="Imagem de exemplo"><option value="">Exemplo</option><optgroup label="Cenário">${Object.entries(PAL_LABEL).map(([k,l])=>`<option value="${k}">${l}</option>`).join("")}</optgroup><optgroup label="Pessoa">${Object.entries(PAL_LABEL).map(([k,l])=>`<option value="p-${k}">${l}</option>`).join("")}</optgroup></select><button type="button" class="btn sm" data-imgclear="${path}">Remover</button></div></div></div>`}
+  return `<div class="fld"><span class="lb">${label}</span><div class="imgf"><div class="th" style="${bgi(val)}"></div><div class="ac"><label class="btn sm" for="${id}">Enviar</label><input type="file" id="${id}" accept="image/*" data-upload="${path}" data-kind="img"><select data-art="${path}" aria-label="Imagem de exemplo"><option value="">Exemplo</option><optgroup label="Pessoa (foto IA)">${Object.entries(AI_PEOPLE).map(([k,[l]])=>`<option value="ai-${k}">${l}</option>`).join("")}</optgroup><optgroup label="Cenário">${Object.entries(PAL_LABEL).map(([k,l])=>`<option value="${k}">${l}</option>`).join("")}</optgroup><optgroup label="Pessoa (ilustração)">${Object.entries(PAL_LABEL).map(([k,l])=>`<option value="p-${k}">${l}</option>`).join("")}</optgroup></select><button type="button" class="btn sm" data-imgclear="${path}">Remover</button></div></div></div>`}
+function imgsField(label,val,path){
+  const arr=val||[];
+  const id="fu"+(++fid);
+  const thumbs=arr.map((u,ix)=>`<div class="imgsth" style="${bgi(u)}"><button type="button" class="rm" data-imgsrm="${path}" data-ix="${ix}" aria-label="Remover foto">×</button></div>`).join("");
+  return `<div class="fld"><span class="lb">${label}</span><div class="imgsgrid">${thumbs}<label class="imgsadd btn sm" for="${id}">+ Enviar fotos</label></div><input type="file" id="${id}" accept="image/*" multiple data-uploadmulti="${path}" style="display:none"><textarea rows="2" placeholder="ou cole links de imagens, um por linha" data-path="${path}" data-k="lines">${esc(arr.join("\n"))}</textarea></div>`}
 function vidField(label,val,path){
   const id="fu"+(++fid);
   return `<div class="fld"><span class="lb">${label}</span><div class="ac" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><label class="btn sm" for="${id}">Enviar vídeo</label><input type="file" id="${id}" accept="video/*" data-upload="${path}" data-kind="vid" style="display:none"><span class="note">${val?"Vídeo carregado":"Nenhum vídeo enviado"}</span>${val?`<button type="button" class="btn sm" data-imgclear="${path}">Remover</button>`:""}</div></div>`}
+function audField(label,val,path){
+  const id="fu"+(++fid);
+  const isBlob=val&&val.startsWith("blob:");
+  const isSpotifyHost=val&&/spotify\.com|spotify\.link/.test(val);
+  const isDeezerHost=val&&/deezer\.(com|page\.link)|link\.deezer\.com/.test(val);
+  const isShort=val&&(isSpotifyHost||isDeezerHost)&&!spotifyEmbedUrl(val)&&!deezerEmbedUrl(val);
+  const status=isBlob?"Arquivo enviado":isShort?`Link curto do ${isSpotifyHost?"Spotify":"Deezer"} — use o link completo`:isSpotifyHost?"Link do Spotify":isDeezerHost?"Link do Deezer":val?"Link definido":"Nenhuma música";
+  return `<div class="fld"><span class="lb">${label}</span><div class="ac" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><label class="btn sm" for="${id}">Enviar arquivo</label><input type="file" id="${id}" accept="audio/*" data-upload="${path}" data-kind="aud" style="display:none"><span class="note" style="${isShort?"color:var(--warn)":""}">${status}</span>${val?`<button type="button" class="btn sm" data-imgclear="${path}">Remover</button>`:""}</div><input type="text" placeholder="ou cole um link (Spotify, Deezer, SoundCloud, link direto de MP3...)" data-path="${path}" value="${isBlob?"":esc(val)}"><p class="note">Link do Spotify ou Deezer mostra o player oficial deles (com prévia da música, como qualquer link incorporado dessas plataformas). Use o link completo da página da música (com /track/, /album/ ou /playlist/) — links curtos de compartilhamento (link.deezer.com, spotify.link) não funcionam direto, é preciso abrir e copiar o endereço completo. Pra tocar a música inteira em loop, use "Enviar arquivo" ou um link direto de MP3.</p></div>`}
 function fld(label,val,kind,opts,path){
   const id="f"+(++fid);
   switch(kind){
     case"bool":return `<div class="fld row"><input type="checkbox" id="${id}" data-path="${path}" data-k="bool" ${val?"checked":""}><label for="${id}">${label}</label></div>`;
+    case"datetime":return `<div class="fld"><label for="${id}">${label}</label><input id="${id}" type="datetime-local" data-path="${path}" value="${esc(val)}"></div>`;
     case"area":return `<div class="fld"><label for="${id}">${label}</label><textarea id="${id}" rows="3" data-path="${path}">${esc(val)}</textarea></div>`;
     case"lines":return `<div class="fld"><label for="${id}">${label}</label><textarea id="${id}" rows="4" data-path="${path}" data-k="lines">${esc((val||[]).join("\n"))}</textarea></div>`;
     case"num":return `<div class="fld"><label for="${id}">${label}</label><input id="${id}" type="number" data-path="${path}" data-k="num" value="${esc(val)}"></div>`;
@@ -370,7 +510,10 @@ function fld(label,val,kind,opts,path){
     case"clr":return `<div class="fld"><label for="${id}">${label} ${val?"":"(padrão)"}</label><div style="display:flex;gap:6px"><input id="${id}" type="color" data-path="${path}" value="${hx(val)}" style="flex:1">${val&&!path.startsWith("tok.")?`<button type="button" class="btn sm" data-clr="${path}">Limpar</button>`:""}</div></div>`;
     case"icon":return `<div class="fld"><span class="lb">${label}</span><details class="ipick"><summary>${val?pic(val):"<span class='none'>—</span>"}<span>${esc((PI_LIST.find(x=>x[0]===val)||["","Sem ícone"])[1])}</span></summary><div class="igp"><button type="button" data-seticon="${path}" data-val="" aria-label="Sem ícone">∅</button>${PI_LIST.map(([k,l])=>`<button type="button" data-seticon="${path}" data-val="${k}" title="${l}" aria-label="${l}" aria-pressed="${k===val}">${pic(k)}</button>`).join("")}</div></details></div>`;
     case"img":return imgField(label,val,path);
+    case"imgs":return imgsField(label,val,path);
     case"vid":return vidField(label,val,path);
+    case"aud":return audField(label,val,path);
+    case"code":return `<div class="fld"><label for="${id}">${label}</label><textarea id="${id}" rows="8" style="font-family:monospace;font-size:12.5px" data-path="${path}">${esc(val)}</textarea></div>`;
     default:return `<div class="fld"><label for="${id}">${label}</label><input id="${id}" type="text" data-path="${path}" value="${esc(val)}"></div>`}}
 const getPath=(o,path)=>path.split(".").reduce((c,k)=>c?.[k],o);
 function setPath(o,path,v){const ks=path.split(".");let c=o;for(let i=0;i<ks.length-1;i++)c=c[ks[i]];c[ks[ks.length-1]]=v}
@@ -384,17 +527,21 @@ function styleGroup(){
   const fontSel=(k,l,blank)=>{const cur=Object.keys(FONTS).find(f=>FONTS[f]===t[k])||"";return `<div class="fld"><label for="ft_${k}">${l}</label><select id="ft_${k}" data-font="${k}">${blank?'<option value="">Igual ao texto</option>':""}${Object.keys(FONTS).map(f=>`<option ${cur===f?"selected":""}>${f}</option>`).join("")}</select></div>`};
   return `<details class="opt" ${od("Estilo do site",!state.sel)}><summary>Estilo do site</summary><div>
   <div class="presets">${Object.entries(P).map(([k,[n,v]])=>`<button type="button" data-preset="${k}" aria-pressed="${state.preset===k}"><i><b style="background:${v.bg}"></b><b style="background:${v.primary}"></b><b style="background:${v.text}"></b></i><span>${n}</span></button>`).join("")}</div>
+  <details class="opt" ${od("Título e SEO",false)}><summary>Título e SEO</summary><div>${fld("Título da página (aba do navegador)",state.seoTitle,"text",null,"$seoTitle")}${fld("Descrição para compartilhamento",state.seoDesc,"area",null,"$seoDesc")}<p class="note">Aparece na aba do navegador e ao compartilhar o link em redes sociais.</p></div></details>
+  <details class="opt" ${od("Rastreamento",false)}><summary>Rastreamento</summary><div>${plan().feat?"":`<p class="note lockn">${ic("lock")} Meta Pixel e Google Analytics estão disponíveis no plano Pro.</p>`}${plan().feat?fld("Meta Pixel (ID)",state.metaPixel,"text",null,"$metaPixel")+fld("Google Analytics (ID de medição)",state.gaId,"text",null,"$gaId"):""}<p class="note">Usados para medir visitas e cliques do seu bio site nas campanhas do Facebook/Instagram Ads e no Google Analytics, quando o site estiver publicado.</p></div></details>
+  <details class="opt" ${od("Música de fundo",false)}><summary>Música de fundo</summary><div>${plan().feat?"":`<p class="note lockn">${ic("lock")} Música de fundo está disponível no plano Pro.</p>`}${plan().feat?audField("Trilha do bio site",state.bgMusic,"$bgMusic")+fld("Tocar automaticamente (com botão para mutar)",state.bgMusicOn,"bool",null,"$bgMusicOn"):""}<p class="note">Com arquivo enviado ou link direto de MP3, aparece um botão flutuante de tocar/mutar — os navegadores exigem esse botão porque não deixam áudio tocar sozinho sem interação. Com link do Spotify ou Deezer, aparece o player oficial deles no rodapé da página.</p></div></details>
   <details class="opt" ${od("Cores",true)}><summary>Cores</summary><div><div class="cgrid">${col("primary","Destaque")}${col("btnBg","Botões")}${col("btnText","Texto botão")}${col("text","Texto")}${col("secondary","Cards")}${col("bg","Fundo")}</div></div></details>
   <details class="opt" ${od("Tipografia",false)}><summary>Tipografia</summary><div>${fontSel("font","Fonte do texto")}${fontSel("hf","Fonte dos títulos",1)}${rng("fs","Tamanho do texto",12,19,"px")}</div></details>
   <details class="opt" ${od("Botões",false)}><summary>Botões</summary><div>${seg("btnStyle","Estilo padrão",BTN_STYLES.slice(1))}${seg("btnAlign","Texto do botão",[["left","À esquerda"],["center","Centralizado"]])}${seg("btnCase","Letras",[["none","Normal"],["upper","MAIÚSCULAS"]])}${rng("radius","Arredondamento",0,40,"px")}
   <div class="fld"><label for="sh">Sombra</label><select id="sh" data-tok="shadow">${[["none","Nenhuma"],["0 2px 6px rgba(0,0,0,.18)","Leve"],["0 8px 24px rgba(0,0,0,.28)","Média"],["0 14px 34px rgba(0,0,0,.42)","Forte"]].map(([v,n])=>`<option value="${v}" ${t.shadow===v?"selected":""}>${n}</option>`).join("")}</select></div></div></details>
-  <details class="opt" ${od("Cards e espaçamento",false)}><summary>Cards e espaçamento</summary><div>${seg("cardStyle","Estilo do card",[["soft","Suave"],["outline","Contorno"],["glass","Vidro"],["lift","Elevado"],["flat","Sem fundo"]])}${rng("gap","Espaçamento",6,32,"px")}</div></details>
+  <details class="opt" ${od("Cards, margens e espaçamento",false)}><summary>Cards, margens e espaçamento</summary><div>${seg("cardStyle","Estilo do card",[["soft","Suave"],["outline","Contorno"],["glass","Vidro"],["lift","Elevado"],["flat","Sem fundo"]])}${rng("gap","Espaçamento entre blocos",6,32,"px")}${rng("top","Margem no topo da página",0,90,"px")}${rng("side","Margem nas laterais",0,40,"px")}${seg("width","Largura no computador",[["narrow","Estreita"],["normal","Normal"],["wide","Larga"]])}</div></details>
   <details class="opt" ${od("Perfil",false)}><summary>Perfil</summary><div>${seg("profile","Disposição",[["center","Centro"],["left","Esquerda"],["row","Lado a lado"],["card","Em cartão"]])}${seg("avatar","Formato da foto",[["circle","Círculo"],["squircle","Arredondada"],["square","Quadrada"],["arch","Arco"],["hex","Hexágono"]])}${seg("avRing","Borda da foto",[["none","Sem"],["solid","Simples"],["double","Dupla"],["gold","Dourada"],["glow","Brilho"]])}${rng("avSize","Tamanho da foto",56,170,"px")}</div></details>
   <details class="opt" ${od("Fundo da página",false)}><summary>Fundo da página</summary><div>${seg("bgMode","Tipo de fundo",[["solid","Cor"],["gradient","Degradê"],["image","Foto"]])}${t.bgMode==="gradient"||t.pattern==="mesh"?`<div class="cgrid">${col("bg2","Cor 2")}${col("bg3","Cor 3")}</div>`:""}${t.bgMode==="gradient"?rng("bgAngle","Ângulo do degradê",0,360,"°"):""}${t.bgMode==="image"?imgField("Foto de fundo",t.bgImg,"tok.bgImg")+rng("bgOv","Camada de cor sobre a foto",0,95,"%"):""}${seg("pattern","Textura",[["none","Liso"],["glow","Brilho"],["aurora","Aurora"],["mesh","Malha de cores"],["dots","Pontos"],["grid","Grade"],["stripes","Listras"],["grain","Grão"],["waves","Ondas"],["blobs","Manchas"],["rings","Anéis"],["geo","Geométrico"],["hex","Hexágonos"],["chevron","Zigue-zague"],["diag","Diagonais"]])}${seg("frame","Moldura",[["none","Sem"],["card","Cartão sobre cor"],["line","Linha interna"]])}${t.frame!=="none"?col("frameClr","Cor da moldura"):""}</div></details>`}
 
-const ITEM_NAME={SocialBlock:["Redes","rede"],TestimonialsBlock:["Depoimentos","depoimento"],CatalogBlock:["Produtos","produto"],ServiceBlock:["Serviços","serviço"],MenuBlock:["Itens do cardápio","item"],ButtonBlock:["Botões","botão"],CardsBlock:["Cartões","cartão"],StoryBlock:["Stories","story"],IconGrid:["Ícones","ícone"],TileGrid:["Blocos","bloco"],StripBlock:["Faixas","faixa"],DockBlock:["Ícones da barra","ícone"]};
+const ITEM_NAME={SocialBlock:["Redes","rede"],TestimonialsBlock:["Depoimentos","depoimento"],CatalogBlock:["Produtos","produto"],ServiceBlock:["Serviços","serviço"],MenuBlock:["Itens do cardápio","item"],ButtonBlock:["Botões","botão"],CardsBlock:["Cartões","cartão"],StoryBlock:["Stories","story"],IconGrid:["Ícones","ícone"],TileGrid:["Blocos","bloco"],StripBlock:["Faixas","faixa"],DockBlock:["Ícones da barra","ícone"],FreeBlock:["Camadas","camada"],FooterBlock:["Itens","item"],PaymentButtonsBlock:["Botões","botão"],FaqBlock:["Perguntas","pergunta"],HoursBlock:["Horários","horário"],StatsBlock:["Números","número"],PricingBlock:["Planos","plano"]};
 function itemSummary(type,item){return item.title||item.name||item.label||item.net||"Item"}
 function renderInspector(){
+  normTokens();
   let h="";
   const b=state.blocks.find(x=>x.id===state.sel);
   if(!b){h+=`<p class="note">Clique em um bloco na prévia para editar.</p>`}
@@ -409,7 +556,7 @@ function renderInspector(){
       h+=items.map((item,ix)=>`<details class="item" ${state.openItem===ix?"open":""} data-ix="${ix}"><summary><span class="tt">${esc(itemSummary(b.type,item))}</span></summary><div><div class="acts"><button type="button" class="btn sm" data-mvitem="-1" data-ix="${ix}" aria-label="Subir">↑</button><button type="button" class="btn sm" data-mvitem="1" data-ix="${ix}" aria-label="Descer">↓</button><button type="button" class="btn sm" data-rmitem="${ix}">Remover</button></div>${LISTS[b.type].map(([k,l,kind,o])=>fld(l,item[k],kind,o,`items.${ix}.${k}`)).join("")}</div></details>`).join("");
       h+=`<button type="button" class="btn sm" data-additem="1">+ Adicionar ${IN[1]}</button>`}
     if(b.type==="PixBlock")h+=`<p class="note">O código copia e cola segue o padrão do Banco Central. O sistema só exibe os dados e não intermedia o pagamento.</p>`}
-  if(b){const bs=b.sty||{};h+=`<details class="opt" ${od("Aparência do bloco",false)}><summary>Aparência deste bloco</summary><div>${fld("Cor do fundo do bloco",bs.bg||"","clr",null,"$sty.bg")}${fld("Cor do texto do bloco",bs.fg||"","clr",null,"$sty.fg")}${fld("Espaço interno (0 = padrão)",+bs.pad||0,"range",[0,48],"$sty.pad")}${fld("Arredondamento (0 = padrão)",+bs.rd||0,"range",[0,60],"$sty.rd")}${fld("Largura total da tela",!!bs.wide,"bool",null,"$sty.wide")}</div></details>`}
+  if(b){const bs=b.sty||{};h+=`<details class="opt" ${od("Aparência do bloco",false)}><summary>Aparência deste bloco</summary><div>${fld("Cor do fundo do bloco",bs.bg||"","clr",null,"$sty.bg")}${fld("Cor do texto do bloco",bs.fg||"","clr",null,"$sty.fg")}${fld("Espaço interno (0 = padrão)",+bs.pad||0,"range",[0,48],"$sty.pad")}${fld("Arredondamento (0 = padrão)",+bs.rd||0,"range",[0,60],"$sty.rd")}${fld("Largura total da tela",!!bs.wide,"bool",null,"$sty.wide")}${fld("Rotação do bloco (°)",+bs.rot||0,"range",[-15,15],"$sty.rot")}${fld("Efeito de profundidade (foto ultrapassa a borda)",!!bs.bleed,"bool",null,"$sty.bleed")}</div></details>`}
   h+=styleGroup();
   $("#inspector").innerHTML=`<button type="button" class="btn sm mob-only" data-tab="stage">← Voltar à prévia</button>`+h}
 function rerender(keepInspector){renderPreview();renderLayers();renderPages();if(!keepInspector)renderInspector();if(typeof syncFab==="function")syncFab()}
@@ -420,12 +567,18 @@ function resolve(path){
   if(path.startsWith("tok."))return[state.tokens,path.slice(4)];
   if(path==="$anim")return[curBlock(),"anim"];
   if(path.startsWith("$sty.")){const b=curBlock();b.sty=b.sty||{};return[b.sty,path.slice(5)]}
+  if(path==="$seoTitle")return[state,"seoTitle"];
+  if(path==="$seoDesc")return[state,"seoDesc"];
+  if(path==="$metaPixel")return[state,"metaPixel"];
+  if(path==="$gaId")return[state,"gaId"];
+  if(path==="$bgMusic")return[state,"bgMusic"];
+  if(path==="$bgMusicOn")return[state,"bgMusicOn"];
   return[curBlock().props,path]}
 function applyValue(path,v){const[o,p]=resolve(path);setPath(o,p,v)}
 function switchPage(i){state.pageIdx=i;state.sel=state.blocks[0]?.id||null;state.openItem=-1;closeStory();rerender()}
 
 document.addEventListener("click",e=>{
-  const t=e.target.closest("[data-act],[data-sideclose],button,a,.blk");if(!t)return;
+  const t=e.target.closest("[data-act],[data-sideclose],[data-tpl],button,a,.blk");if(!t)return;
   const d=t.dataset;
   /* stories */
   if(d.act==="sclose"){closeStory();return}
@@ -438,7 +591,8 @@ document.addEventListener("click",e=>{
   if(d.mvblk){e.preventDefault();const id=t.closest(".blk").dataset.id,i=state.blocks.findIndex(x=>x.id===id),j=i+ +d.mvblk;
     if(j>=0&&j<state.blocks.length){const y=$("#bio").scrollTop;[state.blocks[i],state.blocks[j]]=[state.blocks[j],state.blocks[i]];rerender(true);$("#bio").scrollTop=y}return}
   /* painel esquerdo */
-  if(d.plan){setPlan(d.plan);go("editor");return}
+  if(d.plan){if(AUTH.apiKey&&d.plan!=="gratis"){go("billing");return}setPlan(d.plan);go("editor");return}
+  if(d.moreplan){toast(`Plano ${d.moreplan}: fale com a gente pelo Instagram pra saber mais e ser avisado do lançamento.`);return}
   if(d.upsell){toast("Este template é do plano Pro. Escolha um plano para liberar todos.");return}
   if(d.locked){toast(`${META[d.locked].label} está disponível a partir do plano Pro.`);return}
   if(d.add){const b=mk(d.add);state.blocks.push(b);state.sel=b.id;state.openItem=-1;if(mob())setTab("stage");rerender();$("#bio").scrollTo({top:1e5,behavior:"smooth"});return}
@@ -456,12 +610,18 @@ document.addEventListener("click",e=>{
   if(d.preset){state.preset=d.preset;state.tokens=tk(d.preset);rerender();return}
   if(d.opt){state.tokens[d.opt]=d.val;rerender();return}
   if(d.dev){state.device=d.dev;$$("[data-dev]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.dev===state.device));renderPreview();return}
-  if(d.mode){state.mode=d.mode;$$("[data-mode]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.mode===state.mode));renderPreview();return}
+  if(d.mode){state.mode=d.mode;$$("[data-mode]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.mode===state.mode));renderPreview();if(d.mode==="view")openFullPreview();return}
+  if(t.id==="fsBack"){closeFullPreview();return}
   /* campos do inspetor */
   if(d.seg){const cur=getPath(resolve(d.seg)[0],resolve(d.seg)[1]);applyValue(d.seg,typeof cur==="number"?Number(d.val):d.val);renderPreview();renderInspector();return}
   if(d.seticon!==undefined){applyValue(d.seticon,d.val);renderPreview();renderInspector();return}
   if(d.clr){applyValue(d.clr,"");renderPreview();renderInspector();return}
   if(d.imgclear){applyValue(d.imgclear,"");renderPreview();renderInspector();return}
+  if(d.setplan){
+    if(AUTH.apiKey&&(d.setplan==="pro"||d.setplan==="premium")){startCheckout(d.setplan);return}
+    setPlan(d.setplan);renderBilling();return}
+  if(e.target.closest("[data-bgmtoggle]")){state.bgMusicOn=!state.bgMusicOn;const aud=$("#bgmAud");if(aud){if(state.bgMusicOn)aud.play().catch(()=>{});else aud.pause()}const btn=$("#bgmBtn");if(btn)btn.setAttribute("aria-pressed",String(state.bgMusicOn));return}
+  if(d.imgsrm!==undefined){const[o,p]=resolve(d.imgsrm);const arr=(o[p]||[]).slice();arr.splice(+d.ix,1);setPath(o,p,arr);rerender();return}
   if(d.additem){const b=curBlock();const base=structuredClone(b.props.items[b.props.items.length-1]||{});const reset={title:"Novo item",name:"Novo item",label:"Novo",text:"",sub:"",caption:"",url:"https://exemplo.com"};Object.keys(reset).forEach(k=>{if(k in base)base[k]=reset[k]});if("photos" in base)base.photos=[];base.id=uid();b.props.items.push(base);state.openItem=b.props.items.length-1;rerender();return}
   if(d.rmitem!==undefined){const b=curBlock();b.props.items.splice(+d.rmitem,1);state.openItem=-1;rerender();return}
   if(d.mvitem!==undefined){const b=curBlock(),i=+d.ix,j=i+ +d.mvitem,a=b.props.items;if(j>=0&&j<a.length){[a[i],a[j]]=[a[j],a[i]];state.openItem=j;rerender()}return}
@@ -485,14 +645,20 @@ document.addEventListener("click",e=>{
     if(!b.form.name.trim()){toast("Informe seu nome para enviar o pedido");return}
     if(b.form.type==="entrega"&&!b.form.addr.trim()){toast("Informe o endereço de entrega");return}
     const tt=menuTotals(b),msg=menuMsg(b),url=waUrl(b.props.phone,msg);
-    state.orders.unshift({d:"agora",who:b.form.name,items:tt.lines.map(([q,i])=>q+"x "+i.name).join(", "),type:b.form.type==="entrega"?"Entrega":"Retirada",total:tt.total,st:"Novo"});
+    if(state.remoteSiteId)apiSendOrder(state.handle,{customer_name:b.form.name,items:tt.lines.map(([q,i])=>q+"x "+i.name),type:b.form.type,total_cents:Math.round(tt.total*100)}).catch(()=>{});
+    else state.orders.unshift({d:"agora",who:b.form.name,items:tt.lines.map(([q,i])=>q+"x "+i.name).join(", "),type:b.form.type==="entrega"?"Entrega":"Retirada",total:tt.total,st:"Novo"});
     const w=window.open(url,"_blank","noopener");if(!w){copy(msg,"Pedido copiado. Cole no WhatsApp da loja.")}else toast("Abrindo o WhatsApp da loja");
     b.cart={};b.open=false;renderPreview();return}
   if(t.classList.contains("bks")){b.pick=t.dataset.t;renderPreview();return}
-  if(t.classList.contains("bkc")){state.bookings.push({date:b.date,time:b.pick,svc:b.props.service,who:"Cliente do site",st:"Confirmado"});b.pick=null;toast("Agendamento confirmado");renderPreview();return}
+  if(t.classList.contains("bkc")){
+    if(state.remoteSiteId){const pk=b.pick,dt=b.date;apiSendBooking(state.handle,{service:b.props.service,date:dt,time:pk,client_name:"Cliente do site"}).then(()=>toast("Agendamento confirmado")).catch(err=>toast(err.message)).finally(()=>{clearTaken(dt);renderPreview()})}
+    else{state.bookings.push({date:b.date,time:b.pick,svc:b.props.service,who:"Cliente do site",st:"Confirmado"});toast("Agendamento confirmado")}
+    b.pick=null;renderPreview();return}
   if(t.classList.contains("pxc")){copy(pix(b.props),"PIX copiado");return}
   if(t.classList.contains("pxq")){b.showQr=!b.showQr;renderPreview();return}
+  if(t.classList.contains("cpc")){copy(b.props.code,"Cupom copiado");return}
   if(t.classList.contains("wfc")){copy(b.props.password,"Senha copiada");return}
+  if(t.classList.contains("wfq")){b.showQr=!b.showQr;renderPreview();return}
   if(d.act==="story"){if(state.mode==="edit"&&state.sel!==b.id){state.sel=b.id;rerender(true);renderInspector()}openStory(b.id,+d.i);return}
   if(d.act==="link"){
     if(state.mode==="edit"){e.preventDefault();toast("Link: "+(t.getAttribute("href")||"sem link"))}
@@ -506,7 +672,9 @@ document.addEventListener("input",e=>{
   if(el.classList.contains("pgname")){state.pages[state.pageIdx].name=el.value;renderPreview();return}
   if(el.dataset.font){state.tokens[el.dataset.font]=el.value?FONTS[el.value]:"";renderPreview();return}
   if(el.dataset.tok){const k=el.dataset.tok;state.tokens[k]=el.type==="range"?+el.value:el.value;renderPreview();if(el.type==="range"){const l=el.previousElementSibling;if(l)l.textContent=`${el.dataset.lbl} (${el.value}${el.dataset.u})`}return}
-  if(el.dataset.art!==undefined){if(el.value){const pp=el.value.startsWith("p-");applyValue(el.dataset.art,`${pp?"person":"art"}:${el.value.replace(/^p-/,"")}:${1+Math.floor(Math.random()*90)}`);renderPreview();renderInspector()}return}
+  if(el.dataset.art!==undefined){if(el.value){
+    if(el.value.startsWith("ai-")){applyValue(el.dataset.art,`ai:${el.value.slice(3)}`);renderPreview();renderInspector();return}
+    const pp=el.value.startsWith("p-");applyValue(el.dataset.art,`${pp?"person":"art"}:${el.value.replace(/^p-/,"")}:${1+Math.floor(Math.random()*90)}`);renderPreview();renderInspector()}return}
   if(el.dataset.path){
     let v=el.value;
     if(el.dataset.k==="bool")v=el.checked;else if(el.dataset.k==="num")v=Number(v)||0;else if(el.dataset.k==="money")v=Math.round((parseFloat(String(v).replace(/\./g,"").replace(",","."))||0)*100);else if(el.dataset.k==="lines")v=v.split("\n").map(s=>s.trim()).filter(Boolean);
@@ -517,17 +685,29 @@ document.addEventListener("input",e=>{
     return}
   if(el.classList.contains("bkd")){const b=findBlock(el.closest(".blk").dataset.id);b.date=el.value;b.pick=null;renderPreview()}
 });
-document.addEventListener("change",e=>{
+document.addEventListener("change",async e=>{
   const el=e.target;
   if(el.dataset.upload&&el.files&&el.files[0]){
     const f=el.files[0];
     if(el.dataset.kind==="img"&&!f.type.startsWith("image/")){toast("Escolha um arquivo de imagem");return}
     if(el.dataset.kind==="vid"&&!f.type.startsWith("video/")){toast("Escolha um arquivo de vídeo");return}
-    applyValue(el.dataset.upload,URL.createObjectURL(f));renderPreview();renderInspector();toast(el.dataset.kind==="vid"?"Vídeo carregado":"Foto carregada")}
+    if(el.dataset.kind==="aud"&&!f.type.startsWith("audio/")){toast("Escolha um arquivo de áudio");return}
+    toast("Enviando...");
+    const url=await fileToUrl(f);if(!url)return;
+    applyValue(el.dataset.upload,url);renderPreview();renderInspector();toast(el.dataset.kind==="vid"?"Vídeo carregado":el.dataset.kind==="aud"?"Música carregada":"Foto carregada")}
+  if(el.dataset.uploadmulti&&el.files&&el.files.length){
+    const[o,p]=resolve(el.dataset.uploadmulti);
+    const cur=(o[p]||[]).slice();
+    let n=0;toast("Enviando...");
+    for(const f of Array.from(el.files)){if(f.type.startsWith("image/")){const u=await fileToUrl(f);if(u){cur.push(u);n++}}}
+    if(n){setPath(o,p,cur);renderPreview();renderInspector();toast(n>1?`${n} fotos carregadas`:"Foto carregada")}}
 });
 document.addEventListener("submit",e=>{
   const f=e.target.closest(".lf");if(!f)return;e.preventDefault();
-  const fd=new FormData(f);state.leads.unshift({d:"agora",n:fd.get("n"),c:fd.get("c"),o:"Site",dev:"Desktop",b:"Formulário"});f.reset();toast("Lead recebido")});
+  const fd=new FormData(f);
+  if(state.remoteSiteId)apiSendLead(state.handle,{name:fd.get("n"),contact:fd.get("c"),source:"Site",device:mob()?"Celular":"Desktop",button:"Formulário"}).catch(()=>{});
+  else state.leads.unshift({d:"agora",n:fd.get("n"),c:fd.get("c"),o:"Site",dev:"Desktop",b:"Formulário"});
+  f.reset();toast("Lead recebido")});
 /* arrastar para reordenar */
 let dragI=null;
 document.addEventListener("dragstart",e=>{const l=e.target.closest(".layer");if(l){dragI=+l.dataset.i;e.dataTransfer.effectAllowed="move";try{e.dataTransfer.setData("text/plain",String(dragI))}catch{}}});
@@ -545,24 +725,34 @@ document.addEventListener("toggle",e=>{
 
 function rnd(seed){let s=seed;return()=>{s=(s*16807)%2147483647;return s/2147483647}}
 function renderDashboard(){
-  const N=state.period||14;const r=rnd(42);const views=Array.from({length:N},(_,i)=>Math.round(120+i*(126/N)+r()*70));const clicks=views.map(v=>Math.round(v*(.28+r()*.1)));
-  const V=views.reduce((a,b)=>a+b,0),C=clicks.reduce((a,b)=>a+b,0);
-  $("#kpis").innerHTML=[["Visualizações hoje",views[N-1],"+12%"],["Visualizações no período",V,"+8%"],["Cliques",C,"+15%"],["Leads",state.leads.length,"+3"],["Agendamentos",state.bookings.length,"+2"],["Conversão",(C/V*100).toFixed(1)+"%","+1,2 pt"]].map(([l,v,d])=>`<div class="card kpi"><span>${l}</span><b>${v}</b><em>${d}</em></div>`).join("");
-  const W=640,H=220,pl=36,pb=24,pt=10,pr=10,max=Math.ceil(Math.max(...views)/100)*100;
+  const N=state.period||14,real=state.remoteSiteId>0;
+  let views,clicks,sources,devices,topbtn;
+  if(real){
+    const s=state.stats&&state.stats.N===N&&state.stats.site===state.remoteSiteId?state.stats:null;
+    if((!s||s.stale)&&!state.statsBusy)fetchStats(N);
+    views=s?s.views:Array(N).fill(0);clicks=s?s.clicks:Array(N).fill(0);
+    sources=s?s.sources:[];devices=s?s.devices:[];topbtn=s?s.buttons:[]}
+  else{
+    const r=rnd(42);views=Array.from({length:N},(_,i)=>Math.round(120+i*(126/N)+r()*70));clicks=views.map(v=>Math.round(v*(.28+r()*.1)));
+    sources=[["Instagram",412],["WhatsApp",268],["Google",190],["TikTok",143],["Direto",96],["YouTube",41]];
+    devices=[["Android",520],["iPhone",430],["Desktop",180],["Tablet",20]];
+    topbtn=[["WhatsApp",100],["Instagram",45],["Catálogo",73],["Agendamento",32],["PIX",19]].sort((a,b)=>b[1]-a[1])}
+  const V=views.reduce((a,b)=>a+b,0),C=clicks.reduce((a,b)=>a+b,0),cv=V?(C/V*100).toFixed(1)+"%":"0%";
+  $("#kpis").innerHTML=[["Visualizações hoje",views[N-1],"+12%"],["Visualizações no período",V,"+8%"],["Cliques",C,"+15%"],["Leads",state.leads.length,"+3"],["Agendamentos",state.bookings.length,"+2"],["Conversão",cv,"+1,2 pt"]].map(([l,v,d])=>`<div class="card kpi"><span>${l}</span><b>${v}</b>${real?"":`<em>${d}</em>`}</div>`).join("");
+  const W=640,H=220,pl=36,pb=24,pt=10,pr=10,mx=Math.max(...views,...clicks),max=real?Math.max(5,Math.ceil(mx/5)*5):Math.ceil(Math.max(...views)/100)*100;
   const x=i=>pl+i*(W-pl-pr)/(N-1),y=v=>H-pb-(v/max)*(H-pb-pt);
   const line=a=>a.map((v,i)=>(i?"L":"M")+x(i).toFixed(1)+" "+y(v).toFixed(1)).join(" ");
   const grid=[0,.25,.5,.75,1].map(f=>{const v=Math.round(max*f);return `<line x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/><text x="${pl-6}" y="${y(v)+4}" text-anchor="end" font-size="11" fill="var(--muted)">${v}</text>`}).join("");
   const days=[0,Math.round((N-1)/3),Math.round(2*(N-1)/3),N-1].map(i=>`<text x="${x(i)}" y="${H-6}" text-anchor="middle" font-size="11" fill="var(--muted)">-${N-1-i}d</text>`).join("");
   $("#chart").innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Visitas e cliques por dia">${grid}${days}<path d="${line(views)} L${x(N-1)} ${y(0)} L${x(0)} ${y(0)}Z" fill="var(--accent)" opacity=".12"/><path d="${line(views)}" fill="none" stroke="var(--accent)" stroke-width="2.5"/><path d="${line(clicks)}" fill="none" stroke="var(--warn)" stroke-width="2.5" stroke-dasharray="5 4"/><circle cx="${x(N-1)}" cy="${y(views[N-1])}" r="4" fill="var(--accent)"/><circle cx="${x(N-1)}" cy="${y(clicks[N-1])}" r="4" fill="var(--warn)"/></svg><div class="note" style="display:flex;gap:16px"><span style="color:var(--accent)">━ Visitas</span><span style="color:var(--warn)">╍ Cliques</span></div>`;
-  const bars=(id,rows)=>{const m=Math.max(...rows.map(r=>r[1]));$(id).innerHTML=rows.map(([n,v])=>`<div class="bar"><span>${n}</span><div><i style="width:${v/m*100}%"></i></div><span>${v}</span></div>`).join("")};
-  bars("#sources",[["Instagram",412],["WhatsApp",268],["Google",190],["TikTok",143],["Direto",96],["YouTube",41]]);
-  bars("#devices",[["Android",520],["iPhone",430],["Desktop",180],["Tablet",20]]);
-  bars("#topbtn",[["WhatsApp",100],["Instagram",45],["Catálogo",73],["Agendamento",32],["PIX",19]].sort((a,b)=>b[1]-a[1]));
-  $("#conv").innerHTML=`<p style="margin:0 0 6px"><b style="font:800 32px "Plus Jakarta Sans",sans-serif">${(C/V*100).toFixed(1)}%</b></p><p class="note" style="margin:0">${V} visitantes, ${C} cliques em algum botão. Em breve: escolher quais ações contam como conversão.</p>`}
-function renderLeads(){$("#leadRows").innerHTML=state.leads.map(l=>`<tr><td>${esc(l.d)}</td><td>${esc(l.n)}</td><td>${esc(l.c)}</td><td><span class="tag">${esc(l.o)}</span></td><td>${esc(l.dev)}</td><td>${esc(l.b)}</td></tr>`).join("")}
+  const bars=(id,rows)=>{if(!rows.length){$(id).innerHTML=`<p class="note">Sem dados ainda. Aparece quando o site receber visitas.</p>`;return}const m=Math.max(...rows.map(r=>r[1]));$(id).innerHTML=rows.map(([n,v])=>`<div class="bar"><span>${esc(n)}</span><div><i style="width:${v/m*100}%"></i></div><span>${v}</span></div>`).join("")};
+  bars("#sources",sources);bars("#devices",devices);bars("#topbtn",topbtn);
+  $("#conv").innerHTML=`<p style="margin:0 0 6px"><b style="font:800 32px "Plus Jakarta Sans",sans-serif">${cv}</b></p><p class="note" style="margin:0">${V} visitantes, ${C} cliques em algum botão.${real?"":" Em breve: escolher quais ações contam como conversão."}</p>`}
+const emptyRow=(n,t)=>`<tr><td colspan="${n}" class="note" style="padding:18px">${t}</td></tr>`;
+function renderLeads(){$("#leadRows").innerHTML=!state.leads.length&&state.remoteSiteId>0?emptyRow(6,"Nenhum lead ainda. Quando alguém preencher um formulário do seu site, aparece aqui."):state.leads.map(l=>`<tr><td>${esc(l.d)}</td><td>${esc(l.n)}</td><td>${esc(l.c)}</td><td><span class="tag">${esc(l.o)}</span></td><td>${esc(l.dev)}</td><td>${esc(l.b)}</td></tr>`).join("")}
 function renderBookings(){
   const s=[...state.bookings].sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
-  $("#bkRows").innerHTML=s.map(b=>`<tr><td>${b.date.split("-").reverse().join("/")}</td><td>${b.time}</td><td>${esc(b.svc)}</td><td>${esc(b.who)}</td><td><span class="pill ${b.st==="Pendente"?"warn":""}">${b.st}</span></td></tr>`).join("");
+  $("#bkRows").innerHTML=!s.length&&state.remoteSiteId>0?emptyRow(5,"Nenhum agendamento ainda."):s.map(b=>`<tr><td>${b.date.split("-").reverse().join("/")}</td><td>${b.time}</td><td>${esc(b.svc)}</td><td>${esc(b.who)}</td><td><span class="pill ${b.st==="Pendente"?"warn":""}">${b.st}</span></td></tr>`).join("");
   const svc=$("#bkSvc").value||Object.keys(SERVICES)[0];const sl=slotsFor($("#bkDate").value,SERVICES[svc]);
   $("#bkSlots").innerHTML=sl.map(t=>`<button type="button" class="btn sm">${t}</button>`).join("")||`<span class="note">${$("#bkDate").value?"Sem horários neste dia.":"Escolha uma data."}</span>`}
 

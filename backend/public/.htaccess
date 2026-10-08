@@ -1,0 +1,6 @@
+# Coloque este arquivo em public_html (junto do index.html do Manifesti).
+# manifesti.com.br/nome-do-site  ->  abre o site publicado "nome-do-site"
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([a-z0-9-]+)/?$ index.html?site=$1 [L,QSA]
